@@ -50,10 +50,11 @@ export class DataManager
     return results[ 0 ]
   }
 
-  public async matchUserCredentials( username:string, password:string ) {
+  public async checkUserCredentials( username:string, password:string ) {
     const user = await this.getUserByUsername( username )
-    if ( ! user ) throw new ApiError( `No user with username "${ username }" found.` )
+    if ( ! user ) throw new ApiError( `No user with username '${ username }' found.` )
     if ( ! comparePassword( password, user.passhash ) ) throw new ApiError( `Wrong password!` )
+    return user
   }
 
   //// ENTRY ////

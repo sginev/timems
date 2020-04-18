@@ -6,8 +6,9 @@ import morgan from 'morgan';
 
 import 'express-async-errors';
 
-import { DataManager } from './datamanager';
 import ApiError, { handleError } from './api-errors';
+import { DataManager } from './datamanager';
+import { authenticateUser } from './util/auth';
 
 const db = new DataManager()
 const app = express();
@@ -23,6 +24,13 @@ app.get('/', async (req, res) => {
     users : await db.getUsers(),
     entries : await db.getEntries(),
   } );
+});
+
+app.post('/auth', async (req, res) => {
+  const { username, password } = req.body
+  const user = await db.checkUserCredentials( username, password )
+  const { accessToken, refreshToken } = authenticateUser( user.id, req.body )
+  res.status(201).send( { accessToken, refreshToken } );
 });
 
 app.get('/users', async (req, res) => {
