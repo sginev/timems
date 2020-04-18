@@ -8,7 +8,7 @@ import 'express-async-errors';
 
 import ApiError, { handleError } from './api-errors';
 import { DataManager } from './datamanager';
-import { authenticateUser } from './util/auth';
+import { authenticateUser, validateJWT } from './util/auth';
 
 const db = new DataManager()
 const app = express();
@@ -33,9 +33,9 @@ app.post('/auth', async (req, res) => {
   res.status(201).send( { accessToken, refreshToken } );
 });
 
-app.get('/users', async (req, res) => {
+app.get('/users', [ validateJWT, async (req, res) => {
   res.json( await db.getUsers() );
-});
+} ] );
 
 app.get('/users/:id', async (req, res) => {
   // const user = await db.getUserByUsername( req.params.username );
