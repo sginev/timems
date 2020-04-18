@@ -25,13 +25,13 @@ export class DataManager
   //// USER ////
 
   public async getUsers() {
-    return this.users.value();
+    return this.users.value() as User[];
   }
   public async getUserById( id:string ) {
-    return this.users.find( { id } ).value()
+    return this.users.find( { id } ).value() as User|undefined;
   }
   public async getUserByUsername( username:string ) {
-    return this.users.find( { username } ).value()
+    return this.users.find( { username } ).value() as User|undefined;
   }
   public async addUser( username:string, password:string, role:UserRole ) {
     const id = this.genuuid()
@@ -63,10 +63,13 @@ export class DataManager
   //// ENTRY ////
   
   public async getEntries() {
-    return this.entries.value();
+    return this.entries.value() as Entry[];
+  }
+  public async getUserEntries( userId:string ) {
+    return this.entries.filter( { userId } ).value() as Entry[];
   }
   public async getEntry( id:string ) {
-    return this.entries.find( { id } ).value()
+    return this.entries.find( { id } ).value() as Entry|undefined;
   }
   public async addEntry( userId:string , day:number , duration:number , notes:string[] ) {
     const id = this.genuuid()
@@ -74,7 +77,7 @@ export class DataManager
     const results = await this.entries.push( entry ).write()
     return results[ 0 ]
   }
-  public async updateEntry( id:string, updates:{ date:number, duration:number, notes:string[] } ) {
+  public async updateEntry( id:string, updates:{ day:number, duration:number, notes:string[] } ) {
     const results = this.entries.find( { id } ).assign( updates ).write()
     return results[ 0 ]
   }
