@@ -4,10 +4,15 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 
+import 'express-async-errors';
+
 import { DataManager } from './datamanager';
+import ApiError, { handleError } from './apierrors';
+
+// import crypto from 'crypto';
+// console.log(  )
 
 const db = new DataManager()
-
 const app = express();
 
 app.set( 'trust proxy', 1 );
@@ -29,7 +34,9 @@ app.get('/users', async (req, res) => {
 
 app.get('/users/:id', async (req, res) => {
   // const user = await db.getUserByUsername( req.params.username );
-  const user = await db.getUserById( req.params.id );
+  const id = req.body.id;
+  const user = await db.getUserById( id );
+  if ( ! user ) throw new ApiError( `User not found.`, 404 )
   res.json( user );
 });
 
@@ -51,22 +58,17 @@ app.put('/users/:id', async (req, res) => {
 
 app.delete('/users/:id', async (req, res) => {
   const id = req.body.id;
-  await db.deleteUser( id );
-  res.json( {} );
+  const result = await db.deleteUser( id );
+  if ( ! result ) throw new ApiError( `User not found.`, 404 )
+  res.json( result );
 });
 
+app.use( () => { throw new ApiError( "Invalid route", 404 ) } );
 
-app.get('*', async (req, res) => {
-  res.json( { error : { message : "Unhandled endpoint." } } );
-});
-
-
+app.use( handleError );
 
 ( async function() {
-
   await db.initialize()
-  
   app.listen( 3000, () => console.log('listening on port 3000') );
-
 } )()
 .catch( e => console.error( e ) )
