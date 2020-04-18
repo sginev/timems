@@ -13,7 +13,7 @@ interface DBData {
   entries : Entry[]
 }
 
-export class DataManager 
+class DataManager 
 {
   private millisecondsToDays = ms => ~~( ms / ( 1000 * 60 * 60 * 24 ) )
   private genuuid = uuid.v4;
@@ -39,24 +39,30 @@ export class DataManager
     const settings = { preferredWorkingHoursPerDay : 0 }
     const user = { id, username, passhash, role, settings }
     const results = await this.users.push( user ).write()
+    // delete results[ 0 ]['passhash']
     return results[ 0 ]
   }
   public async updateUser( id:string, updates:{ username?:string, password?:string, role?:UserRole } ) {
+    if ( ! this.users.find( { id } ).value() )
+      throw new ApiError( "User does not exist", 404 )
     if ( updates.password ) {
       updates['passhash'] = encryptPassword( updates.password )
       delete updates.password
     }
-    return await this.users.find( { id } ).assign( updates ).write()
+    const results = await this.users.find( { id } ).assign( updates ).write()
+    // delete results['passhash']
+    return results
   }
   public async deleteUser( id:string ) {
     const results = await this.users.remove( { id } ).write()
+    // delete results[ 0 ]['passhash']
     return results[ 0 ]
   }
 
   public async checkUserCredentials( username:string, password:string ) {
     const user = await this.getUserByUsername( username )
-    if ( ! user ) throw new ApiError( `No user with username '${ username }' found.` )
-    if ( ! comparePassword( password, user.passhash ) ) throw new ApiError( `Wrong password!` )
+    if ( ! user ) throw new ApiError( `No user with username '${ username }' found.`, 401 )
+    if ( ! comparePassword( password, user.passhash ) ) throw new ApiError( `Wrong password!`, 401 )
     return user
   }
 
@@ -112,3 +118,5 @@ export class DataManager
     }
   }
 }
+
+export default new DataManager()

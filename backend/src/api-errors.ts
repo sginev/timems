@@ -10,6 +10,6 @@ export const handleError = async ( error:ApiError, req, res, next) => {
   const message = error.message || 'Internal Server Error';
   const name = error.name || 'Unknown Error';
   // const stacktrace = error.stack?.split('\n').slice(1).map(ln=>ln.trim()) 
-  console.log( `\x1b[31m${ error.stack }\x1b[0m` )
+  console.log( `\x1b[31m${ status >= 500 ? error.stack : [name,message] }\x1b[0m` )
   res.status( status ).send({ error: { name, message } });
 }
