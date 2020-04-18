@@ -1,13 +1,10 @@
 import express from 'express';
 import data from './datamanager';
-import ApiError from './api-errors';
+import ApiError, { handleError } from './api-errors';
 import { authenticateUser, validateToken } from './util/auth';
 import { UserRole, User } from './models';
 
 const routes = express.Router();
-
-
-
 const validation = new class 
 {
   async getRequestingUser( req:express.Request ) {
@@ -185,5 +182,9 @@ routes.delete('/entries/:id', async (req, res) => {
   const result = await data.deleteEntry( entry.id );
   res.json( result );
 });
+
+routes.use( () => { throw new ApiError( "Invalid route.", 404 ) } );
+
+routes.use( handleError );
 
 export default routes;
