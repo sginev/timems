@@ -7,10 +7,7 @@ import morgan from 'morgan';
 import 'express-async-errors';
 
 import { DataManager } from './datamanager';
-import ApiError, { handleError } from './apierrors';
-
-// import crypto from 'crypto';
-// console.log(  )
+import ApiError, { handleError } from './api-errors';
 
 const db = new DataManager()
 const app = express();

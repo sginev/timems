@@ -1,17 +1,12 @@
 import * as uuid from 'uuid';
-
-import { User, UserRole, Entry } from "./models";
-
-// import { Db } from 'mongodb';
-// import { getDatabase } from './util/mongo';
-// import Loki from 'lokijs';
-// var db = new Loki('DATABASS')
-// var users = db.addCollection('users');
-// var entries = db.addCollection('entries');
-
 import low from 'lowdb';
 import FileAsync from 'lowdb/adapters/FileAsync';
-import { encryptPassword } from './util/passwords';
+
+import ApiError from './api-errors';
+import { encryptPassword, comparePassword } from './util/passwords';
+import { User, UserRole, Entry } from "./models";
+
+const DATABASE_FILEPATH = `./temp/db1.json`;
 
 interface DBData {
   users : User[]
@@ -55,6 +50,12 @@ export class DataManager
     return results[ 0 ]
   }
 
+  public async matchUserCredentials( username:string, password:string ) {
+    const user = await this.getUserByUsername( username )
+    if ( ! user ) throw new ApiError( `No user with username "${ username }" found.` )
+    if ( ! comparePassword( password, user.passhash ) ) throw new ApiError( `Wrong password!` )
+  }
+
   //// ENTRY ////
   
   public async getEntries() {
@@ -81,7 +82,7 @@ export class DataManager
   //// INITIALIZATION ////
 
   public async initialize() {
-    this.database = await low( new FileAsync( `./temp/database.json` ) )
+    this.database = await low( new FileAsync( DATABASE_FILEPATH ) )
     this.database.defaultsDeep( { users : [], entries : [] } ).write()
 
     if ( ! (await this.getUsers()).length ) {
