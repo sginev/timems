@@ -1,4 +1,3 @@
-import crypto from 'crypto';
 import * as uuid from 'uuid';
 
 import { User, UserRole, Entry } from "./models";
@@ -12,6 +11,7 @@ import { User, UserRole, Entry } from "./models";
 
 import low from 'lowdb';
 import FileAsync from 'lowdb/adapters/FileAsync';
+import { encryptPassword } from './util/passwords';
 
 interface DBData {
   users : User[]
@@ -20,10 +20,9 @@ interface DBData {
 
 export class DataManager 
 {
-  private genuuid = uuid.v4;
-  private encryptPassword = raw => crypto.createHash('md5').update( raw ).digest("hex");
   private millisecondsToDays = ms => ~~( ms / ( 1000 * 60 * 60 * 24 ) )
-  
+  private genuuid = uuid.v4;
+
   private database?:low.LowdbAsync<DBData>
   private get users() { return this.database!.get( 'users', [] ) }
   private get entries() { return this.database!.get( 'entries', [] ) }
@@ -41,7 +40,7 @@ export class DataManager
   }
   public async addUser( username:string, password:string, role:UserRole ) {
     const id = this.genuuid()
-    const passhash = this.encryptPassword( password )
+    const passhash = encryptPassword( password )
     const settings = { preferredWorkingHoursPerDay : 0 }
     const user = { id, username, passhash, role, settings }
     const results = await this.users.push( user ).write()
