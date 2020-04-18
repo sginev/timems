@@ -1,91 +1,91 @@
 import crypto from 'crypto';
 import * as uuid from 'uuid';
 
-import JsonDB from "./util/jsondb";
-import { User, Entry, UserRole } from "./models";
+import { User, UserRole, Entry } from "./models";
+
+// import { Db } from 'mongodb';
+// import { getDatabase } from './util/mongo';
+// import Loki from 'lokijs';
+// var db = new Loki('DATABASS')
+// var users = db.addCollection('users');
+// var entries = db.addCollection('entries');
+
+import low from 'lowdb';
+import FileAsync from 'lowdb/adapters/FileAsync';
 
 interface DBData {
   users : User[]
   entries : Entry[]
 }
 
-const database = new JsonDB<DBData>('./temp/database.json')
-const encryptPassword = raw => 
-  crypto.createHash('md5').update( raw ).digest("hex");
-
-const genuuid = uuid.v4
-
 export class DataManager 
 {
-  private get users() { return database.data.users }
-  private get entries() { return database.data.entries }
-  private get data() { return database.data }
+  private genuuid = uuid.v4;
+  private encryptPassword = raw => crypto.createHash('md5').update( raw ).digest("hex");
+  private millisecondsToDays = ms => ~~( ms / ( 1000 * 60 * 60 * 24 ) )
+  
+  private database?:low.LowdbAsync<DBData>
+  private get users() { return this.database!.get( 'users', [] ) }
+  private get entries() { return this.database!.get( 'entries', [] ) }
 
   //// USER ////
 
   public async getUsers() {
-    return this.data.users
+    return this.users.value();
   }
   public async getUserById( id:string ) {
-    return this.data.users.find( u => u.id == id )
+    return this.users.find( { id } ).value()
   }
   public async getUserByUsername( username:string ) {
-    return this.data.users.find( u => u.username == username )
+    return this.users.find( { username } ).value()
   }
   public async addUser( username:string, password:string, role:UserRole ) {
-    const id = genuuid()
-    const passhash = encryptPassword( password )
+    const id = this.genuuid()
+    const passhash = this.encryptPassword( password )
     const settings = { preferredWorkingHoursPerDay : 0 }
     const user = { id, username, passhash, role, settings }
-    this.data.users.push( user )
-    return user
+    const results = await this.users.push( user ).write()
+    return results[ 0 ]
   }
   public async updateUser( id:string, updates:{ username?:string, password?:string, role?:UserRole } ) {
-    const user = this.data.users.find( u => u.id == id )
-    if ( user ) {
-      for ( let key in updates ) {
-        user[ key ] = updates[ key ]
-      }
-    }
+    const results = this.users.find( { id } ).assign( updates ).write()
+    return results[ 0 ]
   }
-  public async deleteUser( username:string ) {
-    const userIndex = this.data.users.findIndex( u => u.username == username )
-    this.data.users.splice( userIndex, 1 )
+  public async deleteUser( id:string ) {
+    const results = await this.users.remove( { id } ).write()
+    return results[ 0 ]
   }
 
   //// ENTRY ////
   
   public async getEntries() {
-    return this.data.entries
+    return this.entries.value();
   }
   public async getEntry( id:string ) {
-    return this.data.entries.find( o => o.id == id )
+    return this.entries.find( { id } ).value()
   }
-  public async addEntry( userId:string , date:number , duration:number , notes:string[] ) {
-    const id = genuuid()
-    this.data.entries.push( { id, userId, date, duration, notes } )
+  public async addEntry( userId:string , day:number , duration:number , notes:string[] ) {
+    const id = this.genuuid()
+    const entry = { id, userId, day, duration, notes }
+    const results = await this.entries.push( entry ).write()
+    return results[ 0 ]
   }
   public async updateEntry( id:string, updates:{ date:number, duration:number, notes:string[] } ) {
-    const user = this.data.entries.find( u => u.id == id )
-    if ( user ) {
-      for ( let key in updates ) {
-        user[ key ] = updates[ key ]
-      }
-    }
+    const results = this.entries.find( { id } ).assign( updates ).write()
+    return results[ 0 ]
   }
   public async deleteEntry( id:string ) {
-    const userIndex = this.data.entries.findIndex( o => o.id == id )
-    this.data.entries.splice( userIndex, 1 )
+    const results = await this.entries.remove( { id } ).write()
+    return results[ 0 ]
   }
 
   //// INITIALIZATION ////
 
   public async initialize() {
+    this.database = await low( new FileAsync( `./temp/database.json` ) )
+    this.database.defaultsDeep( { users : [], entries : [] } ).write()
 
-    await database.initialize()
-
-    if ( ! database.data.users ) {
-      database.data.users = []
+    if ( ! (await this.getUsers()).length ) {
       await this.addUser( `admin`, `toptal`, UserRole.Admin )
       await this.addUser( `manager`, `toptal-man`, UserRole.UserManager )
       await this.addUser( `user-red`, `ffoooo`, UserRole.Member )
@@ -93,18 +93,15 @@ export class DataManager
       await this.addUser( `user-blue`, `ooooff`, UserRole.Member )
     }
 
-    if ( ! database.data.entries ) {
-      database.data.entries = []
+    if ( ! (await this.getEntries()).length ) {
       const userId = ( await this.getUserByUsername( `user-blue` ) )!.id
       for ( let i = 0 ; i < 4 ; i++ ) {
         await this.addEntry( 
           userId, 
-          ~~( new Date().getTime() - Math.random() * 1000000 ),
+          this.millisecondsToDays( new Date().getTime() ) - ~~( Math.random() * 365 ),
           ~~( 1 + Math.random() * 23 ),
           [ `entry #` + i, `(mock)` ] )
       }
     }
-
-    // console.log( db.data )
   }
 }

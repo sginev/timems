@@ -27,8 +27,9 @@ app.get('/users', async (req, res) => {
   res.json( await db.getUsers() );
 });
 
-app.get('/users/:username', async (req, res) => {
-  const user = await db.getUserByUsername( req.params.username );
+app.get('/users/:id', async (req, res) => {
+  // const user = await db.getUserByUsername( req.params.username );
+  const user = await db.getUserById( req.params.id );
   res.json( user );
 });
 
@@ -39,7 +40,7 @@ app.post('/users', async (req, res) => {
   res.json( user );
 });
 
-app.put('/users/:username', async (req, res) => {
+app.put('/users/:id', async (req, res) => {
   interface UserData { id:string, username:string, password:string, role:number };
   const id = req.body.id;
   const updates:UserData = req.body;
@@ -48,7 +49,7 @@ app.put('/users/:username', async (req, res) => {
   res.json( user );
 });
 
-app.delete('/users/:username', async (req, res) => {
+app.delete('/users/:id', async (req, res) => {
   const id = req.body.id;
   await db.deleteUser( id );
   res.json( {} );
@@ -68,3 +69,4 @@ app.get('*', async (req, res) => {
   app.listen( 3000, () => console.log('listening on port 3000') );
 
 } )()
+.catch( e => console.error( e ) )
