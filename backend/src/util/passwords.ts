@@ -10,6 +10,7 @@ export const encryptPassword = ( raw:string ) => {
   const hash = hashPassword( raw, salt )
   return salt + '$' + hash;
 }
+
 export const comparePassword = ( password:string, passwordRecord:string ) => {
   const [ salt, hash ] = passwordRecord.split('$')
   return hash === hashPassword( password, salt );

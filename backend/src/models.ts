@@ -14,10 +14,10 @@ export interface User extends DataObject
 }
 
 export enum UserRole {
-  Admin,        /// CRUD everything
-  UserManager,  /// CRUD users, R entries
-  Member,       /// CRUD own entries, R users, R entries
-  Guest,        /// R users, R entries
+  Admin       = 9, /// CRUD everything
+  UserManager = 5, /// CRUD users, R entries
+  Member      = 2, /// CRUD own entries, R users, R entries
+  Guest       = 1, /// R users, R entries
 }
 
 export interface Entry extends DataObject

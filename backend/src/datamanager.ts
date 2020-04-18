@@ -6,7 +6,7 @@ import ApiError from './api-errors';
 import { encryptPassword, comparePassword } from './util/passwords';
 import { User, UserRole, Entry } from "./models";
 
-const DATABASE_FILEPATH = `./temp/db1.json`;
+const DATABASE_FILEPATH = `./temp/db2.json`;
 
 interface DBData {
   users : User[]
@@ -42,8 +42,11 @@ export class DataManager
     return results[ 0 ]
   }
   public async updateUser( id:string, updates:{ username?:string, password?:string, role?:UserRole } ) {
-    const results = this.users.find( { id } ).assign( updates ).write()
-    return results[ 0 ]
+    if ( updates.password ) {
+      updates['passhash'] = encryptPassword( updates.password )
+      delete updates.password
+    }
+    return await this.users.find( { id } ).assign( updates ).write()
   }
   public async deleteUser( id:string ) {
     const results = await this.users.remove( { id } ).write()

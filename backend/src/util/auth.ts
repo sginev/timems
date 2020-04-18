@@ -1,31 +1,33 @@
 import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
 import ApiError from '../api-errors';
+import { User, UserRole } from '../models';
+import { DataManager } from '../datamanager';
 
 const JWT_SECRET = "sekret"
 
 const makeSalt = () => crypto.randomBytes(32).toString( 'base64' );
-const makeHash = ( subject:string, salt:string ) => ////TODO: Use bcrypt?
+const makeHash = ( subject:string, salt:string ) => //// TODO: Use bcrypt?
   crypto.createHmac( 'sha512', salt ).update( subject ).digest( 'base64' );
 
-export const authenticateUser = ( userId:string, body:any ) => {
+interface JWTData { userId : string , refreshKey : string , iat : number }
+
+export const authenticateUser = ( user:User ) => {
   const secret = JWT_SECRET
-  const refreshId = userId + secret;
+  const refreshId = user.id + secret;
   const salt = makeSalt()
   const hash = makeHash( refreshId, salt )
-  const accessToken = jwt.sign( { ...body, refreshKey : salt }, secret )
-  const refreshToken = new Buffer( hash ).toString('base64');
+  const accessToken = jwt.sign( { userId : user.id, refreshKey : salt }, secret )
+  const refreshToken = Buffer.from( hash ).toString('base64');
   return { accessToken, refreshToken }
 }
 
-export const validateJWT = async (req, res, next) => {
-  if ( ! req.headers['authorization'] ) 
+export const validateToken = ( authorizationHeader?:string ) => {
+  if ( ! authorizationHeader ) 
     throw new ApiError( "Authentication header missing", 401 );
-  const [ headerKey, authenticationToken ] = req.headers['authorization'].split(' ');
+  const [ headerKey, authenticationToken ] = authorizationHeader.split(' ');
   if ( headerKey !== 'Bearer' ) 
     throw new ApiError( "Wrong authentication type", 401 );
-  const secret = JWT_SECRET;
-  req.jwt = jwt.verify( authenticationToken, secret );
-  console.log( req.jwt )
-  next()
+  const data = jwt.verify( authenticationToken, JWT_SECRET );
+  return data as JWTData
 }; 
