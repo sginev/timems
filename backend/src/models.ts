@@ -23,7 +23,7 @@ export enum UserRole {
 export interface Entry extends DataObject
 {
   userId : string
-  day : number
   duration : number
+  day : number
   notes : string[]
 }
