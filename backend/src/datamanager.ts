@@ -74,7 +74,7 @@ class DataManager
   public async getUserEntries( userId:string ) {
     return this.entries.filter( { userId } ).value() as Entry[];
   }
-  public async getEntry( id:string ) {
+  public async getEntryById( id:string ) {
     return this.entries.find( { id } ).value() as Entry|undefined;
   }
   public async addEntry( userId:string , day:number , duration:number , notes:string[] ) {
