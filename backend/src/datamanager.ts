@@ -6,7 +6,7 @@ import ApiError from './api-errors';
 import { encryptPassword, comparePassword } from './util/passwords';
 import { User, UserRole, Entry } from "./models";
 
-const DATABASE_FILEPATH = `./temp/db2.json`;
+const DATABASE_FILEPATH = `./temp/db4.json`;
 
 interface DBData {
   users : User[]
@@ -34,29 +34,41 @@ class DataManager
     return this.users.find( { username } ).value() as User|undefined;
   }
   public async addUser( username:string, password:string, role:UserRole ) {
-    const id = this.genuuid()
-    const passhash = encryptPassword( password )
-    const settings = { preferredWorkingHoursPerDay : 0 }
-    const user = { id, username, passhash, role, settings }
-    const results = await this.users.push( user ).write()
-    // delete results[ 0 ]['passhash']
-    return results[ 0 ]
+    if ( await this.getUserByUsername( username ) )
+      throw new ApiError( "Chosen username is already taken.", 409 );
+    
+    //// joi validations !!!
+
+    const id = this.genuuid();
+    const passhash = encryptPassword( password );
+    const settings = { preferredWorkingHoursPerDay : 0 };
+    const user = { id, username, passhash, role, settings };
+    await this.users.push( user ).write();
+    delete user['passhash'];
+    return user as User;
   }
   public async updateUser( id:string, updates:{ username?:string, password?:string, role?:UserRole } ) {
-    if ( ! this.users.find( { id } ).value() )
-      throw new ApiError( "User does not exist", 404 )
+    const user = this.users.find( { id } ).value();
+    if ( ! user )
+      throw new ApiError( "User does not exist", 404 );
+    
+    if ( updates.username && updates.username !== user.username )
+      if ( await this.getUserByUsername( updates.username ) )
+        throw new ApiError( "Chosen username is already taken.", 409 );
+
     if ( updates.password ) {
-      updates['passhash'] = encryptPassword( updates.password )
-      delete updates.password
+      updates['passhash'] = encryptPassword( updates.password );
+      delete updates.password;
     }
-    const results = await this.users.find( { id } ).assign( updates ).write()
-    // delete results['passhash']
-    return results
+
+    const result = await this.users.find( { id } ).assign( updates ).write() as User;
+    delete result['passhash'];
+    return result;
   }
   public async deleteUser( id:string ) {
-    const results = await this.users.remove( { id } ).write()
-    // delete results[ 0 ]['passhash']
-    return results[ 0 ]
+    const [ result ] = await this.users.remove( { id } ).write() as User[]
+    delete result['passhash']
+    return result
   }
 
   public async checkUserCredentials( username:string, password:string ) {
@@ -80,16 +92,16 @@ class DataManager
   public async addEntry( userId:string , day:number , duration:number , notes:string[] ) {
     const id = this.genuuid()
     const entry = { id, userId, day, duration, notes }
-    const results = await this.entries.push( entry ).write()
-    return results[ 0 ]
+    const [ result ] = await this.entries.push( entry ).write() as Entry[]
+    return result
   }
   public async updateEntry( id:string, updates:{ day:number, duration:number, notes:string[] } ) {
-    const results = this.entries.find( { id } ).assign( updates ).write()
-    return results[ 0 ]
+    const result = this.entries.find( { id } ).assign( updates ).write() as Entry
+    return result
   }
   public async deleteEntry( id:string ) {
-    const results = await this.entries.remove( { id } ).write()
-    return results[ 0 ]
+    const [ result ] = await this.entries.remove( { id } ).write() as Entry[]
+    return result
   }
 
   //// INITIALIZATION ////
@@ -107,13 +119,15 @@ class DataManager
     }
 
     if ( ! (await this.getEntries()).length ) {
-      const userId = ( await this.getUserByUsername( `user-blue` ) )!.id
-      for ( let i = 0 ; i < 4 ; i++ ) {
-        await this.addEntry( 
-          userId, 
-          this.millisecondsToDays( new Date().getTime() ) - ~~( Math.random() * 365 ),
-          ~~( 1 + Math.random() * 23 ),
-          [ `entry #` + i, `(mock)` ] )
+      for ( const u of [ `user-red` , `user-green` , `user-blue` ] ) {
+        const userId = ( await this.getUserByUsername( u ) )!.id
+        for ( let i = 0 ; i < 14 ; i++ ) {
+          await this.addEntry( 
+            userId, 
+            this.millisecondsToDays( new Date().getTime() ) - ~~( Math.random() * 365 ),
+            ~~( 1 + Math.random() * 23 ),
+            [ `entry #` + i, `(mock)` ] )
+        }
       }
     }
   }

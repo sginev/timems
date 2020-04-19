@@ -35,11 +35,9 @@ routes.post( '/register', async (req, res) => {
 } );
 
 routes.post( '/login', async (req, res) => {
-  console.log( req.path, res.locals )
   const { username, password } = req.body;
   const user = await data.checkUserCredentials( username, password );
   const { accessToken, refreshToken } = authenticateUser( user );
-  console.log( req.path, res.locals.caller )
   res.status(201).send( { accessToken, refreshToken } );
 } );
 
@@ -70,13 +68,13 @@ routes.get( '/users', async (req, res) => {
 
 routes.put('/users', async (req, res) => {
   const { username, password, role } = req.body;
-  
+
   const minimumRole = UserRole.UserManager;
+  await validation.checkPermissions( res.locals.caller, { minimumRole } );
   if ( res.locals.caller.role < role )
     throw new ApiError( "You cannot create users with higher permission level than your own." );
-  await validation.checkPermissions( res.locals.caller, { minimumRole } );
 
-  const user = await data.addUser( username, password, role );
+  const user = await data.addUser( username, password, role || UserRole.Member );
   res.json( user );
 });
 
@@ -95,11 +93,11 @@ routes.patch('/users/:userId', async (req, res) => {
   interface UserData { username:string, password:string, role:number };
   const userId = req.params.userId;
   const updates:UserData = req.body;
-    
+
   const minimumRole = UserRole.UserManager;
+  await validation.checkPermissions( res.locals.caller, { minimumRole, userId } );
   if ( updates.role && res.locals.caller.role < updates.role )
     throw new ApiError( "You cannot set users to a higher permission level than your own." );
-  await validation.checkPermissions( res.locals.caller, { minimumRole, userId } );
 
   const user = res.locals.user
   if ( !user ) throw new ApiError( `User not found.`, 404 );
