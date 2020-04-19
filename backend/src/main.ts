@@ -7,10 +7,11 @@ import morgan from 'morgan';
 import 'express-async-errors';
 
 import data from './datamanager';
-
 import api from './api-routes';
 
+const ENVIRONMENT = process.env.NODE_ENV || 'development';
 const PORT = process.env.PORT || 3000;
+
 const app = express();
 
 app.set( 'trust proxy', 1 );
@@ -27,7 +28,12 @@ app.use( '/', express.static( '../frontend/public' ) );
 app.use( '*', express.static( '../frontend/public/404.html' ) );
 
 ( async function() {
-  await data.initialize();
+  const DATABASE_FILEPATH = `./temp/db5.json`;
+  await data.initialize( DATABASE_FILEPATH );
+  
+  if ( ENVIRONMENT === 'development' )
+    await require('../dev/mockdata').populateData( data )
+
   app.listen( PORT, () => console.log( `> Running on port ${ PORT }.` ) );
 } )()
 .catch( e => console.error( e ) )

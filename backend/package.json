@@ -1,13 +1,12 @@
 {
-  "name": "top-time-tracker",
-  "version": "0.0.1",
-  "description": "Toptal Screening Test Project",
+  "name": "timetracker-server",
+  "version": "0.1.0",
+  "description": "Toptal Screening Test Project (server)",
   "main": "src/index.ts",
   "scripts": {
     "start": "ts-node src/index.ts",
     "dev": "nodemon -e .ts -x \"clear && ts-node src/index.ts\"",
-    "dev2": "nodemon -e .ts -x \"clear && ts-node src/main.ts\"",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev2": "nodemon -e .ts -x \"clear && ts-node src/main.ts\""
   },
   "author": "Stefan G",
   "license": "ISC",

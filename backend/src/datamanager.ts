@@ -7,8 +7,6 @@ import ApiError from './api-errors';
 import { encryptPassword, comparePassword } from './util/passwords';
 import { User, UserRole, Entry } from "./models";
 
-const DATABASE_FILEPATH = `./temp/db4.json`;
-
 interface DBData {
   users : User[]
   entries : Entry[]
@@ -157,8 +155,8 @@ class DataManager
 
   //// INITIALIZATION ////
 
-  public async initialize() {
-    this.database = await low( new FileAsync( DATABASE_FILEPATH ) )
+  public async initialize( databaseFilePath:string ) {
+    this.database = await low( new FileAsync( databaseFilePath ) )
     this.database.defaultsDeep( { users : [], entries : [] } ).write()
 
     if ( ! (await this.getUsers()).length ) {
