@@ -7,18 +7,15 @@ import {
   Route,
   NavLink,
   Redirect,
-  useHistory,
-  // useLocation
 } from "react-router-dom";
 import MyEntriesPage from './pages/MyEntries'
 import AllEntriesPage from './pages/AllEntries'
 import AllUsersPage from './pages/AllUsers'
 import MyUserPage from './pages/MyUser'
-import LoadingPage from './pages/Loading';
 import LoginPage from './pages/Login';
 import PageNotFoundPage from './pages/404';
 
-import fakeAuthenticationService from './services/auth'
+import authenticationService from './services/auth'
 import hooks from './services/hooks'
 
 import { FaHome, FaClock, FaUserFriends, FaRegClock, FaUserCircle } from "react-icons/fa";
@@ -30,7 +27,7 @@ function useForceUpdate(){
 
 function App() {
   hooks.forceUpdateApp = useForceUpdate();
-  const loggedIn = fakeAuthenticationService.isLoggedIn();
+  const loggedIn = authenticationService.isLoggedIn();
   return (
     <div className="App">
       <Router>
@@ -67,21 +64,6 @@ function App() {
         </div>
       </Router>
     </div>
-  );
-}
-
-function PrivateRoute({ component: Component, ...rest }) {
-  return (
-    <Route
-      { ...rest }
-      render={({ location }) =>
-        fakeAuthenticationService.isLoggedIn() ? (
-          <Component />
-        ) : (
-            <Redirect to={{ pathname: "/login", state: { from: location } }} />
-          )
-      }
-    />
   );
 }
 

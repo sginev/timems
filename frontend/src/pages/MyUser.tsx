@@ -1,21 +1,17 @@
 import React from 'react'
 import { useHistory } from "react-router-dom";
 
-import fakeAuthenticationService from '../services/auth'
+import authenticationService from '../services/auth'
 
 function LogoutButton() {
   let history = useHistory();
   return (
-    <a
-      href="#"
+    <h2
       className="App-link"
-      rel="noopener noreferrer"
-      onClick={() => fakeAuthenticationService.signout().then( () => history.push("/login") ) }
+      onClick={() => authenticationService.signout().then( () => history.push("/login") ) }
     >
-      <h2>
-        Log outta here...
-      </h2>
-    </a>
+      Log outta here...
+    </h2>
   )
 }
 

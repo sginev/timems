@@ -18,7 +18,7 @@
 
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+    animation: App-logo-spin infinite 20s linear, fade-in 1s;
   }
 }
 
@@ -32,7 +32,7 @@
   text-align: center;
 }
 .page-content > div{
-  animation: fade-in 250ms;
+  animation: fade-in 400ms;
 }
 @keyframes fade-in {
   from { opacity: 0 }
