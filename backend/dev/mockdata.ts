@@ -1,4 +1,5 @@
 import { UserRole } from '../src/models';
+import makeRandomSentence from './randsent';
 
 const millisecondsToDays = ms => ~~( ms / ( 1000 * 60 * 60 * 24 ) )
 
@@ -17,22 +18,22 @@ export async function populateData( data ) {
         username : `huey`,
         days : _ => millisecondsToDays( new Date().getTime() ) - ~~( Math.random() * 365 ),
         duration : _ => ~~( 1 + Math.random() * 23 ),
-        notes : i => [ `entry #` + i, `(mock)` ] ,
-        count : 123
+        notes : i => [ makeRandomSentence() ] ,
+        count : 4
       } ,
       {
         username : `dewey`,
         days : _ => millisecondsToDays( new Date().getTime() ) - ~~( Math.random() * 365 ),
         duration : _ => ~~( 1 + Math.random() * 23 ),
-        notes : i => [ `entry #` + i, `(mock)` ] ,
+        notes : i => [ makeRandomSentence() ] ,
         count : 31
       } ,
       {
         username : `louie`,
         days : _ => millisecondsToDays( new Date().getTime() ) - ~~( Math.random() * 365 ),
         duration : _ => ~~( 1 + Math.random() * 23 ),
-        notes : i => [ `entry #` + i, `(mock)` ] ,
-        count : 17
+        notes : i => [ makeRandomSentence() ] ,
+        count : 127
       } ,
     ]
     for ( const o of jobs ) {

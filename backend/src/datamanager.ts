@@ -24,6 +24,7 @@ const validation = {
     role: Joi.number().integer().valid( UserRole.Admin, UserRole.UserManager, UserRole.Member, UserRole.Guest ),
   }),
   entry : Joi.object({
+    id: Joi.string(),
     userId: Joi.string().required(),
     day: Joi.number().integer().min(0).required(),
     duration: Joi.number().required(),
@@ -39,7 +40,7 @@ const validation = {
 const validate = <T>( joi:Joi.ObjectSchema<T>, target:T ) => {
   const validationError = joi.validate( target ).error;
   if ( validationError )
-    throw new ApiError( validationError.toString() );
+    throw new ApiError( validationError.toString(), 403, "ValidationError" );
 }
   
 
@@ -138,6 +139,7 @@ class DataManager
     const id = this.genuuid()
     const entry = { id, userId, day, duration, notes }
     validate( validation.entry, entry )
+
     const [ result ] = await this.entries.push( entry ).write() as Entry[]
     return result
   }
@@ -158,27 +160,6 @@ class DataManager
   public async initialize( databaseFilePath:string ) {
     this.database = await low( new FileAsync( databaseFilePath ) )
     this.database.defaultsDeep( { users : [], entries : [] } ).write()
-
-    if ( ! (await this.getUsers()).length ) {
-      await this.addUser( `admin`, `toptal`, UserRole.Admin )
-      await this.addUser( `manager`, `toptal-man`, UserRole.UserManager )
-      await this.addUser( `user-red`, `ffoooo`, UserRole.Member )
-      await this.addUser( `user-green`, `ooffoo`, UserRole.Member )
-      await this.addUser( `user-blue`, `ooooff`, UserRole.Member )
-    }
-
-    if ( ! (await this.getEntries()).length ) {
-      for ( const u of [ `user-red` , `user-green` , `user-blue` ] ) {
-        const userId = ( await this.getUserByUsername( u ) )!.id
-        for ( let i = 0 ; i < 14 ; i++ ) {
-          await this.addEntry( 
-            userId, 
-            this.millisecondsToDays( new Date().getTime() ) - ~~( Math.random() * 365 ),
-            ~~( 1 + Math.random() * 23 ),
-            [ `entry #` + i, `(mock)` ] )
-        }
-      }
-    }
   }
 }
 

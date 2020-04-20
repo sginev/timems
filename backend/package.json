@@ -5,8 +5,7 @@
   "main": "src/index.ts",
   "scripts": {
     "start": "ts-node src/index.ts",
-    "dev": "nodemon -e .ts -x \"clear && ts-node src/index.ts\"",
-    "dev2": "nodemon -e .ts -x \"clear && ts-node src/main.ts\""
+    "dev": "nodemon -e .ts -x \"clear && ts-node src/server.ts\""
   },
   "author": "Stefan G",
   "license": "ISC",

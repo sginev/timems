@@ -28,7 +28,7 @@ app.use( '/', express.static( '../frontend/public' ) );
 app.use( '*', express.static( '../frontend/public/404.html' ) );
 
 ( async function() {
-  const DATABASE_FILEPATH = `./temp/db5.json`;
+  const DATABASE_FILEPATH = `./temp/database.json`;
   await data.initialize( DATABASE_FILEPATH );
   
   if ( ENVIRONMENT === 'development' )
