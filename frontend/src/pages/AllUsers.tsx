@@ -1,10 +1,18 @@
 import React from 'react'
-export default class AllUsers extends React.Component {
-  render() {
-    return (
-      <div>
-        <h1>All Them Users</h1>
-      </div>
-    )
-  }
+import PageContentHeaderComponent from '../components/PageContentHeader';
+import PageContentBodyComponent from '../components/PageContentBody';
+import UserListComponent from '../components/UserList';
+
+import data from '../services/data'
+
+export default function AllUsers() {
+  const list = data.getUsers();
+  return (
+    <div>
+      <PageContentHeaderComponent title="Time management users" />
+      <PageContentBodyComponent>
+        <UserListComponent list={ list } />
+      </PageContentBodyComponent>
+    </div>
+  )
 }

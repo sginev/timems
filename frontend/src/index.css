@@ -8,9 +8,10 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-html {
+html, a {
   margin: 0;
   padding: 0;
+  line-height: 100%;
 }
 
 code {

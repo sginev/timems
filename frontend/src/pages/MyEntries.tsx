@@ -1,15 +1,17 @@
 import React from 'react'
+import EntryListComponent from '../components/EntryList'
+import PageContentHeaderComponent from '../components/PageContentHeader';
+import PageContentBodyComponent from '../components/PageContentBody';
+import data from '../services/data'
 
-export default class MyEntriesPage extends React.Component {
-  render() {
-    return (
-      <div>
-        <h1>Just My Own Entries here</h1>
-        <h3>They are very nice</h3>
-        <h5>...</h5>
-        <h5>...</h5>
-        <h5>I can see them in my heart</h5>
-      </div>
-    )
-  }
+export default function MyEntriesPage() {
+  const list = data.getEntries();
+  return (
+    <div>
+      <PageContentHeaderComponent title="My work records" />
+      <PageContentBodyComponent>
+        <EntryListComponent list={ list } />
+      </PageContentBodyComponent>
+    </div>
+  )
 }
