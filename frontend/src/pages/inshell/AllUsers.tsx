@@ -1,9 +1,9 @@
 import React from 'react'
-import PageContentHeaderComponent from '../components/PageContentHeader';
-import PageContentBodyComponent from '../components/PageContentBody';
-import UserListComponent from '../components/UserList';
+import PageContentHeaderComponent from '../../components/PageContentHeader';
+import PageContentBodyComponent from '../../components/PageContentBody';
+import UserListComponent from '../../components/UserList';
 
-import data from '../services/data'
+import data from '../../services/data'
 
 export default function AllUsers() {
   const list = data.getUsers();

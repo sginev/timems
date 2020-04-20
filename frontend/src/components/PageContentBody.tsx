@@ -1,9 +1,13 @@
 import React from 'react'
- 
-const PageContentBodyComponent:React.FC = ({ children }) => {
+
+type Props = {
+  className?: string
+}
+
+const PageContentBodyComponent:React.FC<Props> = ( props ) => {
   return (
-    <div className="page-content-body">
-      { children }
+    <div className={ "page-content-body " + props.className } >
+      { props.children }
     </div>
   )
 }

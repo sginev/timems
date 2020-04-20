@@ -3,10 +3,10 @@ import { useHistory } from "react-router-dom";
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 
-import user from '../services/user'
-import authenticationService from '../services/auth'
-import PageContentHeaderComponent from '../components/PageContentHeader';
-import PageContentBodyComponent from '../components/PageContentBody';
+import user from '../../services/user'
+import authenticationService from '../../services/auth'
+import PageContentHeaderComponent from '../../components/PageContentHeader';
+import PageContentBodyComponent from '../../components/PageContentBody';
 
 function LogoutButton() {
   let history = useHistory();

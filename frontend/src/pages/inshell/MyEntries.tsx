@@ -1,8 +1,8 @@
 import React from 'react'
-import EntryListComponent from '../components/EntryList'
-import PageContentHeaderComponent from '../components/PageContentHeader';
-import PageContentBodyComponent from '../components/PageContentBody';
-import data from '../services/data'
+import EntryListComponent from '../../components/EntryList'
+import PageContentHeaderComponent from '../../components/PageContentHeader';
+import PageContentBodyComponent from '../../components/PageContentBody';
+import data from '../../services/data'
 
 export default function MyEntriesPage() {
   const list = data.getEntries();

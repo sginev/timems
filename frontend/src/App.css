@@ -45,6 +45,7 @@
   width: 100%;
   overflow:auto;
 }
+.center-content,
 .page-content.all-entries,
 .page-content.login,
 .page-content.register {
@@ -105,20 +106,24 @@
   transition: color 200ms;
 }
 
-.navigation-bar .home button {
-  background-color: #61dafb48;
-  color: #FfFfFf;
-  height: 62px;
-  font-size: 16px;
-  cursor: default;
-}
-
 .navigation-bar button:hover {
   color: white;
 }
 
 .navigation-bar .active button {
   color: #61dafb;
+}
+
+.navigation-bar .active button:hover {
+  cursor: default;
+}
+
+.navigation-bar .home button {
+  background-color: #61dafb48;
+  color: #FfFfFf;
+  height: 62px;
+  font-size: 16px;
+  cursor: default;
 }
 
 code {

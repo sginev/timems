@@ -10,13 +10,14 @@ import {
   Redirect,
   useLocation,
 } from "react-router-dom";
-import MyEntriesPage from './pages/MyEntries'
-import AllEntriesPage from './pages/AllEntries'
-import AllUsersPage from './pages/AllUsers'
-import MyUserPage from './pages/MyUser'
-import LoginPage from './pages/Login';
-import RegisterPage from './pages/Register';
-import PageNotFoundPage from './pages/404';
+import MyEntriesPage from './pages/inshell/MyEntries'
+import AllEntriesPage from './pages/inshell/AllEntries'
+import AllUsersPage from './pages/inshell/AllUsers'
+import MyUserPage from './pages/inshell/MyUser'
+import LoginPage from './pages/fullwidth/Login';
+import RegisterPage from './pages/fullwidth/Register';
+import PageNotFoundPage from './pages/fullwidth/404';
+import AboutPage from './pages/inshell/About';
 
 import authenticationService from './services/auth'
 import hooks from './services/hooks'
@@ -45,7 +46,8 @@ function AppMenu() {
   const loggedIn = authenticationService.isLoggedIn();
   return ! loggedIn ? <></> : (
     <div className="navigation-bar">
-      <NavLink activeClassName="active" className="home" exact to="/"><button> TOPTAL </button></NavLink>
+      <NavLink className="home" exact to="/"><button> TOPTAL </button></NavLink>
+      {/* <NavLink activeClassName="active" exact to="/"><button><FaHome/></button></NavLink> */}
       { user.canViewPage( "my-entries" ) && 
         <NavLink activeClassName="active" exact to="/my-entries"><button><FaClock/></button></NavLink> }
       { user.canViewPage( "all-users" ) && 
@@ -71,7 +73,7 @@ function AppPage() {
             </Switch>
           ) : (
             <Switch>
-              {/* <Route exact path="/" component={ LoadingPage } /> */}
+              <Route exact path="/" component={ AboutPage } />
               <Route path="/my-entries" component={ MyEntriesPage } />
               <Route path="/all-users" component={ AllUsersPage } />
               <Route path="/all-entries" component={ AllEntriesPage } />
