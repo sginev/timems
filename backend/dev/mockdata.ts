@@ -1,5 +1,6 @@
 import { UserRole } from '../src/models';
 import makeRandomSentence from './randsent';
+import randomUsernames from './randuser';
 
 const millisecondsToDays = ms => ~~( ms / ( 1000 * 60 * 60 * 24 ) )
 
@@ -10,6 +11,10 @@ export async function populateData( data ) {
     await data.addUser( `huey`, `toptal`, UserRole.Member )
     await data.addUser( `dewey`, `toptal`, UserRole.Member )
     await data.addUser( `louie`, `toptal`, UserRole.Member )
+    for ( const username of randomUsernames ) {
+      const password = [...username].reverse().join('');
+      await data.addUser( username, password, UserRole.Member );
+    }
   }
 
   if ( ! (await data.getEntries()).length ) {

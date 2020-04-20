@@ -1,0 +1,3 @@
+const USERNAMES = [ "cheak", "smacket", "dindows", "wumbling", "crawn", "blook", "mocket", "peedles", "hoat", "shastic", "strell", "pogs", "chorse", "scrand", "heaky", "slaldy", "foof", "mimbing", "chunch", "bluck", "chaldy", "glope", "meam", "tuscle", "blucking", "jabies", "lorals", "bumpets", "twumbs", "ladpock", "gagic", "strunch", "fooden", "bittle", "pouldy", "jungee", "vard", "tindows", "bied", "truscle", "molice", "fiff", "wippery", "chothy", "sperman", "tuit", "pisps", "knaped", "brilly", "jegs", "flurger", "mobal", "chalty", "seach", "cruckles", "chorton", "junny", "swizzy", "parp", "funting", "flaminate", "thowers", "gugs", "hiff", "bobbly", "crits", "flig", "fale", "blucky", "smeese", "pebb", "stockey", "titch", "blants", "yuity" ]
+
+export default USERNAMES;

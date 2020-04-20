@@ -12,6 +12,9 @@ interface DBData {
   entries : Entry[]
 }
 
+type UserUpdates = { username?:string, password?:string, role?:UserRole, preferredWorkingHoursPerDay?:number }
+type EntryUpdates = { day:number, duration:number, notes:string[] }
+
 const validation = {
   user : Joi.object({
     username: Joi.string().alphanum().min(4).max(40).required(),
@@ -42,7 +45,8 @@ const validate = <T>( joi:Joi.ObjectSchema<T>, target:T ) => {
   if ( validationError )
     throw new ApiError( validationError.toString(), 403, "ValidationError" );
 }
-  
+
+
 
 class DataManager 
 {
@@ -71,19 +75,19 @@ class DataManager
     if ( await this.getUserByUsername( username ) )
       throw new ApiError( "Chosen username is already taken.", 409 );
 
-    const id = this.genuuid();
-    const passhash = encryptPassword( password );
-    const settings = { preferredWorkingHoursPerDay : 0 };
-
     validate( validation.user, { username, password, role } )
 
-    const user = { id, username, passhash, role, settings }
+    const id = this.genuuid();
+    const passhash = encryptPassword( password );
+    const preferredWorkingHoursPerDay = 0;
+
+    const user = { id, username, passhash, role, preferredWorkingHoursPerDay }
+
     await this.users.push( user ).write();
-    delete user['passhash'];
     return user as User;
   }
 
-  public async updateUser( id:string, updates:{ username?:string, password?:string, role?:UserRole } ) {
+  public async updateUser( id:string, updates:UserUpdates ) {
     const user = this.users.find( { id } ).value();
     if ( ! user )
       throw new ApiError( "User does not exist", 404 );
@@ -100,13 +104,11 @@ class DataManager
     }
 
     const result = await this.users.find( { id } ).assign( updates ).write() as User;
-    delete result['passhash'];
     return result;
   }
 
   public async deleteUser( id:string ) {
     const [ result ] = await this.users.remove( { id } ).write() as User[]
-    delete result['passhash']
     return result
   }
 
@@ -144,7 +146,7 @@ class DataManager
     return result
   }
 
-  public async updateEntry( id:string, updates:{ day:number, duration:number, notes:string[] } ) {
+  public async updateEntry( id:string, updates:EntryUpdates ) {
     validate( validation.entry_updates, updates )
     const result = this.entries.find( { id } ).assign( updates ).write() as Entry
     return result

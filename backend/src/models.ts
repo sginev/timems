@@ -7,9 +7,7 @@ export interface User extends DataObject
 {
   username : string
   passhash : string
-  settings : {
-    preferredWorkingHoursPerDay? : number
-  }
+  preferredWorkingHoursPerDay? : number
   role : UserRole
 }
 
