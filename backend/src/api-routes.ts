@@ -52,8 +52,8 @@ routes.post( '/login', async (req, res, next) => {
 //// PREDEFINE LOCALS
 
 routes.use( '/users', async (req, res, next) => {
-  res.locals.caller = await validation.getRequestingUser( req );
-  // res.locals.caller = await data.getUserByUsername(`admin`)
+  // res.locals.caller = await validation.getRequestingUser( req );
+  res.locals.caller = await data.getUserByUsername(`admin`)
   next()
 } )
 
@@ -229,14 +229,14 @@ routes.delete('/entries/:entryId', async (req, res, next) => {
 
 
 
-routes.use( (req, res) => 
+routes.use( (req, res) => {
+  if ( ! res.locals.data )
+    throw new ApiError( "Invalid route.", 404 )
   res.json( {
     status : "success",
     data : res.locals.data || undefined
   } ) 
-);
-
-routes.use( () => { throw new ApiError( "Invalid route.", 404 ) } );
+} );
 
 routes.use( handleError );
 

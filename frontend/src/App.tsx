@@ -23,7 +23,7 @@ import authenticationService from './services/auth'
 import hooks from './services/hooks'
 import user from './services/user'
 
-import { FaHome, FaClock, FaUserFriends, FaRegClock, FaUserCircle } from "react-icons/fa";
+import { FaClock, FaUserFriends, FaRegClock, FaUserCircle } from "react-icons/fa";
 
 function useForceUpdate(){
   const [ _, setValue ] = useState( 0 ); // integer state
@@ -47,7 +47,6 @@ function AppMenu() {
   return ! loggedIn ? <></> : (
     <div className="navigation-bar">
       <NavLink className="home" exact to="/"><button> TOPTAL </button></NavLink>
-      {/* <NavLink activeClassName="active" exact to="/"><button><FaHome/></button></NavLink> */}
       { user.canViewPage( "my-entries" ) && 
         <NavLink activeClassName="active" exact to="/my-entries"><button><FaClock/></button></NavLink> }
       { user.canViewPage( "all-users" ) && 

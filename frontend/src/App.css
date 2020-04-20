@@ -51,12 +51,9 @@
 .page-content.register {
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   text-align: center;
-}
-.page-content > div{
-  animation: fade-in 400ms;
 }
 @keyframes fade-in {
   from { opacity: 0 }
@@ -123,7 +120,6 @@
   color: #FfFfFf;
   height: 62px;
   font-size: 16px;
-  cursor: default;
 }
 
 code {
@@ -157,6 +153,44 @@ code {
 .page-content-body {
   padding: 20px 20px;
 }
+
+
+.page-content-body > * {
+  animation: fade-in 250ms;
+}
+.page-content-header > * {
+  animation: fade-in 500ms;
+}
+
+
+.progress-line, .progress-line:before {
+  height: 2px;
+  width: 100%;
+  margin: 0;
+}
+.progress-line {
+  background-color: #0004;
+  display: -webkit-flex;
+  display: flex;
+}
+.progress-line:before {
+  background-color: #61dafb80;
+  content: '';
+  -webkit-animation: running-progress 1s infinite, fade-in 1s;
+  animation: running-progress 1s infinite, fade-in 1s;
+}
+@-webkit-keyframes running-progress {
+  0% { margin-left: 0px; margin-right: 100%; }
+  50% { margin-left: 0%; margin-right: 0%; }
+  100% { margin-left: 100%; margin-right: 0; }
+}
+@keyframes running-progress {
+  0% { margin-left: 0px; margin-right: 100%; }
+  50% { margin-left: 0%; margin-right: 0%; }
+  100% { margin-left: 100%; margin-right: 0; }
+}
+
+
 
 
 

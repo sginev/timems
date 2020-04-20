@@ -12,9 +12,7 @@ export interface User
   id : string
   username : string
   passhash : string
-  settings : {
-    preferredWorkingHoursPerDay? : number
-  }
+  preferredWorkingHoursPerDay? : number
   role : UserRole
 }
 
@@ -44,8 +42,8 @@ const UserListItemComponent:React.FC<{user:User}> = ({ user }) => {
     9 : { label : "Administrator", color : "danger" } ,
     0 : { label : "Locked", color : "secondary" } ,
   };
-  const TEXT = ! user.settings.preferredWorkingHoursPerDay ? '-' :
-    "Preferred work hours per day: " + user.settings.preferredWorkingHoursPerDay;
+  const TEXT = ! user.preferredWorkingHoursPerDay ? '-' :
+    "Preferred work hours per day: " + user.preferredWorkingHoursPerDay;
   const canChangeRole = myuser.id !== user.id 
                       && myuser.role >= user.role 
                        && myuser.role >= 5;
