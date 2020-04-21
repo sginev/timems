@@ -4,7 +4,7 @@ import PageContentHeaderComponent from '../../components/PageContentHeader';
 import PageContentBodyComponent from '../../components/PageContentBody';
 import ErrorBodyComponent from '../../components/ErrorBody';
 import UserListComponent from '../../components/UserList';
-import useApiLoader from '../../utils/react';
+import { useApiLoader } from '../../utils/react';
 
 export default function AllUsers()
 {

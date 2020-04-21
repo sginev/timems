@@ -11,7 +11,7 @@ import PageContentBodyComponent from '../../components/PageContentBody';
 function LogoutButton() {
   let history = useHistory();
   return (
-    <Button onClick={() => authenticationService.signout().then( () => history.push("/login") ) }>
+    <Button onClick={() => authenticationService.logout().then( () => history.push("/login") ) }>
       Log outta here... 
     </Button>
   )

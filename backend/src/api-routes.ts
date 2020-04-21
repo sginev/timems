@@ -25,30 +25,39 @@ const validation = new class
 
 routes.post( '/register', async (req, res, next) => {
   const { username, password } = req.body;
+  if ( ! username ) throw new ApiError( "No username given" )
+  if ( ! password ) throw new ApiError( "No password given" )
   const user = await data.addUser( username, password, UserRole.Member );
   const { accessToken, refreshToken } = authenticateUser( user );
   res.status(201)
-  res.locals.data = { accessToken, refreshToken };
+  res.locals.data = { user, accessToken, refreshToken };
+  res.locals.skipAuthorization = true;
   next();
 } );
 
 routes.post( '/login', async (req, res, next) => {
   const { username, password } = req.body;
+  if ( ! username ) throw new ApiError( "No username given" )
+  if ( ! password ) throw new ApiError( "No password given" )
   const user = await data.checkUserCredentials( username, password );
   const { accessToken, refreshToken } = authenticateUser( user );
   res.status(201)
-  res.locals.data = { accessToken, refreshToken };
+  res.locals.data = { user, accessToken, refreshToken };
+  res.locals.skipAuthorization = true;
   next();
 } );
 
 //// PREDEFINE LOCALS
 
 routes.use( async (req, res, next) => {
-  const id = validateToken( req.headers['authorization'] ).userId;
-  const user = await data.getUserById( id );
-  if ( ! user ) 
-    throw new ApiError( "Your user does not exist. Please login again with a valid user.", 401 );
-  res.locals.caller = user;
+  if ( ! res.locals.skipAuthorization ) {
+    // const user = await data.getUserByUsername( `admin` )
+    const id = validateToken( req.headers['authorization'] ).userId;
+    const user = await data.getUserById( id );
+    if ( ! user ) 
+      throw new ApiError( "Your user does not exist. Please login again with a valid user.", 401 );
+    res.locals.caller = user;
+  }
   next();
 } )
 
@@ -64,7 +73,12 @@ routes.param( 'entryId', async (_, res, next, entryId) => {
 
 //// USERS ////
 
-routes.get( '/users', async (req, res, next) => {
+routes.get( '/me', async (_, res, next) => {
+  res.locals.data = { user : res.locals.caller };
+  next();
+} );
+
+routes.get( '/users', async (_, res, next) => {
   const minimumRole = UserRole.UserManager;
   await validation.checkPermissions( res.locals.caller, { minimumRole } );
 
@@ -159,7 +173,7 @@ routes.get( '/users/:userId/entries', async (req, res, next) => {
 
 //// ENTRIES ////
 
-routes.get( '/entries', async (req, res, next) => {
+routes.get( '/entries', async (_, res, next) => {
   const minimumRole = UserRole.Admin;
   await validation.checkPermissions( res.locals.caller, { minimumRole } );
   
@@ -181,7 +195,7 @@ routes.put('/entries', async (req, res, next) => {
   next();
 });
 
-routes.get( '/entries/:entryId', async (req, res, next) => {
+routes.get( '/entries/:entryId', async (_, res, next) => {
   const minimumRole = UserRole.Admin;
   const entry = res.locals.entry
   if ( !entry ) throw new ApiError( `Entry not found.`, 404 );
@@ -209,7 +223,7 @@ routes.patch('/entries/:entryId', async (req, res, next) => {
   next();
 });
 
-routes.delete('/entries/:entryId', async (req, res, next) => {
+routes.delete('/entries/:entryId', async (_, res, next) => {
   const minimumRole = UserRole.Admin;
   const entry = res.locals.entry
   if ( !entry ) throw new ApiError( `Entry not found.`, 404 );
@@ -224,7 +238,7 @@ routes.delete('/entries/:entryId', async (req, res, next) => {
 
 
 
-routes.use( (req, res) => {
+routes.use( (_, res) => {
   if ( ! res.locals.data )
     throw new ApiError( "Invalid route.", 404 )
   res.json( {

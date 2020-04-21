@@ -1,7 +1,7 @@
 // import hooks from './hooks'
 
 export default {
-  id : '61f0c617-1a02-407b-af5a-7052ccd7d13f',
+  id : '_',
   role : 9,
   username : 'memberado',
   workHoursPerDay : 10,
@@ -13,5 +13,11 @@ export default {
       case "my-user": return this.role >= 1
       default: return false
     }
+  },
+  update( userData:any ) {
+    this.id = userData.id
+    this.username = userData.username
+    this.role = userData.role
+    this.workHoursPerDay = userData.workHoursPerDay
   }
 }

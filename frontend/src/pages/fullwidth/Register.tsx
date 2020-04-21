@@ -9,10 +9,10 @@ import Form from 'react-bootstrap/Form';
 
 export default function RegisterPage() {
   const history = useHistory();
-  const auth = authenticationService.authenticate;
+  // const auth = authenticationService.authenticate;
   const handleSubmit = async e => {
     e.preventDefault()
-    await auth();
+    // await auth();
     history.push("/");
   }
   const values = {

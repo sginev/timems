@@ -6,11 +6,14 @@ const API_URL_PATH = "/api"
 const api = new class ApiService
 {
   baseUrl:string = API_URL_ORIGIN + API_URL_PATH
-  authToken?:string
+  authToken:string|null = null
 
   async request<T extends any>( path:string, method:"get"|"post"|"patch"|"put"|"delete", body?:any ) {
-    const authToken = this.authToken
-    const headers = authToken ? { "Authorization" : "Bearer " + authToken } : undefined
+    const headers = { "Content-Type" : "application/json" }
+    this.authToken && ( headers["Authorization"] = "Bearer " + this.authToken )
+
+    body = JSON.stringify( body )
+
     const response = await fetch( this.baseUrl + path, { method, headers, body } );
     
     if ( response.status > 299 ) {

@@ -10,8 +10,6 @@ export default function AboutPage() {
       <PageContentHeaderComponent title="" />
       <PageContentBodyComponent className="center-content">
         <br/>
-        <h3>Welcome to</h3>
-        <br/>
         <h1>TOPTAL</h1>
         <h2>Time Management Test Project</h2>
         <br/>

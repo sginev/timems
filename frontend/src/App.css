@@ -45,7 +45,6 @@
   overflow:auto;
 }
 .center-content,
-.page-content.all-entries,
 .page-content.login,
 .page-content.register {
   display: flex;

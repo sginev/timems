@@ -49,7 +49,7 @@ const UserListItemComponent:React.FC<{user:User}> = ({ user }) => {
                        && myuser.role >= 5;
   return (
     <Card style={{ width: '18rem' }} className="user-list-item">
-      <Card.Img variant="top" src={ img } />
+      {/* <Card.Img variant="top" src={ img } /> */}
       <Card.Body>
         <Card.Title>{ user.username }</Card.Title>
         <Card.Text> { TEXT } </Card.Text>
