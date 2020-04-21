@@ -5,12 +5,13 @@ import PageContentBodyComponent from '../../components/PageContentBody';
 import ErrorBodyComponent from '../../components/ErrorBody';
 import EntryListComponent from '../../components/EntryList'
 import { useApiLoader } from '../../utils/react';
-
-import user from '../../services/user';
+import { MyUserContext, User } from '../../services/user';
 
 export default function MyEntriesPage() 
 {
-  const path = `/users/${ user.id }/entries`
+  const myUser = React.useContext( MyUserContext ) as User;
+  
+  const path = `/users/${ myUser.id }/entries`
   const { data, loading, error } = useApiLoader( path, { entries : [] } )
   const items = data.entries
 

@@ -4,10 +4,9 @@ import { FaTimesCircle as IconDelete } from 'react-icons/fa';
 import Pagination from 'react-bootstrap/Pagination';
 import DatePicker from "react-datepicker";
 
-import user from '../services/user'
-
 import "react-datepicker/dist/react-datepicker.css";
 import { NavLink } from 'react-router-dom';
+import { MyUserContext, User } from '../services/user';
 
 export interface Entry
 {
@@ -29,6 +28,7 @@ for ( let number = 1; number <= 10; number++ ) {
 }
 
 export default function EntryListComponent( props:{ list:Entry[] } ) {
+  const myUser = React.useContext( MyUserContext ) as User;
   const [ startDate, setStartDate ] = useState( new Date() );
   const [ endDate, setEndDate ] = useState( new Date() );
   return (
@@ -47,7 +47,7 @@ export default function EntryListComponent( props:{ list:Entry[] } ) {
 
       <div className="setting-note">
         <span className="label"> 
-          (Preferred working hours per day: <b>{ user.workHoursPerDay }</b>) 
+          (Preferred working hours per day: <b>{ myUser.preferredWorkingHoursPerDay }</b>) 
         </span>
         <NavLink className="sneaky" exact to="/my-user"><b>change</b></NavLink>
       </div>

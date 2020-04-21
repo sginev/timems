@@ -1,3 +1,5 @@
+import { User } from "./user";
+
 export default {
-  forceRerenderApp : () => {},
+  setMyUserData : ( user:User|null ) => {},
 }

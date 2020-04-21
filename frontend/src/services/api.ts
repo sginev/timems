@@ -3,10 +3,12 @@
 const API_URL_ORIGIN = 'http://thechoephix.com:3000'
 const API_URL_PATH = "/api"
 
+const KEY_ACCESS_TOKEN = "ACCESS_TOKEN";
+
 const api = new class ApiService
 {
   baseUrl:string = API_URL_ORIGIN + API_URL_PATH
-  authToken:string|null = null
+  authToken:string|null = localStorage.getItem( KEY_ACCESS_TOKEN )
 
   async request<T extends any>( path:string, method:"get"|"post"|"patch"|"put"|"delete", body?:any ) {
     const headers = { "Content-Type" : "application/json" }

@@ -1,5 +1,4 @@
 import api from './api'
-import user from './user';
 import hooks from './hooks'
 
 const KEY_ACCESS_TOKEN = "ACCESS_TOKEN";
@@ -23,16 +22,14 @@ const fakeAuthenticationService = {
     api.authToken = results.accessToken
     localStorage.setItem( KEY_ACCESS_TOKEN, results.accessToken )
 
-    user.update( results.user )
-
-    hooks.forceRerenderApp()
+    hooks.setMyUserData( results.user )
   },
 
   async logout() {
     api.authToken = null
     localStorage.removeItem( KEY_ACCESS_TOKEN )
 
-    hooks.forceRerenderApp()
+    hooks.setMyUserData( null ) 
   }
 }
 
