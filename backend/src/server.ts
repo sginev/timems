@@ -1,5 +1,4 @@
 import express from 'express'
-import bodyParser from 'body-parser';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
@@ -15,7 +14,7 @@ const app = express();
 app.set( 'trust proxy', 1 );
 app.use( helmet() );
 app.use( cors() );
-app.use( bodyParser.json() );
+app.use( express.json() );
 app.use( morgan('dev') );
 
 //// API

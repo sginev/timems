@@ -24,26 +24,35 @@ const validation = new class
 
 //// AUTHENTICATION ////
 
-routes.post( '/register', async (req, res, next) => {
+routes.post( ['/register','/login'], async (req, res, next) => {
+
   const { username, password } = req.body;
   if ( ! username ) throw new ApiError( "No username given" )
   if ( ! password ) throw new ApiError( "No password given" )
-  const user = await data.addUser( username, password, UserRole.Member );
+
+  switch( req.path ) {
+    case '/register':
+      var user = await data.addUser( username, password, UserRole.Member );
+      break;
+    case '/login':
+      var user = await data.checkUserCredentials( username, password );
+      break;
+    default: 
+      throw new ApiError( 'Bad path', 404 );
+  }
+
   const { accessToken, refreshToken } = authenticateUser( user );
   res.status(201)
   res.locals.data = { user, accessToken, refreshToken };
   res.locals.skipAuthorization = true;
+
   next();
 } );
 
-routes.post( '/login', async (req, res, next) => {
-  const { username, password } = req.body;
-  if ( ! username ) throw new ApiError( "No username given" )
-  if ( ! password ) throw new ApiError( "No password given" )
-  const user = await data.checkUserCredentials( username, password );
-  const { accessToken, refreshToken } = authenticateUser( user );
-  res.status(201)
-  res.locals.data = { user, accessToken, refreshToken };
+routes.post( '/logout', async (req, res, next) => {
+  res.cookie( 'accessToken', null, {maxAge: 0} );
+  res.cookie( 'refreshToken', null, {maxAge: 0} );
+  res.locals.data = {};
   res.locals.skipAuthorization = true;
   next();
 } );
