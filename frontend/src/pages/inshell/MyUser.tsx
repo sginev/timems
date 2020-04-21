@@ -11,18 +11,21 @@ import PageContentBodyComponent from '../../components/PageContentBody';
 function LogoutButton() {
   let history = useHistory();
   return (
-    <h2
-      className="App-link"
-      onClick={() => authenticationService.signout().then( () => history.push("/login") ) }
-    >
-      Log outta here...
-    </h2>
+    <Button onClick={() => authenticationService.signout().then( () => history.push("/login") ) }>
+      Log outta here... 
+    </Button>
   )
 }
 
 function MyUserPage() {
+  const [ _, forceUpdate ] = useState(0)
   const [ workHoursPerDay, setWorkHoursPerDay ] = useState( user.workHoursPerDay )
   const [ username, setUsername ] = useState( user.username )
+  const dirty = 
+    username !== user.username ||
+    workHoursPerDay !== user.workHoursPerDay
+  
+
   const workHoursPerDayVisual = (
     ( ~~workHoursPerDay ) + " hours" + 
     ( 
@@ -33,11 +36,9 @@ function MyUserPage() {
   const handleSubmit = async e => {
     e.preventDefault()
     user.workHoursPerDay = workHoursPerDay;
-    user.username = username
+    user.username = username;
+    forceUpdate( _+1 )
   }
-  const dirty = 
-    username !== user.username ||
-    workHoursPerDay !== user.workHoursPerDay
   
   return ( 
     <div>
@@ -52,29 +53,38 @@ function MyUserPage() {
         </PageContentHeaderComponent>
 
         <PageContentBodyComponent>
-          <Form.Group controlId="formBasicRangeCustom">
-            <Form.Label>
-              Preferred work hours per day: { workHoursPerDayVisual }
-            </Form.Label>
-            <Form.Control
-              onChange={ e => setWorkHoursPerDay( parseFloat( e.target.value ) ) } 
-              value={ workHoursPerDay }
-              type="range" 
-              min=".5" 
-              max="20"
-              step=".5" 
-              custom />
-          </Form.Group>
+          <div style={{ maxWidth:"400px" }}>
+
           <Form.Group controlId="formBasicUsername">
-            <Form.Label>Username</Form.Label>
-            <Form.Control 
-              type="text" 
-              value={ username }
-              onChange={ e => setUsername( e.target.value ) }
-              placeholder="Enter username" />
-          </Form.Group>
-          
-          <LogoutButton />
+              <Form.Label>Username</Form.Label>
+              <Form.Control 
+                type="text" 
+                value={ username }
+                onChange={ e => setUsername( e.target.value ) }
+                placeholder="Enter username" />
+            </Form.Group>
+
+            <br/>
+            
+            <Form.Group controlId="formBasicRangeCustom">
+              <Form.Label>
+                Preferred work hours per day: { workHoursPerDayVisual }
+              </Form.Label>
+              <Form.Control
+                onChange={ e => setWorkHoursPerDay( parseFloat( e.target.value ) ) } 
+                value={ workHoursPerDay }
+                type="range" 
+                min=".5" 
+                max="20"
+                step=".5" 
+                custom />
+            </Form.Group>
+
+            <br/>
+            
+            <LogoutButton />
+
+          </div>
         </PageContentBodyComponent>
         
       </Form>
