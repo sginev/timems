@@ -6,11 +6,9 @@ import morgan from 'morgan';
 
 import 'express-async-errors';
 
+import config from './configuration';
 import data from './datamanager';
 import api from './api-routes';
-
-const ENVIRONMENT = process.env.NODE_ENV || 'development';
-const PORT = process.env.PORT || 3000;
 
 const app = express();
 
@@ -28,12 +26,11 @@ app.use( '/', express.static( '../frontend/public' ) );
 app.use( '*', express.static( '../frontend/public/404.html' ) );
 
 ( async function() {
-  const DATABASE_FILEPATH = `./temp/database.json`;
-  await data.initialize( DATABASE_FILEPATH );
+  await data.initialize( config.DATABASE_FILEPATH );
   
-  if ( ENVIRONMENT === 'development' )
+  if ( config.isDev() )
     await require('../dev/mockdata').populateData( data )
 
-  app.listen( PORT, () => console.log( `> Running on port ${ PORT }.` ) );
+  app.listen( config.PORT, () => console.log( `> Running on port ${ config.PORT }.` ) );
 } )()
 .catch( e => console.error( e ) )

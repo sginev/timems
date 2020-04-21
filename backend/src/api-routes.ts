@@ -1,9 +1,10 @@
 import express from 'express';
+
 import data from './datamanager';
+import config from './configuration';
 import ApiError, { handleError } from './api-errors';
 import { authenticateUser, validateToken } from './util/auth';
 import { UserRole, User } from './models';
-
 
 
 const routes = express.Router();
