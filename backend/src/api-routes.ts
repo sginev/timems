@@ -9,14 +9,6 @@ import { UserRole, User } from './models';
 const routes = express.Router();
 const validation = new class 
 {
-  async getRequestingUser( req:express.Request ) {
-    const id = validateToken( req.headers['authorization'] ).userId;
-    const user = await data.getUserById( id );
-    if ( ! user ) 
-      throw new ApiError( "Your user does not exist. Please login again with a valid user.", 401 );
-    return user;
-  }
-  
   //// throws error if ALL check options fail
   async checkPermissions( user:User, options:{ minimumRole?:UserRole, userId?:string } ) {
     if ( options.userId && user.id === options.userId ) 
@@ -51,10 +43,13 @@ routes.post( '/login', async (req, res, next) => {
 
 //// PREDEFINE LOCALS
 
-routes.use( '/users', async (req, res, next) => {
-  // res.locals.caller = await validation.getRequestingUser( req );
-  res.locals.caller = await data.getUserByUsername(`admin`)
-  next()
+routes.use( async (req, res, next) => {
+  const id = validateToken( req.headers['authorization'] ).userId;
+  const user = await data.getUserById( id );
+  if ( ! user ) 
+    throw new ApiError( "Your user does not exist. Please login again with a valid user.", 401 );
+  res.locals.caller = user;
+  next();
 } )
 
 routes.param( 'userId', async (_, res, next, userId) => {
