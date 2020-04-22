@@ -4,11 +4,11 @@ import PageContentHeaderComponent from '../../components/PageContentHeader';
 import PageContentBodyComponent from '../../components/PageContentBody';
 import ErrorBodyComponent from '../../components/ErrorBody';
 import EntryListComponent from '../../components/EntryList'
-import { useApiLoader } from '../../utils/react';
+import { useApiLoader_old } from '../../utils/react';
 
 export default function MyEntriesPage() 
 {
-  const { data, loading, error } = useApiLoader( "/entries", { entries : [] } )
+  const { data, loading, error } = useApiLoader_old( "/entries", { entries : [] } )
   const items = data.entries
 
   const renderBody = () => {

@@ -6,16 +6,16 @@ import ErrorBodyComponent from '../../components/ErrorBody';
 import EntryListComponent from '../../components/EntryList'
 import Button from 'react-bootstrap/Button';
 
-import { useApiLoader } from '../../utils/react';
+import { useApiDataLoader } from '../../utils/react';
 import { MyUserContext, User } from '../../services/user';
 
 export default function MyEntriesPage() 
 {
   const myUser = React.useContext( MyUserContext ) as User;
-  
-  const path = `/users/${ myUser.id }/entries`
-  const { data, loading, error } = useApiLoader( path, { entries : [] } )
+  const path = `/users/${ myUser.id }/entries` // + (Math.random()>.5?'_broken':'')
+  const [ { data, loading, error }, reload ] = useApiDataLoader( path, { entries : [] } )
   const items = data.entries
+  // items.length = 1 + ~~( Math.random() * 8 )
 
   const renderBody = () => {
     if ( error )
@@ -27,7 +27,8 @@ export default function MyEntriesPage()
   return (
     <div>
       <PageContentHeaderComponent title="My work records">
-        <Button variant="primary">
+        <Button variant="primary"
+          onClick={ () => reload( data ) }>
           Add new record
         </Button>
       </PageContentHeaderComponent>
