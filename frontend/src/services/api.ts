@@ -10,11 +10,18 @@ const api = new class ApiService
   baseUrl:string = API_URL_ORIGIN + API_URL_PATH
   authToken:string|null = localStorage.getItem( KEY_ACCESS_TOKEN )
 
-  async request<T extends any>( path:string, method:"get"|"post"|"patch"|"put"|"delete", body?:any ) {
+  async request<T extends any>( path:string, method:"get"|"post"|"patch"|"put"|"delete", data?:any ) {
     const headers = { "Content-Type" : "application/json" }
     this.authToken && ( headers["Authorization"] = "Bearer " + this.authToken )
 
-    body = JSON.stringify( body )
+    let body:any = undefined
+    if ( method === "get" ) {
+      if ( data ) {
+        path += '?' + Object.entries( data ).map(([key, val]) => `${key}=${val}`).join('&');
+      }
+    } else {
+      body = JSON.stringify( data )
+    }
 
     const response = await fetch( this.baseUrl + path, { method, headers, body } );
     

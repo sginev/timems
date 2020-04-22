@@ -3,11 +3,12 @@ import React from 'react'
 import PageContentHeaderComponent from '../../components/PageContentHeader';
 import PageContentBodyComponent from '../../components/PageContentBody';
 import ErrorBodyComponent from '../../components/ErrorBody';
-import EntryListComponent from '../../components/EntryList'
+import EntryListComponent from '../../components/EntryList';
 import Button from 'react-bootstrap/Button';
 
 import { useApiDataLoader } from '../../utils/react';
 import { MyUserContext, User } from '../../services/user';
+import { NavLink } from 'react-router-dom';
 
 export default function MyEntriesPage() 
 {
@@ -36,6 +37,20 @@ export default function MyEntriesPage()
       <PageContentBodyComponent>
         { renderBody() }
       </PageContentBodyComponent>
+    </div>
+  )
+}
+
+function SettingsNoteComponent() {
+  const myUser = React.useContext( MyUserContext ) as User;
+  if ( ! myUser.preferredWorkingHoursPerDay )
+    return null
+  return (
+    <div className="setting-note">
+      <span className="label"> 
+        (Preferred working hours per day: <b>{ myUser.preferredWorkingHoursPerDay }</b>) 
+      </span>
+      <NavLink className="sneaky" exact to="/my-user"><b>change</b></NavLink>
     </div>
   )
 }
