@@ -27,8 +27,21 @@ for ( let number = 1; number <= 10; number++ ) {
   );
 }
 
-export default function EntryListComponent( props:{ list:Entry[] } ) {
+function SettingsNoteComponent() {
   const myUser = React.useContext( MyUserContext ) as User;
+  if ( ! myUser.preferredWorkingHoursPerDay )
+    return null
+  return (
+    <div className="setting-note">
+      <span className="label"> 
+        (Preferred working hours per day: <b>{ myUser.preferredWorkingHoursPerDay }</b>) 
+      </span>
+      <NavLink className="sneaky" exact to="/my-user"><b>change</b></NavLink>
+    </div>
+  )
+}
+
+export default function EntryListComponent( props:{ list:Entry[] } ) {
   const [ startDate, setStartDate ] = useState( new Date() );
   const [ endDate, setEndDate ] = useState( new Date() );
   return (
@@ -45,12 +58,7 @@ export default function EntryListComponent( props:{ list:Entry[] } ) {
         </div>
       </div>
 
-      <div className="setting-note">
-        <span className="label"> 
-          (Preferred working hours per day: <b>{ myUser.preferredWorkingHoursPerDay }</b>) 
-        </span>
-        <NavLink className="sneaky" exact to="/my-user"><b>change</b></NavLink>
-      </div>
+      <SettingsNoteComponent/>
 
       { props.list.map( o => <EntryListItemComponent key={ o.id } entry={ o } /> ) }
       
@@ -59,6 +67,7 @@ export default function EntryListComponent( props:{ list:Entry[] } ) {
   )
 }
 
+// private millisecondsToDays = ms => ~~( ms / ( 1000 * 60 * 60 * 24 ) )
 const daysToMilliseconds = days => ( days * 1000 * 60 * 60 * 24 )
 
 function EntryListItemComponent( props:{ entry:Entry }) {
