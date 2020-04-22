@@ -29,17 +29,17 @@ function weakCompareObjects( a:any, b:any ) {
 
 function MyUserPage() {
   const myUser = React.useContext( MyUserContext ) as User;
-  const [ preferredWorkingHoursPerDay, setWorkHoursPerDay ] = useState( myUser.preferredWorkingHoursPerDay || 4 )
+  const [ preferredWorkingHoursPerDay, setWorkHoursPerDay ] = useState( myUser.preferredWorkingHoursPerDay )
   const [ username, setUsername ] = useState( myUser.username )
 
   const dirty = ! weakCompareObjects( { username, preferredWorkingHoursPerDay }, myUser )
 
-  const workHoursPerDayVisual = (
+  const workHoursPerDayVisual = ( ! preferredWorkingHoursPerDay ) ? 'Disabled' : (
     ( ~~preferredWorkingHoursPerDay ) + " hours" + 
     ( 
       preferredWorkingHoursPerDay % 1.0 === 0.0 ? '' :
       ( ' ' + ( preferredWorkingHoursPerDay % 1.0 ) * 60 + ' minutes' ) 
-    )
+    ) + ( preferredWorkingHoursPerDay >= 16 ? ' (Get some sleep!)' : '' )
   )
   const handleSubmit = async e => {
     e.preventDefault()
@@ -59,7 +59,7 @@ function MyUserPage() {
         </PageContentHeaderComponent>
 
         <PageContentBodyComponent>
-          <div style={{ maxWidth:"400px" }}>
+          <div style={{ maxWidth:"520px" }}>
 
           <Form.Group controlId="formBasicUsername">
               <Form.Label>Username</Form.Label>
@@ -74,13 +74,14 @@ function MyUserPage() {
             
             <Form.Group controlId="formBasicRangeCustom">
               <Form.Label>
-                Preferred work hours per day: { workHoursPerDayVisual }
+                Preferred work hours per day: <b>{ workHoursPerDayVisual }</b>
               </Form.Label>
               <Form.Control
-                onChange={ e => setWorkHoursPerDay( parseFloat( e.target.value ) ) } 
-                value={ preferredWorkingHoursPerDay }
+                onChange={ e => 
+                  setWorkHoursPerDay( parseFloat( e.target.value ) || undefined ) } 
+                value={ preferredWorkingHoursPerDay || 0 }
                 type="range" 
-                min=".5" 
+                min="0" 
                 max="20"
                 step=".5" 
                 custom />
