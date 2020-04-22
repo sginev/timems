@@ -13,7 +13,7 @@ interface DBData {
 }
 
 type UserUpdates = { username?:string, password?:string, role?:UserRole, preferredWorkingHoursPerDay?:number }
-type EntryUpdates = { day:number, duration:number, notes:string[] }
+type EntryUpdates = { day:number, duration:number, notes:string }
 type EntryFilterOptions = { userId?:string, from?:number, to?:number, limit?:number }
 
 const validation = {
@@ -142,7 +142,7 @@ class DataManager
     return this.entries.find( { id } ).value() as Entry|undefined;
   }
 
-  public async addEntry( userId:string , day:number , duration:number , notes:string[] ) {
+  public async addEntry( userId:string , day:number , duration:number , notes:string ) {
     const user = this.users.find( { id : userId } ).value();
     if ( ! user )
       throw new ApiError( "User does not exist", 404 );

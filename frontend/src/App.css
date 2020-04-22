@@ -247,25 +247,27 @@ code {
 }
 
 .entry-list-item > div {
-  padding: 20px;
+  /* padding: 10px; */
+  line-height: 50px;
   text-align: center;
 }
 
 .entry-list-item .date {
-  width: 150px;
+  flex: 0 0 150px;
   background-color: #FFF1;
 }
-
 .entry-list-item .duration {
-  width: 100px;
+  flex: 0 0 100px;
   border-right: 1px solid #FFF1;
 }
-
 .entry-list-item .notes {
   padding-left: 30px;
+  flex: 1 1;
   font-size: 20px;
-  flex-grow: 1;
   text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .entry-list-item .delete {

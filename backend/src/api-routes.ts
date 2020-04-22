@@ -219,7 +219,7 @@ routes.get( '/entries/:entryId', async (_, res, next) => {
 } );
 
 routes.patch('/entries/:entryId', async (req, res, next) => {
-  interface EntryData { day:number , duration:number , notes:string[] };
+  interface EntryData { day:number , duration:number , notes:string };
   const updates:EntryData = req.body;
   const entryId = req.params.entryId;
 

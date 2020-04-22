@@ -14,7 +14,7 @@ export interface Entry
   userId : string
   duration : number
   day : number
-  notes : string[]
+  notes : string
 }
 
 let active = 2;
@@ -63,6 +63,7 @@ export default function EntryListComponent( props:{ list:Entry[] } ) {
       { props.list.map( o => <EntryListItemComponent key={ o.id } entry={ o } /> ) }
       
       <Pagination>{items}</Pagination>
+
     </div>
   )
 }
@@ -70,15 +71,22 @@ export default function EntryListComponent( props:{ list:Entry[] } ) {
 // private millisecondsToDays = ms => ~~( ms / ( 1000 * 60 * 60 * 24 ) )
 const daysToMilliseconds = days => ( days * 1000 * 60 * 60 * 24 )
 
-function EntryListItemComponent( props:{ entry:Entry }) {
-  const date = new Date( daysToMilliseconds( props.entry.day ) )
-  const duration = props.entry.duration + ":00"
+const EntryListItemComponent:React.FC<{ entry:Entry }> = ({ entry }) => {
+  const Content = () => {
+    const date = new Date( daysToMilliseconds( entry.day ) ).toLocaleDateString()
+    const duration = (+entry.duration).toFixed( 2 )
+    const description = entry.notes
+    return ( <>
+      <div className="date"> { date } </div>
+      <div className="duration"> { duration } </div>
+      <div className="notes"> { description } </div>
+      <div className="delete"> <IconDelete/> </div>
+    </> )
+  }
+
   return (
     <div className="entry-list-item">
-      <div className="date"> { date.toLocaleDateString() } </div>
-      <div className="duration"> { duration } </div>
-      <div className="notes"> { props.entry.id } </div>
-      <div className="delete"> <IconDelete/> </div>
+      { entry && <Content /> }
     </div>
   )
 }

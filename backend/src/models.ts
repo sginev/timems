@@ -24,5 +24,11 @@ export interface Entry extends DataObject
   userId : string
   duration : number
   day : number
-  notes : string[]
+  notes : string
+  color? : EntryColor
+}
+
+export enum EntryColor {
+  BelowPreference = 1,
+  MeetsPreference = 2,
 }
