@@ -175,7 +175,8 @@ routes.get( '/users/:userId/entries', async (req, res, next) => {
   const user = res.locals.user
   if ( !user ) throw new ApiError( `User not found.`, 404 );
 
-  const entries = await data.getUserEntries( userId );
+  const options = req.query;
+  const entries = await data.getEntries( { ...options, userId } );
 
   res.locals.data = { entries };
   next();
@@ -183,12 +184,13 @@ routes.get( '/users/:userId/entries', async (req, res, next) => {
 
 //// ENTRIES ////
 
-routes.get( '/entries', async (_, res, next) => {
+routes.get( '/entries', async (req, res, next) => {
   const minimumRole = UserRole.Admin;
   await validation.checkPermissions( res.locals.caller, { minimumRole } );
-  
+
+  const options = req.query;
   res.locals.data = {
-    entries : await data.getEntries()
+    entries : await data.getEntries( options )
   }
   next();
 } );

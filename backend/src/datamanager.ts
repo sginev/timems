@@ -14,6 +14,7 @@ interface DBData {
 
 type UserUpdates = { username?:string, password?:string, role?:UserRole, preferredWorkingHoursPerDay?:number }
 type EntryUpdates = { day:number, duration:number, notes:string[] }
+type EntryFilterOptions = { userId?:string, from?:number, to?:number, limit?:number }
 
 const validation = {
   user : Joi.object({
@@ -50,19 +51,17 @@ const validate = <T>( joi:Joi.ObjectSchema<T>, target:T ) => {
 
 class DataManager 
 {
-  private millisecondsToDays = ms => ~~( ms / ( 1000 * 60 * 60 * 24 ) )
   private genuuid = uuid.v4;
 
   private database?:low.LowdbAsync<DBData>
   private get users() { return this.database!.get( 'users', [] ) }
   private get entries() { return this.database!.get( 'entries', [] ) }
 
-  //// USER ////
+  //#region USER 
 
   public async getUsers() {
     return this.users.value() as User[];
   }
-
   public async getUserById( id:string ) {
     return this.users.find( { id } ).value() as User|undefined;
   }
@@ -119,14 +118,24 @@ class DataManager
     return user
   }
 
-  //// ENTRY ////
-  
-  public async getEntries() {
-    return this.entries.value() as Entry[];
-  }
+  //#endregion
 
-  public async getUserEntries( userId:string ) {
-    return this.entries.filter( { userId } ).value() as Entry[];
+  //#region ENTRY
+  
+  public async getEntries( options?:EntryFilterOptions ) {
+    if ( ! options )
+      return this.entries.sort( (a,b) => b.day - a.day ).value() as Entry[];
+
+    const { userId, from, to, limit } = options
+    let entries = ( !userId ? this.entries : this.entries.filter( { userId } ) ).value()
+    if ( from ) 
+      entries = entries.filter( o => o.day >= from )
+    if ( to )
+      entries = entries.filter( o => o.day <= to )
+    if ( limit && entries.length > limit )
+      entries.length = limit
+
+    return entries as Entry[];
   }
 
   public async getEntryById( id:string ) {
@@ -142,7 +151,7 @@ class DataManager
     const entry = { id, userId, day, duration, notes }
     validate( validation.entry, entry )
 
-    const [ result ] = await this.entries.push( entry ).write() as Entry[]
+    const [ result ] = await this.entries.splice( 0, 0, entry ).write() as Entry[]
     return result
   }
 
@@ -156,6 +165,8 @@ class DataManager
     const [ result ] = await this.entries.remove( { id } ).write() as Entry[]
     return result
   }
+
+  //#endregion
 
   //// INITIALIZATION ////
 
