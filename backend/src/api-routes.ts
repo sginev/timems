@@ -185,8 +185,10 @@ routes.get( '/users/:userId/entries', async (req, res, next) => {
 //// ENTRIES ////
 
 routes.get( '/entries', async (req, res, next) => {
+  const userId = req.query.userId as string;
+
   const minimumRole = UserRole.Admin;
-  await validation.checkPermissions( res.locals.caller, { minimumRole } );
+  await validation.checkPermissions( res.locals.caller, { minimumRole, userId } );
 
   const options = req.query;
   res.locals.data = {

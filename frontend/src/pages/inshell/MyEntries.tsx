@@ -12,19 +12,20 @@ import { useApiDataLoader } from '../../utils/react';
 import { millisecondsToDays } from '../../services/entry';
 import { MyUserContext, User } from '../../services/user';
 
-export default function AllEntriesPage() 
+export default function MyEntriesPage() 
 {
   const myUser = React.useContext( MyUserContext ) as User;
   const defaultFilterState = { startDate : null, endDate : new Date() };
   const [ filterState, setFilterState ] = useState<FilterState>( defaultFilterState );
-  let path = `/entries/`;
-  const [ { data, loading, error }, load ] = useApiDataLoader( path, { entries : [] }, { userId: myUser.id } );
+  const limit = 20
+  const path = `/entries`;
+  const [ { data, loading, error }, load ] = useApiDataLoader( path, { entries : [] }, { userId: myUser.id, limit } );
 
   const onFilterChange = ( state:FilterState ) => {
     setFilterState( state );
     const from = state.startDate && millisecondsToDays( state.startDate.getTime() );
     const to = state.endDate && millisecondsToDays( state.endDate.getTime() );
-    load( { from, to, userId : myUser.id }, data );
+    load( { from, to, limit, userId : myUser.id }, data );
   }
 
   const renderBody = () => {

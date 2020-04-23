@@ -13,14 +13,15 @@ export default function AllEntriesPage()
 {
   const defaultFilterState = { startDate : null, endDate : new Date() };
   const [ filterState, setFilterState ] = useState<FilterState>( defaultFilterState );
-  let path = `/entries`;
-  const [ { data, loading, error }, load ] = useApiDataLoader( path, { entries : [] } );
+  const limit = 10
+  const path = `/entries`;
+  const [ { data, loading, error }, load ] = useApiDataLoader( path, { entries : [] }, { limit } );
 
   const onFilterChange = ( state:FilterState ) => {
     setFilterState( state );
     const from = state.startDate && millisecondsToDays( state.startDate.getTime() );
     const to = state.endDate && millisecondsToDays( state.endDate.getTime() );
-    load( { from, to }, data );
+    load( { from, to, limit }, data );
   }
 
   const renderBody = () => {

@@ -249,6 +249,12 @@ code {
   font-size: 20px;
   cursor: default;
 }
+.entry-list-item.prefUnmet {
+  background-color: #5f0c0c;
+}
+.entry-list-item.prefMet {
+  background-color: #1b3b2a;
+}
 
 .entry-list-item > div {
   /* padding: 10px; */

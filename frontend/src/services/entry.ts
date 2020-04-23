@@ -6,6 +6,7 @@ export interface Entry
   duration : number
   day : number
   notes : string
+  _dailyTotalDuration? : number
 }
 
 export const millisecondsToDays = ms => ~~( ms / ( 1000 * 60 * 60 * 24 ) ) + 1
