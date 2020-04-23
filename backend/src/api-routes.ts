@@ -166,21 +166,21 @@ routes.delete('/users/:userId', async (req, res, next) => {
 
 //// USER ENTRIES ////
 
-routes.get( '/users/:userId/entries', async (req, res, next) => {
-  const userId = req.params.userId;
+// routes.get( '/users/:userId/entries', async (req, res, next) => {
+//   const userId = req.params.userId;
   
-  const minimumRole = UserRole.Admin;
-  await validation.checkPermissions( res.locals.caller, { minimumRole, userId } );
+//   const minimumRole = UserRole.Admin;
+//   await validation.checkPermissions( res.locals.caller, { minimumRole, userId } );
   
-  const user = res.locals.user
-  if ( !user ) throw new ApiError( `User not found.`, 404 );
+//   const user = res.locals.user
+//   if ( !user ) throw new ApiError( `User not found.`, 404 );
 
-  const options = req.query;
-  const entries = await data.getEntries( { ...options, userId } );
+//   const options = req.query;
+//   const entries = await data.getEntries( { ...options, userId } );
 
-  res.locals.data = { entries };
-  next();
-} );
+//   res.locals.data = { entries };
+//   next();
+// } );
 
 //// ENTRIES ////
 
@@ -191,9 +191,7 @@ routes.get( '/entries', async (req, res, next) => {
   await validation.checkPermissions( res.locals.caller, { minimumRole, userId } );
 
   const options = req.query;
-  res.locals.data = {
-    entries : await data.getEntries( options )
-  }
+  res.locals.data = await data.getEntriesPaginated( options )
   next();
 } );
 

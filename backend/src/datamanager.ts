@@ -14,7 +14,7 @@ interface DBData {
 
 type UserUpdates = { username?:string, password?:string, role?:UserRole, preferredWorkingHoursPerDay?:number }
 type EntryUpdates = { day:number, duration:number, notes:string }
-type EntryFilterOptions = { userId?:string, from?:number, to?:number, limit?:number }
+type EntryFilterOptions = { userId?:string, from?:number, to?:number, limit?:number, page?:number }
 
 const validation = {
   user : Joi.object({
@@ -131,19 +131,9 @@ class DataManager
     await this.database?.write()
   }
   
-  // private async updateEntryTotals( userId:string, day?:number ) {
-  //   const groups = day ?
-  //     [ this.entries.filter( { userId, day } ) ] :
-  //     Object.values( this.entries.filter( { userId } ).groupBy( 'day' ) );
-  //   for ( const group of groups ) {
-  //     const totalDuration = group.reduce( (a,c) => a + c.duration, 0 )
-  //     group.forEach( entry => entry.assign({ _dailyTotalDuration : totalDuration }))
-  //   }
-  // }
-  
-  public async getEntries( options?:EntryFilterOptions ) {
+  public async getEntriesPaginated( options?:EntryFilterOptions ) {
     if ( ! options )
-      return this.entries.value() as Entry[];
+      return { entries : this.entries.value() as Entry[] };
 
     const { userId, from, to, limit } = options
     let entries = ( !userId ? this.entries : this.entries.filter( { userId } ) ).value()
@@ -151,10 +141,20 @@ class DataManager
       entries = entries.filter( o => o.day >= from )
     if ( to )
       entries = entries.filter( o => o.day <= to )
-    if ( limit && entries.length > limit )
-      entries.length = limit
 
-    return entries.sort( (a,b) => b.day - a.day ) as Entry[];
+    entries.sort( (a,b) => b.day - a.day )
+
+    const totalCount = entries.length
+    
+    if ( limit && entries.length > limit ) {
+      const page = options?.page || 1
+      entries = entries.slice( ( page - 1 ) * limit, page * limit )
+      var pages = Math.ceil(totalCount/limit)
+    } else {
+      var pages = 1;
+    }
+
+    return { entries, pages }
   }
 
   public async getEntryById( id:string ) {

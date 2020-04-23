@@ -17,27 +17,27 @@ export async function populateData( data ) {
     }
   }
 
-  if ( ! (await data.getEntries()).length ) {
+  if ( ! (await data.getEntriesPaginated()).entries.length ) {
     const jobs = [
       {
         username : `huey`,
         days : () => millisecondsToDays( new Date().getTime() ) - ~~( Math.random() * 365 ),
         duration : () => ~~( 1 + Math.random() * 23 ),
-        notes : () => [ makeRandomSentence() ] ,
+        notes : () => makeRandomSentence() ,
         count : 4
       } ,
       {
         username : `dewey`,
         days : () => millisecondsToDays( new Date().getTime() ) - ~~( Math.random() * 365 ),
         duration : () => ~~( 1 + Math.random() * 23 ),
-        notes : () => [ makeRandomSentence() ] ,
+        notes : () => makeRandomSentence() ,
         count : 31
       } ,
       {
         username : `louie`,
         days : _ => millisecondsToDays( new Date().getTime() ) - ~~( Math.random() * 365 ),
         duration : _ => ~~( 1 + Math.random() * 23 ),
-        notes : _ => [ makeRandomSentence() ] ,
+        notes : _ => makeRandomSentence() ,
         count : 127
       } ,
     ]

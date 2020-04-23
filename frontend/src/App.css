@@ -249,6 +249,7 @@ code {
   flex-direction: row;
   font-size: 20px;
   cursor: default;
+  transition: opacity 100ms, background-color 100ms;
 }
 .entry-list-item.prefUnmet {
   background-color: #5f0c0c;

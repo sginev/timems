@@ -9,7 +9,7 @@ import ErrorBodyComponent from '../../components/ErrorBody';
 import EntryListComponent from '../../components/EntryList'
 import EntryFilterComponent, { FilterState } from '../../components/EntryFilter';
 import { useApiDataLoader } from '../../utils/react';
-import { millisecondsToDays } from '../../services/entry';
+import { millisecondsToDays, Entry } from '../../services/entry';
 import { MyUserContext, User } from '../../services/user';
 import PaginationComponent from '../../components/Pagination';
 
@@ -18,20 +18,31 @@ export default function MyEntriesPage()
   const myUser = React.useContext( MyUserContext ) as User;
   const defaultFilterState = { startDate : null, endDate : null };
   const [ filterState, setFilterState ] = useState<FilterState>( defaultFilterState );
+  var [ page, setPage ] = useState( 1 );
 
-  const limit = 20
+  const limit = 10
   const path = `/entries`;
-  const [ { data, loading, error }, load ] = useApiDataLoader( path, { entries : [] }, { userId: myUser.id, limit } );
+  const defaultData = { entries : new Array<Entry>(), pages : 1 };
+  const [ { data, loading, error }, load ] = useApiDataLoader( path, defaultData, { userId: myUser.id, limit } );
+  //// todo: trust current page from api
+
+  if ( page > data.pages )
+    page = data.pages
 
   const onFilterChange = ( state:FilterState ) => {
     setFilterState( state );
     reloadData( state );
   }
 
-  const reloadData = ( state:FilterState = filterState ) => {
+  const onPageSelect = ( page:number ) => {
+    setPage( page )
+    reloadData( filterState, page );
+  }
+
+  const reloadData = ( state:FilterState = filterState, pg = page ) => {
     const from = state.startDate ? millisecondsToDays( state.startDate.getTime() ) : undefined;
     const to = state.endDate ? millisecondsToDays( state.endDate.getTime() ) : undefined;
-    load( { from, to, limit, userId : myUser.id }, data );
+    load( { from, to, limit, page : pg, userId : myUser.id }, data );
   }
 
   const renderBody = () => {
@@ -55,7 +66,7 @@ export default function MyEntriesPage()
         <EntryFilterComponent state={ filterState } setState={ onFilterChange } />
         <SettingsNoteComponent />
         { renderBody() }
-        <PaginationComponent />
+        <PaginationComponent currentPage={ page } lastPage={ data.pages } onAction={ onPageSelect }/>
       </PageContentBodyComponent>
       
     </div>
