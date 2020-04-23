@@ -11,35 +11,40 @@ import EntryFilterComponent, { FilterState } from '../../components/EntryFilter'
 import { useApiDataLoader } from '../../utils/react';
 import { millisecondsToDays } from '../../services/entry';
 import { MyUserContext, User } from '../../services/user';
+import PaginationComponent from '../../components/Pagination';
 
 export default function MyEntriesPage() 
 {
   const myUser = React.useContext( MyUserContext ) as User;
-  const defaultFilterState = { startDate : null, endDate : new Date() };
+  const defaultFilterState = { startDate : null, endDate : null };
   const [ filterState, setFilterState ] = useState<FilterState>( defaultFilterState );
+
   const limit = 20
   const path = `/entries`;
   const [ { data, loading, error }, load ] = useApiDataLoader( path, { entries : [] }, { userId: myUser.id, limit } );
 
   const onFilterChange = ( state:FilterState ) => {
     setFilterState( state );
-    const from = state.startDate && millisecondsToDays( state.startDate.getTime() );
-    const to = state.endDate && millisecondsToDays( state.endDate.getTime() );
+    reloadData( state );
+  }
+
+  const reloadData = ( state:FilterState = filterState ) => {
+    const from = state.startDate ? millisecondsToDays( state.startDate.getTime() ) : undefined;
+    const to = state.endDate ? millisecondsToDays( state.endDate.getTime() ) : undefined;
     load( { from, to, limit, userId : myUser.id }, data );
   }
 
   const renderBody = () => {
     if ( error )
       return <ErrorBodyComponent error={ error } />
-    if ( ! loading ) 
-      return <EntryListComponent list={ data.entries } size={ limit } />
+    return <EntryListComponent list={ data.entries } size={ limit } />
   }
 
   return (
     <div>
 
       <PageContentHeaderComponent title="My work records">
-        <Button variant="primary" onClick={ () => load( data ) }>
+        <Button variant="primary" onClick={ () => reloadData() }>
           Add new record
         </Button>
       </PageContentHeaderComponent>
@@ -50,6 +55,7 @@ export default function MyEntriesPage()
         <EntryFilterComponent state={ filterState } setState={ onFilterChange } />
         <SettingsNoteComponent />
         { renderBody() }
+        <PaginationComponent />
       </PageContentBodyComponent>
       
     </div>

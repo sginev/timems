@@ -219,7 +219,7 @@ code {
   background-color: #61dafb80;
   content: '';
   -webkit-animation: running-progress 1s infinite, fade-in 1s;
-  animation: running-progress 1s infinite, fade-in 1s;
+  animation: running-progress ease 1s infinite, fade-in 1s;
 }
 @-webkit-keyframes running-progress {
   0% { margin-left: 0px; margin-right: 100%; }

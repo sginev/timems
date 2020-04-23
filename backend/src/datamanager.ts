@@ -125,8 +125,8 @@ class DataManager
       [ this.entries.filter( { userId, day } ).value() ] :
       Object.values( this.entries.filter( { userId } ).groupBy( 'day' ).value() );
     for ( const group of groups ) {
-      const totalDuration = group.reduce( (a,c) => a + c.duration, 0 )
-      group.forEach( entry => entry._dailyTotalDuration = totalDuration )
+      const totalDuration = group.reduce( (a,c) => +a+(+c.duration), 0 )
+      group.forEach( entry => entry._dailyTotalDuration = +totalDuration )
     }
     await this.database?.write()
   }

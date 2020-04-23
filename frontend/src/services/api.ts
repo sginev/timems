@@ -17,7 +17,10 @@ const api = new class ApiService
     let body:any = undefined
     if ( method === "get" ) {
       if ( data ) {
-        path += '?' + Object.entries( data ).map(([key, val]) => `${key}=${val}`).join('&');
+        path += '?' + Object.entries( data )
+          .filter(([_, value]) => value != undefined )
+          .map(([key, val]) => `${key}=${val}`)
+          .join('&');
       }
     } else {
       body = JSON.stringify( data )
