@@ -25,7 +25,7 @@ export interface Entry extends DataObject
   duration : number
   day : number
   notes : string
-  color? : EntryColor
+  _dailyTotalDuration? : number
 }
 
 export enum EntryColor {

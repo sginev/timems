@@ -32,13 +32,13 @@ const validation = {
     userId: Joi.string().required(),
     day: Joi.number().integer().min(0).required(),
     duration: Joi.number().required(),
-    notes: Joi.array().required(),
+    notes: Joi.string().required(),
   }),
   entry_updates : Joi.object({
     userId: Joi.string(),
     day: Joi.number().integer().min(0),
     duration: Joi.number(),
-    notes: Joi.array(),
+    notes: Joi.string(),
   }),
 }
 const validate = <T>( joi:Joi.ObjectSchema<T>, target:T ) => {
@@ -46,8 +46,6 @@ const validate = <T>( joi:Joi.ObjectSchema<T>, target:T ) => {
   if ( validationError )
     throw new ApiError( validationError.toString(), 403, "ValidationError" );
 }
-
-
 
 class DataManager 
 {
@@ -121,10 +119,31 @@ class DataManager
   //#endregion
 
   //#region ENTRY
+
+  private async updateEntryTotals( userId:string, day?:number ) {
+    const groups = day ?
+      [ this.entries.filter( { userId, day } ).value() ] :
+      Object.values( this.entries.filter( { userId } ).groupBy( 'day' ).value() );
+    for ( const group of groups ) {
+      const totalDuration = group.reduce( (a,c) => a + c.duration, 0 )
+      group.forEach( entry => entry._dailyTotalDuration = totalDuration )
+    }
+    await this.database?.write()
+  }
+  
+  // private async updateEntryTotals( userId:string, day?:number ) {
+  //   const groups = day ?
+  //     [ this.entries.filter( { userId, day } ) ] :
+  //     Object.values( this.entries.filter( { userId } ).groupBy( 'day' ) );
+  //   for ( const group of groups ) {
+  //     const totalDuration = group.reduce( (a,c) => a + c.duration, 0 )
+  //     group.forEach( entry => entry.assign({ _dailyTotalDuration : totalDuration }))
+  //   }
+  // }
   
   public async getEntries( options?:EntryFilterOptions ) {
     if ( ! options )
-      return this.entries.sort( (a,b) => b.day - a.day ).value() as Entry[];
+      return this.entries.value() as Entry[];
 
     const { userId, from, to, limit } = options
     let entries = ( !userId ? this.entries : this.entries.filter( { userId } ) ).value()
@@ -135,7 +154,7 @@ class DataManager
     if ( limit && entries.length > limit )
       entries.length = limit
 
-    return entries as Entry[];
+    return entries.sort( (a,b) => b.day - a.day ) as Entry[];
   }
 
   public async getEntryById( id:string ) {
@@ -151,19 +170,30 @@ class DataManager
     const entry = { id, userId, day, duration, notes }
     validate( validation.entry, entry )
 
-    const [ result ] = await this.entries.splice( 0, 0, entry ).write() as Entry[]
-    return result
+    await this.entries.splice( 0, 0, entry ).write()
+    await this.updateEntryTotals( entry.userId, day );
+
+    return await this.getEntryById( id )
   }
 
   public async updateEntry( id:string, updates:EntryUpdates ) {
     validate( validation.entry_updates, updates )
-    const result = this.entries.find( { id } ).assign( updates ).write() as Entry
-    return result
+
+    await this.entries.find( { id } ).assign( updates ).write()
+
+    const entry = await this.getEntryById( id )
+    await this.updateEntryTotals( entry!.userId );
+    return entry
   }
 
   public async deleteEntry( id:string ) {
-    const [ result ] = await this.entries.remove( { id } ).write() as Entry[]
-    return result
+    const entry = await this.getEntryById( id )
+    if ( ! entry )
+      throw new ApiError( "Entry does not exist", 404 );
+      
+    await this.entries.remove( { id } ).write();
+    await this.updateEntryTotals( entry.userId, entry.day );
+    await this.database?.write()
   }
 
   //#endregion

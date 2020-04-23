@@ -21,23 +21,23 @@ export async function populateData( data ) {
     const jobs = [
       {
         username : `huey`,
-        days : _ => millisecondsToDays( new Date().getTime() ) - ~~( Math.random() * 365 ),
-        duration : _ => ~~( 1 + Math.random() * 23 ),
-        notes : i => [ makeRandomSentence() ] ,
+        days : () => millisecondsToDays( new Date().getTime() ) - ~~( Math.random() * 365 ),
+        duration : () => ~~( 1 + Math.random() * 23 ),
+        notes : () => [ makeRandomSentence() ] ,
         count : 4
       } ,
       {
         username : `dewey`,
-        days : _ => millisecondsToDays( new Date().getTime() ) - ~~( Math.random() * 365 ),
-        duration : _ => ~~( 1 + Math.random() * 23 ),
-        notes : i => [ makeRandomSentence() ] ,
+        days : () => millisecondsToDays( new Date().getTime() ) - ~~( Math.random() * 365 ),
+        duration : () => ~~( 1 + Math.random() * 23 ),
+        notes : () => [ makeRandomSentence() ] ,
         count : 31
       } ,
       {
         username : `louie`,
         days : _ => millisecondsToDays( new Date().getTime() ) - ~~( Math.random() * 365 ),
         duration : _ => ~~( 1 + Math.random() * 23 ),
-        notes : i => [ makeRandomSentence() ] ,
+        notes : _ => [ makeRandomSentence() ] ,
         count : 127
       } ,
     ]
