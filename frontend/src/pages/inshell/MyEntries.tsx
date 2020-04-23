@@ -1,42 +1,56 @@
-import React from 'react'
+import React, { useState } from 'react'
+
+import { NavLink } from 'react-router-dom';
+import Button from 'react-bootstrap/Button';
 
 import PageContentHeaderComponent from '../../components/PageContentHeader';
 import PageContentBodyComponent from '../../components/PageContentBody';
 import ErrorBodyComponent from '../../components/ErrorBody';
-import EntryListComponent from '../../components/EntryList';
-import Button from 'react-bootstrap/Button';
-
+import EntryListComponent from '../../components/EntryList'
+import EntryFilterComponent, { FilterState } from '../../components/EntryFilter';
 import { useApiDataLoader } from '../../utils/react';
+import { millisecondsToDays } from '../../services/entry';
 import { MyUserContext, User } from '../../services/user';
-import { NavLink } from 'react-router-dom';
 
-export default function MyEntriesPage() 
+export default function AllEntriesPage() 
 {
   const myUser = React.useContext( MyUserContext ) as User;
-  const path = `/users/${ myUser.id }/entries` // + (Math.random()>.5?'_broken':'')
-  const [ { data, loading, error }, reload ] = useApiDataLoader( path, { entries : [] } )
-  const items = data.entries
-  // items.length = 1 + ~~( Math.random() * 8 )
+  const defaultFilterState = { startDate : null, endDate : new Date() };
+  const [ filterState, setFilterState ] = useState<FilterState>( defaultFilterState );
+  let path = `/entries/`;
+  const [ { data, loading, error }, load ] = useApiDataLoader( path, { entries : [] }, { userId: myUser.id } );
+
+  const onFilterChange = ( state:FilterState ) => {
+    setFilterState( state );
+    const from = state.startDate && millisecondsToDays( state.startDate.getTime() );
+    const to = state.endDate && millisecondsToDays( state.endDate.getTime() );
+    load( { from, to, userId : myUser.id }, data );
+  }
 
   const renderBody = () => {
     if ( error )
       return <ErrorBodyComponent error={ error } />
-    if ( ! loading )
-      return <EntryListComponent list={ items } />;
+    if ( ! loading ) 
+      return <EntryListComponent list={ data.entries } />
   }
 
   return (
     <div>
+
       <PageContentHeaderComponent title="My work records">
-        <Button variant="primary"
-          onClick={ () => reload( data ) }>
+        <Button variant="primary" onClick={ () => load( data ) }>
           Add new record
         </Button>
       </PageContentHeaderComponent>
+
       { loading && <div className="progress-line"></div> }
+
       <PageContentBodyComponent>
+        <EntryFilterComponent state={ filterState } setState={ onFilterChange } />
+        <SettingsNoteComponent />
         { renderBody() }
       </PageContentBodyComponent>
+      
     </div>
   )
 }
