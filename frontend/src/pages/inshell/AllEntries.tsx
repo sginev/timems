@@ -28,7 +28,7 @@ export default function AllEntriesPage()
     if ( error )
       return <ErrorBodyComponent error={ error } />
     if ( ! loading ) 
-      return <EntryListComponent list={ data.entries } />
+      return <EntryListComponent list={ data.entries } size={ limit } />
   }
 
   return (

@@ -208,9 +208,10 @@ code {
   height: 2px;
   width: 100%;
   margin: 0;
+  margin-bottom: -2px;
 }
 .progress-line {
-  background-color: #0004;
+  background-color: #0001;
   display: -webkit-flex;
   display: flex;
 }
@@ -254,6 +255,9 @@ code {
 }
 .entry-list-item.prefMet {
   background-color: #1b3b2a;
+}
+.entry-list-item.empty {
+  opacity: .5;
 }
 
 .entry-list-item > div {
