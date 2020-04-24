@@ -316,6 +316,21 @@ code {
   color: #F55;
 }
 
+li.page-item {
+  flex: 1 1 80px;
+  text-align: center;
+  user-select: none;
+}
+li.page-item > * {
+  line-height: 50px;
+  padding: 0;
+}
+
+
+
+
+
+
 
 .filter-bar {
   display: flex;
@@ -374,14 +389,6 @@ code {
   opacity: 1;
 }
 
-
-
-li.page-item {
-  flex-shrink: 1;
-  flex-basis: 80px;
-  text-align: center;
-  user-select: none;
-}
 
 
 

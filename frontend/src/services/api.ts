@@ -18,7 +18,7 @@ const api = new class ApiService
     if ( method === "get" ) {
       if ( data ) {
         path += '?' + Object.entries( data )
-          .filter(([_, value]) => value != undefined )
+          .filter(([_, value]) => value !== undefined )
           .map(([key, val]) => `${key}=${val}`)
           .join('&');
       }

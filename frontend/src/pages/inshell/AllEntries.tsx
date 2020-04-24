@@ -1,7 +1,5 @@
 import React, { useState } from 'react'
 
-import Button from 'react-bootstrap/Button';
-
 import PageContentHeaderComponent from '../../components/PageContentHeader';
 import PageContentBodyComponent from '../../components/PageContentBody';
 import ErrorBodyComponent from '../../components/ErrorBody';
