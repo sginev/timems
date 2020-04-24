@@ -53,7 +53,6 @@ export default function MyEntriesPage()
   }
 
   const [editorModalState, setEditorModalState] = useState<any>({});
-
   const onClickEdit = ( entry:Entry ) => {
     setEditorModalState({ show:true, entry })
   }
