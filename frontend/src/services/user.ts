@@ -17,4 +17,8 @@ export enum UserRole {
   Locked      = 0, /// nada
 }
 
+// export const PermissionsResolver = {
+  // canEditEntry
+// }
+
 export const MyUserContext = React.createContext<User|null>( null );

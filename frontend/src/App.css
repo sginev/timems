@@ -293,17 +293,28 @@ code {
   background: #0001;
 }
 
-.entry-list-item .delete {
+.entry-list-item .buttons {
   font-size: 24px;
-  color: #F55;
   opacity: 0;
   transition: opacity 250ms;
   cursor: pointer;
 }
-.entry-list-item:hover .delete {
+.entry-list-item:hover .buttons {
   opacity: 1;
+  display: flex;
 }
-
+.entry-list-item .buttons > div {
+  color: #b3b3b3;
+  display: inline-block;
+  line-height: 50px;
+  width: 50px;
+}
+.entry-list-item .buttons > div:hover {
+  color: #61dafb;
+}
+.entry-list-item .buttons > .delete {
+  color: #F55;
+}
 
 
 .filter-bar {
@@ -371,6 +382,28 @@ li.page-item {
   text-align: center;
   user-select: none;
 }
+
+
+
+
+
+
+
+
+.modal-body .react-datepicker-wrapper {
+  display: block;
+}
+/* .modal-body input {
+  background-color: #FFF2;
+  color: white;
+} */
+.modal-body input[disabled] {
+  background-color: #FFF0;
+  color: white;
+}
+
+
+
 
 
 

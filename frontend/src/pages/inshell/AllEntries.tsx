@@ -6,13 +6,14 @@ import ErrorBodyComponent from '../../components/ErrorBody';
 import EntryListComponent from '../../components/EntryList'
 import EntryFilterComponent, { FilterState } from '../../components/EntryFilter';
 import { useApiDataLoader } from '../../utils/react';
-import { millisecondsToDays } from '../../services/entry';
+import { millisecondsToDays, Entry } from '../../services/entry';
 import Button from 'react-bootstrap/Button';
 
 export default function AllEntriesPage() 
 {
   const defaultFilterState = { startDate : null, endDate : new Date() };
   const [ filterState, setFilterState ] = useState<FilterState>( defaultFilterState );
+  const canEdit = true
   const limit = 10
   const path = `/entries`;
   const [ { data, loading, error }, load ] = useApiDataLoader( path, { entries : [] }, { limit } );
@@ -24,11 +25,14 @@ export default function AllEntriesPage()
     load( { from, to, limit }, data );
   }
 
+  const onClickEdit = ( entry:Entry ) => {
+  }
+
   const renderBody = () => {
     if ( error )
       return <ErrorBodyComponent error={ error } />
     if ( ! loading ) 
-      return <EntryListComponent list={ data.entries } size={ limit } />
+      return <EntryListComponent list={ data.entries } size={ limit } onClickEdit={ onClickEdit } />
   }
 
   return (

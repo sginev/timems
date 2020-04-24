@@ -12,6 +12,7 @@ import { useApiDataLoader } from '../../utils/react';
 import { millisecondsToDays, Entry } from '../../services/entry';
 import { MyUserContext, User } from '../../services/user';
 import PaginationComponent from '../../components/Pagination';
+import EntryEditorModalComponent from '../../components/EntryEditor';
 
 export default function MyEntriesPage() 
 {
@@ -19,7 +20,7 @@ export default function MyEntriesPage()
   const defaultFilterState = { startDate : null, endDate : null };
   const [ filterState, setFilterState ] = useState<FilterState>( defaultFilterState );
   var [ page, setPage ] = useState( 1 );
-
+  const canEdit = true;
   const limit = 10
   const path = `/entries`;
   const defaultData = { entries : new Array<Entry>(), pages : 1 };
@@ -48,19 +49,26 @@ export default function MyEntriesPage()
   const renderBody = () => {
     if ( error )
       return <ErrorBodyComponent error={ error } />
-    return <EntryListComponent list={ data.entries } size={ limit } />
+    return <EntryListComponent list={ data.entries } size={ limit } onClickEdit={ canEdit && onClickEdit } />
+  }
+
+  const [editorModalState, setEditorModalState] = useState<any>({});
+
+  const onClickEdit = ( entry:Entry ) => {
+    setEditorModalState({ show:true, entry })
   }
 
   return (
     <div>
 
       <PageContentHeaderComponent title="My work records">
-        <Button variant="primary" onClick={ () => reloadData() }>
+        {/* <Button variant="primary" onClick={ () => reloadData() }> */}
+        <Button variant="primary" onClick={ () => setEditorModalState({ show:true }) }>
           Add new record
         </Button>
       </PageContentHeaderComponent>
 
-      { loading && <div className="progress-line"></div> }
+      { loading && <div className="progress-line" /> }
 
       <PageContentBodyComponent>
         <EntryFilterComponent state={ filterState } setState={ onFilterChange } />
@@ -68,7 +76,14 @@ export default function MyEntriesPage()
         { renderBody() }
         <PaginationComponent currentPage={ page } lastPage={ data.pages } onAction={ onPageSelect }/>
       </PageContentBodyComponent>
-      
+
+      { editorModalState.show &&
+        <EntryEditorModalComponent 
+          state={ editorModalState } 
+          changeState={ setEditorModalState } 
+          refresh={ () => reloadData() } />
+      }
+
     </div>
   )
 }

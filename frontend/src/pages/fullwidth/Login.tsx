@@ -49,6 +49,7 @@ export default function LoginPage() {
 
       <br/>
       <br/>
+      
       <p className="App-link" onClick={ () => history.push("/register") } >
         Are you a new user?
       </p>

@@ -73,6 +73,8 @@ const EntryFilterComponent_OLD:React.FC<{state:FilterState,setState:React.Dispat
       <div>
         <span className="label">From: </span>
         <DatePicker 
+          dropdownMode='scroll'
+          placeholderText="Anytime"
           selected={ state.startDate } 
           onChange={ startDate => {
             if ( startDate ) {
@@ -86,6 +88,7 @@ const EntryFilterComponent_OLD:React.FC<{state:FilterState,setState:React.Dispat
       <div>
         <span className="label">To: </span>
         <DatePicker 
+          placeholderText="Anytime"
           selected={ state.endDate } 
           onChange={ endDate => {
             if ( endDate ) {

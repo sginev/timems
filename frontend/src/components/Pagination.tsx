@@ -24,17 +24,18 @@ const PaginationComponent:React.FC<PaginationProperties> =
 
   const buffer = 5;
   const buttons:(number|'...')[] = [ 1 ]
-  if ( currentPage > 2 + buffer )
-    buttons.push( '...' )
-  const L = Math.max( 2, currentPage - buffer )
-  const R = Math.min( lastPage - 1 , currentPage + buffer )
-  for ( let i = L ; i <= R ; i++ )
-    buttons.push( i )
-  if ( currentPage < lastPage - buffer - 1 )
-    buttons.push( '...' )
-  buttons.push( lastPage )
 
-  console.log( currentPage, lastPage )
+  if ( lastPage > 1 ) {
+    if ( currentPage > 2 + buffer )
+      buttons.push( '...' )
+    const L = Math.max( 2, currentPage - buffer )
+    const R = Math.min( lastPage - 1 , currentPage + buffer )
+    for ( let i = L ; i <= R ; i++ )
+      buttons.push( i )
+    if ( currentPage < lastPage - buffer - 1 )
+      buttons.push( '...' )
+    buttons.push( lastPage )
+  }
 
   const onItemClick = pg => onAction( pg )
 
