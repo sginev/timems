@@ -71,7 +71,7 @@ const EntryEditorModalComponent =
       <Form onSubmit={ onSubmit }>
           
         <Modal.Header closeButton>
-          <Modal.Title>Create a new work record</Modal.Title>
+          <Modal.Title>{ entry ? 'Update' : 'Create a new' } work record</Modal.Title>
         </Modal.Header>
 
         <Modal.Body>
@@ -89,9 +89,10 @@ const EntryEditorModalComponent =
             <Form.Label>What did you work on?</Form.Label>
             <Form.Control 
               required 
-              type="text" 
+              as="textarea" 
+              rows="2"
               value={ fields.notes } 
-              onChange={ e => setFields({ ...fields, notes:e.target.value }) } 
+              onChange={ e => setFields({ ...fields, notes: (e.target as HTMLInputElement).value }) } 
               placeholder="Provide some short notes on what you did" />
           </Form.Group>
 
@@ -111,7 +112,7 @@ const EntryEditorModalComponent =
               required 
               disabled
               type="text" 
-              value={ myUser.username }
+              value={ entry ? entry._username : myUser.username }
               placeholder="Provide some short notes on what you did" />
           </Form.Group>
 

@@ -5,7 +5,8 @@ import { Entry, daysToMilliseconds } from '../services/entry';
 import dateformat from 'dateformat'
 import { MyUserContext } from '../services/user';
 
-const EntryListItemComponent = ({ entry, onClickEdit }:{ entry:Entry, onClickEdit:(entry:Entry)=>void }) => {
+type ItemProps = { entry:Entry, showUsername:boolean, onClickEdit:(entry:Entry)=>void }
+const EntryListItemComponent = ({ entry, showUsername, onClickEdit }:ItemProps) => {
   const myUser = React.useContext( MyUserContext )!;
   const color = ! entry || ! myUser.preferredWorkingHoursPerDay ? '' :
     entry._dailyTotalDuration! < myUser.preferredWorkingHoursPerDay ? 'prefUnmet' : 'prefMet';
@@ -25,6 +26,7 @@ const EntryListItemComponent = ({ entry, onClickEdit }:{ entry:Entry, onClickEdi
     const description = entry.notes
     return (
       <div className={`entry-list-item ${ color }`}>
+        { showUsername && <div className="username"> { entry._username } </div> }
         <div className="date"> { date } </div>
         <div className="duration"> { duration } </div>
         <div className="notes"> { description }</div>
@@ -38,22 +40,26 @@ const EntryListItemComponent = ({ entry, onClickEdit }:{ entry:Entry, onClickEdi
         <div className="date"> &#8203; </div>
         <div className="duration"> </div>
         <div className="notes"> </div>
-        <div className="delete"> </div>
       </div>
     )
   }
 }
 
-const EntryListComponent = ({ list, size, onClickEdit }:{ list:Entry[], size:number, onClickEdit:(entry:Entry)=>void }) => {
+type ListProps = { list:Entry[], size:number, showUsername:boolean, onClickEdit:(entry:Entry)=>void }
+const EntryListComponent = ({ list, size, showUsername, onClickEdit }:ListProps) => {
   const items = new Array( size ).fill( 0 )
   return (
     <div className="entry-list">
       <div className="entry-list-item entry-list-header">
+        { showUsername && <div className="username"> User </div> }
         <div className="date"> Date </div>
         <div className="duration"> Time </div>
         <div className="notes"> Notes </div>
       </div>
-      { items.map( ( _, i ) => <EntryListItemComponent key={ i } entry={ list[ i ] } onClickEdit={ onClickEdit } /> ) }
+      { items.map( ( _, i ) => <EntryListItemComponent 
+          key={ i } entry={ list[ i ] } 
+          showUsername={ showUsername }
+          onClickEdit={ onClickEdit } /> ) }
     </div>
   )
 }

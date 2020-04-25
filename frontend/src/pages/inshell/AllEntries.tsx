@@ -43,7 +43,10 @@ export default function AllEntriesPage()
   const renderBody = () => {
     if ( error )
       return <ErrorBodyComponent error={ error } />
-    return <EntryListComponent list={ data.entries } size={ limit } onClickEdit={ canEdit && onClickEdit } />
+    return <EntryListComponent 
+              list={ data.entries } size={ limit } 
+              showUsername={ true }
+              onClickEdit={ canEdit && onClickEdit } />
   }
 
   const [editorModalState, setEditorModalState] = useState<any>({});

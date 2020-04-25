@@ -267,6 +267,14 @@ code {
   text-align: center;
 }
 
+.entry-list-item .username {
+  padding: 0 30px;
+  flex: 0 0 250px;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
 .entry-list-item .date {
   flex: 0 0 150px;
   background-color: #FFF1;
@@ -278,7 +286,7 @@ code {
 .entry-list-item .notes {
   padding-left: 30px;
   flex: 1 1;
-  font-size: 20px;
+  /* font-size: 20px; */
   text-align: left;
   text-overflow: ellipsis;
   white-space: nowrap;
