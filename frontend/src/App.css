@@ -317,7 +317,7 @@ code {
 }
 
 li.page-item {
-  flex: 1 1 80px;
+  flex: 0 1 80px;
   text-align: center;
   user-select: none;
 }

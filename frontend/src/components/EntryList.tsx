@@ -28,7 +28,7 @@ const EntryListItemComponent = ({ entry, onClickEdit }:{ entry:Entry, onClickEdi
         <div className="date"> { date } </div>
         <div className="duration"> { duration } </div>
         <div className="notes"> { description }</div>
-        {/* <div className=""> ({ entry._dailyTotalDuration })</div> */}
+        <div className=""> ({ entry._dailyTotalDuration })</div>
         { onClickEdit && renderEditButtons() }
       </div>
     )

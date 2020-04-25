@@ -6,6 +6,7 @@ import {
   NavLink,
   Redirect,
   useLocation,
+  useHistory,
 } from "react-router-dom";
 import { FaClock, FaUserFriends, FaRegClock, FaUserCircle } from "react-icons/fa";
 
@@ -60,6 +61,7 @@ function AppRoutesWrapper() {
 function AppMemberContent() {
   const [ myUser, setMyUserData ] = useState<User|null>( null );
   const [ error, setError ] = useState<Error|null>( null );
+  const history = useHistory();
   hooks.setMyUserData = setMyUserData
 
   const location = useLocation();
@@ -82,34 +84,15 @@ function AppMemberContent() {
         setMyUserData( data.user )
       } )
       .catch( error => {
-        setError( error )
+        console.error( error );
+        authenticationService.logout().then( () => {
+          history.push("/login")
+        } );
       } )
   }, [] );
 
   if ( error ) 
     return <ErrorBodyComponent error={ error }/>;
-
-  const PageContent = () => {
-    if ( ! myUser )
-      return null
-    return (
-      <div className={ "page-content " + location.pathname.substr(1) }>
-        <MyUserContext.Provider value={ myUser }>
-          <Switch>
-            <Route exact path="/" component={ AboutPage } />
-            <Route path="/my-entries" component={ MyEntriesPage } />
-            <Route path="/all-users" component={ AllUsersPage } />
-            <Route path="/all-entries" component={ AllEntriesPage } />
-            <Route path="/my-user" component={ MyUserPage } />
-            <Redirect exact from="/" to="/my-entries"/>
-            <Redirect exact from="/login" to="/"/>
-            <Redirect exact from="/register" to="/"/>
-            <Route component={ PageNotFoundPage } />
-          </Switch>
-        </MyUserContext.Provider>
-      </div>
-    )
-  }
 
   return (
     <>
@@ -126,7 +109,6 @@ function AppMemberContent() {
           <NavLink activeClassName="active" exact to="/my-user"><button><FaUserCircle/></button></NavLink> }
         <div className="tiny-name">{ myUser?.username || '' }</div>
       </div>
-      {/* <PageContent /> */}
       {
         myUser && (
           <div className={ "page-content " + location.pathname.substr(1) }>

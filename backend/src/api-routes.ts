@@ -1,26 +1,14 @@
 import express from 'express';
 
 import data from './datamanager';
-import config from './configuration';
 import ApiError, { handleError } from './api-errors';
 import { authenticateUser, validateToken } from './util/auth';
-import { UserRole, User } from './models';
 
+import users from './routes/users.route';
+import entries from './routes/entries.route';
+import { UserRole } from './models/User';
 
 const routes = express.Router();
-const validation = new class 
-{
-  //// throws error if ALL check options fail
-  async checkPermissions( user:User, options:{ minimumRole?:UserRole, userId?:string } ) {
-    if ( options.userId && user.id === options.userId ) 
-      return
-    if ( options.minimumRole && user.role >= options.minimumRole ) 
-      return
-    throw new ApiError( "Access denied.", 403 );
-  }
-}();
-
-
 
 //// AUTHENTICATION ////
 
@@ -32,10 +20,10 @@ routes.post( ['/register','/login'], async (req, res, next) => {
 
   switch( req.path ) {
     case '/register':
-      var user = await data.addUser( username, password, UserRole.Member );
+      var user = await data.users.add( username, password, UserRole.Member );
       break;
     case '/login':
-      var user = await data.checkUserCredentials( username, password );
+      var user = await data.users.checkCredentials( username, password );
       break;
     default: 
       throw new ApiError( 'Bad path', 404 );
@@ -49,21 +37,11 @@ routes.post( ['/register','/login'], async (req, res, next) => {
   next();
 } );
 
-routes.post( '/logout', async (req, res, next) => {
-  res.cookie( 'accessToken', null, {maxAge: 0} );
-  res.cookie( 'refreshToken', null, {maxAge: 0} );
-  res.locals.data = {};
-  res.locals.skipAuthorization = true;
-  next();
-} );
-
-//// PREDEFINE LOCALS
-
 routes.use( async (req, res, next) => {
   if ( ! res.locals.skipAuthorization ) {
     // const user = await data.getUserByUsername( `admin` )
     const id = validateToken( req.headers['authorization'] ).userId;
-    const user = await data.getUserById( id );
+    const user = ( await data.users.getById( id ) )?.toJSON();
     if ( ! user ) 
       throw new ApiError( "Your user does not exist. Please login again with a valid user.", 401 );
     res.locals.caller = user;
@@ -71,184 +49,15 @@ routes.use( async (req, res, next) => {
   next();
 } )
 
-routes.param( 'userId', async (_, res, next, userId) => {
-  res.locals.user = await data.getUserById( userId );
-  next()
-} );
-
-routes.param( 'entryId', async (_, res, next, entryId) => {
-  res.locals.entry = await data.getEntryById( entryId );
-  next()
-} );
-
-//// USERS ////
+////
 
 routes.get( '/me', async (_, res, next) => {
   res.locals.data = { user : res.locals.caller };
   next();
 } );
 
-routes.get( '/users', async (_, res, next) => {
-  const minimumRole = UserRole.UserManager;
-  await validation.checkPermissions( res.locals.caller, { minimumRole } );
-
-  const users = await data.getUsers()
-
-  res.locals.data = {
-    users: users.map( user => ({ ...user, passhash : undefined }) )
-  };
-  next();
-} );
-
-routes.get( '/users/:userId', async (req, res, next) => {
-  const userId = req.params.userId;
-  
-  const minimumRole = UserRole.UserManager;
-  await validation.checkPermissions( res.locals.caller, { minimumRole, userId } );
-  
-  const user = res.locals.user
-
-  if ( !user ) 
-    throw new ApiError( `User not found.`, 404 );
-
-  res.locals.data = { user : { ...user, passhash : undefined } }
-  next();
-} );
-
-routes.put('/users', async (req, res, next) => {
-  const { username, password, role } = req.body;
-
-  const minimumRole = UserRole.UserManager;
-  await validation.checkPermissions( res.locals.caller, { minimumRole } );
-  
-  if ( res.locals.caller.role < role )
-    throw new ApiError( "You cannot create users with higher permission level than your own." );
-
-  const user = await data.addUser( username, password, role || UserRole.Member );
-  
-  res.locals.data = { user : { ...user, passhash : undefined } }
-  next();
-});
-
-routes.patch('/users/:userId', async (req, res, next) => {
-  interface UserData { username:string, password:string, role:number };
-  const userId = req.params.userId;
-  const updates:UserData = req.body;
-
-  const minimumRole = UserRole.UserManager;
-  await validation.checkPermissions( res.locals.caller, { minimumRole, userId } );
-  if ( updates.role && res.locals.caller.role < updates.role )
-    throw new ApiError( "You cannot set users to a higher permission level than your own." );
-
-  let user = res.locals.user
-  if ( !user ) 
-    throw new ApiError( `User not found.`, 404 );
-  user = await data.updateUser( userId, updates )
-
-  res.locals.data = { user : { ...user, passhash : undefined } }
-  next();
-});
-
-routes.delete('/users/:userId', async (req, res, next) => {
-  const userId = req.params.userId;
-  
-  const minimumRole = UserRole.UserManager;
-  await validation.checkPermissions( res.locals.caller, { minimumRole, userId } );
-
-  const user = res.locals.user
-  if ( !user ) throw new ApiError( `User not found.`, 404 );
-  
-  await data.deleteUser( userId );
-  
-  res.locals.data = {};
-  next();
-});
-
-//// USER ENTRIES ////
-
-// routes.get( '/users/:userId/entries', async (req, res, next) => {
-//   const userId = req.params.userId;
-  
-//   const minimumRole = UserRole.Admin;
-//   await validation.checkPermissions( res.locals.caller, { minimumRole, userId } );
-  
-//   const user = res.locals.user
-//   if ( !user ) throw new ApiError( `User not found.`, 404 );
-
-//   const options = req.query;
-//   const entries = await data.getEntries( { ...options, userId } );
-
-//   res.locals.data = { entries };
-//   next();
-// } );
-
-//// ENTRIES ////
-
-routes.get( '/entries', async (req, res, next) => {
-  const userId = req.query.userId as string;
-
-  const minimumRole = UserRole.Admin;
-  await validation.checkPermissions( res.locals.caller, { minimumRole, userId } );
-
-  const options = req.query;
-  res.locals.data = await data.getEntriesPaginated( options )
-  next();
-} );
-
-routes.put('/entries', async (req, res, next) => {
-  const { userId, day, duration, notes } = req.body;
-  
-  const minimumRole = UserRole.Admin;
-  await validation.checkPermissions( res.locals.caller, { minimumRole, userId } );
-
-  res.locals.data = {
-    entries : await data.addEntry( userId, day, duration, notes )
-  };
-  next();
-});
-
-routes.get( '/entries/:entryId', async (_, res, next) => {
-  const minimumRole = UserRole.Admin;
-  const entry = res.locals.entry
-  if ( !entry ) throw new ApiError( `Entry not found.`, 404 );
-
-  await validation.checkPermissions( res.locals.caller, { minimumRole, userId : entry.userId } );
-
-  res.locals.data = { entry };
-  next();
-} );
-
-routes.post('/entries/:entryId', async (req, res, next) => {
-  interface EntryData { day:number , duration:number , notes:string };
-  const updates:EntryData = req.body;
-  const entryId = req.params.entryId;
-
-  const minimumRole = UserRole.Admin;
-  
-  let entry = res.locals.entry
-  if ( !entry ) 
-    throw new ApiError( `Entry not found.`, 404 );
-  await validation.checkPermissions( res.locals.caller, { minimumRole, userId : entry.userId } );
-  entry = await data.updateEntry( entryId, updates ) 
-  
-  res.locals.data = { entry };
-  next();
-});
-
-routes.delete('/entries/:entryId', async (_, res, next) => {
-  const minimumRole = UserRole.Admin;
-  const entry = res.locals.entry
-  if ( !entry ) throw new ApiError( `Entry not found.`, 404 );
-  await validation.checkPermissions( res.locals.caller, { minimumRole, userId : entry.userId } );
-  await data.deleteEntry( entry.id )
-
-  res.locals.data = {};
-  next();
-});
-
-
-
-
+routes.use( "/users", users );
+routes.use( "/entries", entries );
 
 routes.use( (_, res) => {
   if ( ! res.locals.data )

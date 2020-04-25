@@ -1,12 +1,15 @@
+import mongoose from 'mongoose'
+
 import express from 'express'
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
-
 import 'express-async-errors';
 
+import dotenv from "dotenv";
+dotenv.config();
+
 import config from './configuration';
-import data from './datamanager';
 import api from './api-routes';
 
 const app = express();
@@ -25,10 +28,19 @@ app.use( '/', express.static( '../frontend/public' ) );
 app.use( '*', express.static( '../frontend/public/404.html' ) );
 
 ( async function() {
-  await data.initialize( config.DATABASE_FILEPATH );
-  
-  if ( config.isDev() )
-    await require('../dev/mockdata').populateData( data )
+  const dbUri:string = `${config.DATABASE_URL}?authSource=${config.DATABASE_AUTHDB}`;
+  const dbOptions:mongoose.ConnectionOptions = {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    auth: {
+     user: config.DATABASE_USERNAME!,
+     password: config.DATABASE_PASSWORD!,
+    },
+  };
+  mongoose.set( 'useCreateIndex', true );
+  await mongoose.connect( dbUri, dbOptions );
+
+  console.log(`Connected to database ${ config.DATABASE_URL }`);
 
   app.listen( config.PORT, () => console.log( `> Running on port ${ config.PORT }.` ) );
 } )()

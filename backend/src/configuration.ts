@@ -3,8 +3,10 @@ export default {
   PORT : process.env.PORT || 3000 ,
   HTTPS : false ,
 
-  // TODO when scaling up, rework into actual MongoDB (or other)
-  DATABASE_FILEPATH : `./temp/database.json` , 
+  DATABASE_URL: process.env.DATABASE_URL,
+  DATABASE_USERNAME: process.env.DATABASE_USERNAME,
+  DATABASE_PASSWORD: process.env.DATABASE_PASSWORD,
+  DATABASE_AUTHDB: process.env.DATABASE_AUTHDB,
 
   isDev() { return this.ENVIRONMENT === 'development' } ,
   isProd() { return this.ENVIRONMENT === 'production' } ,

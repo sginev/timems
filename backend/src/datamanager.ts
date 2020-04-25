@@ -1,16 +1,13 @@
-import * as uuid from 'uuid';
-import low from 'lowdb';
-import FileAsync from 'lowdb/adapters/FileAsync';
+import Mongoose from 'mongoose';
+import MongoosePaginate from 'mongoose-paginate-v2';
 import Joi from '@hapi/joi';
 
 import ApiError from './api-errors';
 import { encryptPassword, comparePassword } from './util/passwords';
-import { User, UserRole, Entry } from "./models";
+// import { User, UserRole, Entry } from "./models";
 
-interface DBData {
-  users : User[]
-  entries : Entry[]
-}
+import User, { IUser, UserRole } from "./models/User";
+import Entry, { IEntry } from "./models/Entry";
 
 type UserUpdates = { username?:string, password?:string, role?:UserRole, preferredWorkingHoursPerDay?:number }
 type EntryUpdates = { day:number, duration:number, notes:string }
@@ -20,12 +17,12 @@ const validation = {
   user : Joi.object({
     username: Joi.string().alphanum().min(4).max(40).required(),
     password: Joi.string().min(4).max(80).required(),
-    role: Joi.number().integer().valid( UserRole.Admin, UserRole.UserManager, UserRole.Member, UserRole.Guest ).required(),
+    role: Joi.number().integer().valid( UserRole.Admin, UserRole.UserManager, UserRole.Member ).required(),
   }),
   user_updates : Joi.object({
     username: Joi.string().alphanum().min(4).max(40),
     password: Joi.string().min(4).max(80),
-    role: Joi.number().integer().valid( UserRole.Admin, UserRole.UserManager, UserRole.Member, UserRole.Guest ),
+    role: Joi.number().integer().valid( UserRole.Admin, UserRole.UserManager, UserRole.Member ),
   }),
   entry : Joi.object({
     id: Joi.string(),
@@ -47,51 +44,42 @@ const validate = <T>( joi:Joi.ObjectSchema<T>, target:T ) => {
     throw new ApiError( validationError.toString(), 403, "ValidationError" );
 }
 
-class DataManager 
-{
-  private genuuid = uuid.v4;
-
-  private database?:low.LowdbAsync<DBData>
-  private get users() { return this.database!.get( 'users', [] ) }
-  private get entries() { return this.database!.get( 'entries', [] ) }
-
   //#region USER 
 
-  public async getUsers() {
-    return this.users.value() as User[];
-  }
-  public async getUserById( id:string ) {
-    return this.users.find( { id } ).value() as User|undefined;
-  }
+const users = {
+  getAll: async function () {
+    return await User.find();
+  } ,
 
-  public async getUserByUsername( username:string ) {
-    return this.users.find( { username } ).value() as User|undefined;
-  }
+  getById: async function ( id:string ) {
+    return await User.findById( id );
+  } ,
 
-  public async addUser( username:string, password:string, role:UserRole ) {
-    if ( await this.getUserByUsername( username ) )
+  getByUsername: async function ( username:string ) {
+    return await User.findOne({ username });
+  } ,
+
+  add: async function ( username:string, password:string, role:UserRole ) {
+    if ( await this.getByUsername( username ) )
       throw new ApiError( "Chosen username is already taken.", 409 );
 
     validate( validation.user, { username, password, role } )
 
-    const id = this.genuuid();
     const passhash = encryptPassword( password );
     const preferredWorkingHoursPerDay = 0;
 
-    const user = { id, username, passhash, role, preferredWorkingHoursPerDay }
+    const newUser = await new User({ 
+      username, passhash, role, preferredWorkingHoursPerDay }).save();
 
-    await this.users.push( user ).write();
-    return user as User;
-  }
+    return newUser;
+  } ,
 
-  public async updateUser( id:string, updates:UserUpdates ) {
-    const user = this.users.find( { id } ).value();
-    if ( ! user )
-      throw new ApiError( "User does not exist", 404 );
-    
-    if ( updates.username && updates.username !== user.username )
-      if ( await this.getUserByUsername( updates.username ) )
+  update: async function ( id:string, updates:UserUpdates ) {
+    if ( updates.username ) {
+      const user = await this.getByUsername( updates.username );
+      if ( user && user.id !== id )
         throw new ApiError( "Chosen username is already taken.", 409 );
+    }
 
     validate( validation.user_updates, updates )
   
@@ -100,110 +88,96 @@ class DataManager
       delete updates.password;
     }
 
-    const result = await this.users.find( { id } ).assign( updates ).write() as User;
-    return result;
-  }
+    return await User.findByIdAndUpdate( id, updates );
+  } ,
 
-  public async deleteUser( id:string ) {
-    const [ result ] = await this.users.remove( { id } ).write() as User[]
-    return result
-  }
+  delete: async function ( id:string ) {
+    return await User.findByIdAndDelete( id )
+  } ,
 
-  public async checkUserCredentials( username:string, password:string ) {
-    const user = await this.getUserByUsername( username )
-    if ( ! user ) throw new ApiError( `No user with username '${ username }' found.`, 401 )
-    if ( ! comparePassword( password, user.passhash ) ) throw new ApiError( `Wrong password!`, 401 )
-    return user
-  }
+  checkCredentials: async function ( username:string, password:string ) {
+    const user = await User.findOne({ username }).select('+passhash').exec()
+    if ( ! user ) 
+      throw new ApiError( `No user with username '${ username }' found.`, 401 )
+    if ( ! comparePassword( password, user.passhash ) ) 
+      throw new ApiError( `Wrong password!`, 401 )
+    return await User.findOne({ username })
+  } ,
+}
 
-  //#endregion
+//#endregion
 
-  //#region ENTRY
+//#region ENTRY
 
-  private async updateEntryTotals( userId:string, day?:number ) {
-    const groups = day ?
-      [ this.entries.filter( { userId, day } ).value() ] :
-      Object.values( this.entries.filter( { userId } ).groupBy( 'day' ).value() );
-    for ( const group of groups ) {
-      const totalDuration = group.reduce( (a,c) => +a+(+c.duration), 0 )
-      group.forEach( entry => entry._dailyTotalDuration = +totalDuration )
-    }
-    await this.database?.write()
-  }
+const entries = {
+  updateDailyTotals: async function ( owner:string, day?:number ) 
+  {
+    const userId = Mongoose.Types.ObjectId( owner )
+    const aggregations:any[] = [
+      { $match: day ? { userId, day } : { userId } },
+      { $group: { _id: "$day", _dailyTotalDuration: { $sum: "$duration" } } },
+    ];
   
-  public async getEntriesPaginated( options?:EntryFilterOptions ) {
-    if ( ! options )
-      return { entries : this.entries.value() as Entry[] };
-
-    const { userId, from, to, limit } = options
-    let entries = ( !userId ? this.entries : this.entries.filter( { userId } ) ).value()
-    if ( from ) 
-      entries = entries.filter( o => o.day >= from )
-    if ( to )
-      entries = entries.filter( o => o.day <= to )
-
-    entries.sort( (a,b) => b.day - a.day )
-
-    const totalCount = entries.length
-    
-    if ( limit && entries.length > limit ) {
-      const page = options?.page || 1
-      entries = entries.slice( ( page - 1 ) * limit, page * limit )
-      var pages = Math.ceil(totalCount/limit)
-    } else {
-      var pages = 1;
+    const groups = await Entry.aggregate( aggregations )
+    for ( const { _id:day, _dailyTotalDuration } of groups ) {
+      await Entry.updateMany( { userId, day }, { $set : { _dailyTotalDuration } } )
     }
+  
+    return groups
+  },
+  
+  getPaginated: async function ( options?:EntryFilterOptions ) {
+    const DEFAULT_LIMIT = 10
+    const { userId, from, to, limit, page } = { limit : DEFAULT_LIMIT, page :1, ...options }
+    const conditions:any = {}
+    if ( from && to ) conditions.day = { $lte: to, $gte: from }
+    else if ( from ) conditions.day = { $gte: from }
+    else if ( to ) conditions.day = { $lte: to }
+    if ( userId ) conditions.userId = userId
+    // return await Entry.paginate( conditions , { limit, page, sort:'-day' } )
 
-    return { entries, pages }
-  }
+    const temp = await Entry.paginate( conditions , { limit, page, sort:'-day' } )
+    return {
+      entries : temp.docs,
+      pages : temp.totalPages,
+    }
+  },
 
-  public async getEntryById( id:string ) {
-    return this.entries.find( { id } ).value() as Entry|undefined;
-  }
+  getById: async function ( id:string ) {
+    return await Entry.findById( id ).exec()
+  },
 
-  public async addEntry( userId:string , day:number , duration:number , notes:string ) {
-    const user = this.users.find( { id : userId } ).value();
+  add: async function ( userId:string , day:number , duration:number , notes:string ) {
+    const user = await users.getById( userId );
     if ( ! user )
       throw new ApiError( "User does not exist", 404 );
     
-    const id = this.genuuid()
-    const entry = { id, userId, day, duration, notes }
-    validate( validation.entry, entry )
+    const entryData = { userId, day, duration, notes };
+    validate( validation.entry, entryData );
+    const entry = await new Entry(entryData).save();
+    await this.updateDailyTotals( entry.userId, entry.day );
+  },
 
-    await this.entries.splice( 0, 0, entry ).write()
-    await this.updateEntryTotals( entry.userId, day );
-
-    return await this.getEntryById( id )
-  }
-
-  public async updateEntry( id:string, updates:EntryUpdates ) {
+  update: async function ( id:string, updates:EntryUpdates ) {
     validate( validation.entry_updates, updates )
+    const entry = await this.getById( id );
+    if ( !entry ) 
+      throw new ApiError( `Entry not found.`, 404 );
+    const updatedEntry = await Entry.findByIdAndUpdate( id, updates );
+    if ( updatedEntry && updatedEntry.day !== entry.day )
+      await this.updateDailyTotals( entry.userId, updatedEntry.day );
+    await this.updateDailyTotals( entry.userId, entry.day );
+  },
 
-    await this.entries.find( { id } ).assign( updates ).write()
-
-    const entry = await this.getEntryById( id )
-    await this.updateEntryTotals( entry!.userId );
-    return entry
-  }
-
-  public async deleteEntry( id:string ) {
-    const entry = await this.getEntryById( id )
-    if ( ! entry )
-      throw new ApiError( "Entry does not exist", 404 );
-      
-    await this.entries.remove( { id } ).write();
-    await this.updateEntryTotals( entry.userId, entry.day );
-    await this.database?.write()
-  }
-
-  //#endregion
-
-  //// INITIALIZATION ////
-
-  public async initialize( databaseFilePath:string ) {
-    this.database = await low( new FileAsync( databaseFilePath ) )
-    this.database.defaultsDeep( { users : [], entries : [] } ).write()
-  }
+  delete: async function ( id:string ) {
+    const entry = await this.getById( id );
+    if ( !entry ) 
+      throw new ApiError( `Entry not found.`, 404 );
+    await Entry.findByIdAndDelete( id );
+    await this.updateDailyTotals( entry.userId, entry.day );
+  },
 }
 
-export default new DataManager()
+//#endregion
+
+export default { users, entries }
