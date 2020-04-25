@@ -38,6 +38,7 @@ app.use( '*', express.static( '../frontend/public/404.html' ) );
     },
   };
   mongoose.set( 'useCreateIndex', true );
+  mongoose.set( 'useFindAndModify', false );
   await mongoose.connect( dbUri, dbOptions );
 
   console.log(`Connected to database ${ config.DATABASE_URL }`);

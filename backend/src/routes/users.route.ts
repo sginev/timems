@@ -41,11 +41,11 @@ routes.put('/', async (req, res, next) => {
   next();
 });
 
-routes.patch('/:id', async (req, res, next) => {
+routes.post('/:id', async (req, res, next) => {
   const user = res.locals.user
   if ( !user ) 
     throw new ApiError( `User not found.`, 404 );
-  const userId = user.userId;
+  const userId = user.id;
   const updates = {
     username : req.body.username,
     password : req.body.password,
@@ -57,7 +57,7 @@ routes.patch('/:id', async (req, res, next) => {
   if ( updates.role && res.locals.caller.role < updates.role )
     throw new ApiError( "You cannot set users to a higher permission level than your own." );
   const updatedUser = await data.users.update( userId, updates );
-  res.locals.data = updatedUser
+  res.locals.data = { user : updatedUser };
   next();
 });
 

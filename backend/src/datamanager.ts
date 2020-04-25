@@ -12,16 +12,19 @@ type UserUpdates = { username?:string, password?:string, role?:UserRole, preferr
 type EntryUpdates = { day:number, duration:number, notes:string }
 type EntryFilterOptions = { userId?:string, from?:number, to?:number, limit?:number, page?:number }
 
+const roles = [ UserRole.Admin, UserRole.UserManager, UserRole.Member, UserRole.Locked ]
 const validation = {
   user : Joi.object({
     username: Joi.string().alphanum().min(4).max(40).required(),
     password: Joi.string().min(4).max(80).required(),
-    role: Joi.number().integer().valid( UserRole.Admin, UserRole.UserManager, UserRole.Member ).required(),
+    role: Joi.number().integer().valid( ...roles ).required(),
+    preferredWorkingHoursPerDay: Joi.number().min(0).max(24),
   }),
   user_updates : Joi.object({
     username: Joi.string().alphanum().min(4).max(40),
     password: Joi.string().min(4).max(80),
-    role: Joi.number().integer().valid( UserRole.Admin, UserRole.UserManager, UserRole.Member ),
+    role: Joi.number().integer().valid( ...roles ),
+    preferredWorkingHoursPerDay: Joi.number().min(0).max(24),
   }),
   entry : Joi.object({
     id: Joi.string(),
@@ -72,6 +75,10 @@ const users = {
   } ,
 
   update: async function ( id:string, updates:UserUpdates ) {
+    for ( const key in updates )
+      if ( updates[key] === undefined )
+        delete updates[key]
+
     if ( updates.username ) {
       const user = await this.getByUsername( updates.username );
       if ( user && user.id !== id )
@@ -85,7 +92,10 @@ const users = {
       delete updates.password;
     }
 
-    return await User.findByIdAndUpdate( id, updates );
+    console.log( updates )
+    
+    const user = await User.findByIdAndUpdate( id, updates, {new: true} );
+    return user;
   } ,
 
   delete: async function ( id:string ) {
@@ -156,6 +166,10 @@ const entries = {
   },
 
   update: async function ( id:string, updates:EntryUpdates ) {
+    for ( const key in updates )
+      if ( updates[key] === undefined )
+        delete updates[key]
+
     validate( validation.entry_updates, updates )
     const entry = await this.getById( id );
     if ( !entry ) 

@@ -42,6 +42,13 @@ const UserListItemComponent:React.FC<{user:User,onChange:()=>void}> = ({ user, o
     }
   }                       
 
+  const changeUserRole = ( role:UserRole ) => {
+    setRole( -1 )
+    api.request( '/users/' + user.id, 'post', { role } )
+      .then( () => setRole( role ) )
+      .catch( () => setRole( user.role ) )
+  }                       
+
   const renderDeleteButton = () => {
     return (
       <Button 
@@ -55,6 +62,8 @@ const UserListItemComponent:React.FC<{user:User,onChange:()=>void}> = ({ user, o
   }
 
   const renderRoleDropdown = () => {
+    if ( role == -1 )
+      return <Button id="dropdown-basic-button" variant='link' disabled>Please wait...</Button>
     if ( ! ROLES[ role ] )
       return <Button id="dropdown-basic-button" variant='dark' disabled>Error getting roles</Button>
     return (
@@ -68,7 +77,7 @@ const UserListItemComponent:React.FC<{user:User,onChange:()=>void}> = ({ user, o
           Object.keys( ROLES )
                 .filter( key => myUser.role >= parseInt( key ) )
                 .map( key => (
-                  <Dropdown.Item key={ key } onClick={ () => setRole( parseInt( key ) ) }>
+                  <Dropdown.Item key={ key } onClick={ () => changeUserRole( parseInt( key ) ) }>
                     { ROLES[ key ].label } 
                   </Dropdown.Item>
                 ) )
