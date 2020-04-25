@@ -58,6 +58,7 @@ async function main() {
             day: parseInt( faker.fake(e.day) ),
             duration: parseFloat( faker.fake(e.duration) ),
             notes: faker.fake( e.notes ),
+            _username: newUser.username,
           };
           entries.push( new Entry(entryData) );
           console.log( `- ${ entryData.notes } ${ entryData.day }/${ entryData.duration }` )

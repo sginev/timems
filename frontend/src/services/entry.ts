@@ -1,4 +1,3 @@
-
 export interface Entry
 {
   id : string
@@ -7,6 +6,7 @@ export interface Entry
   day : number
   notes : string
   _dailyTotalDuration? : number
+  _username? : number
 }
 
 export const millisecondsToDays = ms => ~~( ms / ( 1000 * 60 * 60 * 24 ) ) + 1

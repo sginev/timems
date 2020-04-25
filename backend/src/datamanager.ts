@@ -32,6 +32,7 @@ const validation = {
     day: Joi.number().integer().min(0).required(),
     duration: Joi.number().required(),
     notes: Joi.string().required(),
+    _username: Joi.string().required(),
   }),
   entry_updates : Joi.object({
     userId: Joi.string(),
@@ -95,11 +96,17 @@ const users = {
     console.log( updates )
     
     const user = await User.findByIdAndUpdate( id, updates, {new: true} );
+    
+    if ( user && updates.username ) {
+      await entries.updateUsernames( user.id, user.username )
+    }
+
     return user;
   } ,
 
   delete: async function ( id:string ) {
-    return await User.findByIdAndDelete( id )
+    await User.findByIdAndDelete( id )
+    await Entry.deleteMany({ userId : id })
   } ,
 
   checkCredentials: async function ( username:string, password:string ) {
@@ -125,8 +132,11 @@ const entries = {
     for ( const { _id:day, _dailyTotalDuration } of groups ) {
       await Entry.updateMany( { userId, day }, { $set : { _dailyTotalDuration } } )
     }
-  
-    return groups
+  },
+
+  updateUsernames: async function ( userId:string, _username:string ) 
+  {
+    await Entry.updateMany( { userId }, { $set : { _username } } )
   },
   
   getPaginated: async function ( options?:EntryFilterOptions ) {
@@ -159,7 +169,7 @@ const entries = {
     if ( ! user )
       throw new ApiError( "User does not exist", 404 );
     
-    const entryData = { userId, day, duration, notes };
+    const entryData = { userId, day, duration, notes, _username: user.username };
     validate( validation.entry, entryData );
     const entry = await new Entry(entryData).save();
     await this.updateDailyTotals( entry.userId, entry.day );

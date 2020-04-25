@@ -41,7 +41,8 @@ const EntrySchema = new Mongoose.Schema({
     // Better to allow users to make mistakes 
     // with their total duration, for smoother ux
     required: false
-  }
+  },
+  _username: { type: String, required: true }
 });
 
 EntrySchema.virtual('id').get( _id => _id );
