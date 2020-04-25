@@ -8,7 +8,7 @@ import { UserRole } from '../models/User';
 const routes = express.Router();
 
 routes.param( 'id', async (_, res, next, id) => {
-  res.locals.entry = (await data.entries.getById( id ))?.toJSON();
+  res.locals.entry = ( await data.entries.getById( id ) )?.toJSON();
   next()
 } );
 
@@ -21,14 +21,6 @@ routes.get( '/', async (req, res, next) => {
   next();
 } );
 
-routes.put('/', async (req, res, next) => {
-  const { userId, day, duration, notes } = req.body;
-  const minimumRole = UserRole.Admin;
-  await checkPermissions( res.locals.caller, { minimumRole, userId } );
-  res.locals.data = await data.entries.add( userId, day, duration, notes );
-  next();
-});
-
 routes.get( '/:id', async (_, res, next) => {
   const entry = res.locals.entry
   if ( !entry ) 
@@ -38,6 +30,14 @@ routes.get( '/:id', async (_, res, next) => {
   res.locals.data = { entry };
   next();
 } );
+
+routes.put('/', async (req, res, next) => {
+  const { userId, day, duration, notes } = req.body;
+  const minimumRole = UserRole.Admin;
+  await checkPermissions( res.locals.caller, { minimumRole, userId } );
+  res.locals.data = await data.entries.add( userId, day, duration, notes );
+  next();
+});
 
 routes.post('/:id', async (req, res, next) => {
   interface EntryData { day:number , duration:number , notes:string };

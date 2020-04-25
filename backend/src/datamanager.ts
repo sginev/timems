@@ -1,5 +1,4 @@
 import Mongoose from 'mongoose';
-import MongoosePaginate from 'mongoose-paginate-v2';
 import Joi from '@hapi/joi';
 
 import ApiError from './api-errors';
@@ -43,8 +42,6 @@ const validate = <T>( joi:Joi.ObjectSchema<T>, target:T ) => {
   if ( validationError )
     throw new ApiError( validationError.toString(), 403, "ValidationError" );
 }
-
-  //#region USER 
 
 const users = {
   getAll: async function () {
@@ -105,10 +102,6 @@ const users = {
   } ,
 }
 
-//#endregion
-
-//#region ENTRY
-
 const entries = {
   updateDailyTotals: async function ( owner:string, day?:number ) 
   {
@@ -129,6 +122,10 @@ const entries = {
   getPaginated: async function ( options?:EntryFilterOptions ) {
     const DEFAULT_LIMIT = 10
     const { userId, from, to, limit, page } = { limit : DEFAULT_LIMIT, page :1, ...options }
+
+    if ( userId && ! await User.findById( userId ) )
+      throw new ApiError( "User does not exist", 400 );
+
     const conditions:any = {}
     if ( from && to ) conditions.day = { $lte: to, $gte: from }
     else if ( from ) conditions.day = { $gte: from }
@@ -177,7 +174,5 @@ const entries = {
     await this.updateDailyTotals( entry.userId, entry.day );
   },
 }
-
-//#endregion
 
 export default { users, entries }
