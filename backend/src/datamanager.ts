@@ -7,17 +7,15 @@ import { UserRole } from 'shared/interfaces/UserRole';
 import User from "./models/User";
 import Entry from "./models/Entry";
 
-import validation from 'shared/validation/joi';
+import Validator from 'shared/Validator';
 
 type UserUpdates = { username?:string, password?:string, role?:UserRole, preferredWorkingHoursPerDay?:number }
 type EntryUpdates = { day:number, duration:number, notes:string }
 type EntryFilterOptions = { userId?:string, from?:number, to?:number, limit?:number, page?:number }
 
-const validate = <T>( joi:Joi.ObjectSchema<T>, target:T ) => {
-  const validationError = joi.validate( target ).error;
-  if ( validationError )
-    throw new ApiError( validationError.toString(), 403, "ValidationError" );
-}
+const { validate } = new Validator( error => {
+  throw new ApiError( error.toString(), 403, "ValidationError" );
+} )
 
 const users = {
   getAll: async function () {
@@ -36,7 +34,7 @@ const users = {
     if ( await this.getByUsername( username ) )
       throw new ApiError( "Chosen username is already taken.", 409 );
 
-    validate( validation.user, { username, password, role } )
+    validate( Validator.UserModel, { username, password, role } )
 
     const passhash = encryptPassword( password );
     const preferredWorkingHoursPerDay = 0;
@@ -58,7 +56,7 @@ const users = {
         throw new ApiError( "Chosen username is already taken.", 409 );
     }
 
-    validate( validation.user_updates, updates )
+    validate( Validator.UserUpdates, updates )
   
     if ( updates.password ) {
       updates['passhash'] = encryptPassword( updates.password );
@@ -143,7 +141,7 @@ const entries = {
       throw new ApiError( "User does not exist", 404 );
     
     const entryData = { userId, day, duration, notes, _username: user.username };
-    validate( validation.entry, entryData );
+    validate( Validator.EntryModel, entryData );
     const entry = await new Entry(entryData).save();
     await this.updateDailyTotals( entry.userId, entry.day );
   },
@@ -153,7 +151,7 @@ const entries = {
       if ( updates[key] === undefined )
         delete updates[key]
 
-    validate( validation.entry_updates, updates )
+    validate( Validator.EntryUpdates, updates )
     const entry = await this.getById( id );
     if ( !entry ) 
       throw new ApiError( `Entry not found.`, 404 );
