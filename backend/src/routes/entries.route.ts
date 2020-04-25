@@ -42,8 +42,9 @@ routes.put('/', async (req, res, next) => {
 routes.post('/:id', async (req, res, next) => {
   interface EntryData { day:number , duration:number , notes:string };
   const updates:EntryData = req.body;
-  const entryId = req.params.entryId;
+  const entryId = req.params.id;
   let entry = res.locals.entry
+  console.log( req.params.id, entry )
   if ( !entry ) 
     throw new ApiError( `Entry not found.`, 404 );
   const minimumRole = UserRole.Admin;
