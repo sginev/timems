@@ -13,7 +13,7 @@ const makeHash = ( subject:string, salt:string ) => //// TODO: Use bcrypt?
 
 interface JWTData { userId : string , refreshKey : string , iat : number }
 
-export async function authenticateUser( user:IUser )
+export function authenticateUser( user:IUser )
 {
   const secret = JWT_SECRET
   const refreshId = user.id + secret;
@@ -24,7 +24,7 @@ export async function authenticateUser( user:IUser )
   return { accessToken, refreshToken }
 }
 
-export async function validateToken( authorizationHeader?:string )
+export function validateToken( authorizationHeader?:string )
 {
   if ( ! authorizationHeader ) 
     throw new ApiError( "Authentication header missing", 401 );
