@@ -3,10 +3,9 @@ import Joi from '@hapi/joi';
 
 import ApiError from './api-errors';
 import { encryptPassword, comparePassword } from './util/passwords';
-// import { User, UserRole, Entry } from "./models";
-
-import User, { IUser, UserRole } from "./models/User";
-import Entry, { IEntry } from "./models/Entry";
+import { UserRole } from "shared/UserRole";
+import User from "./models/User";
+import Entry from "./models/Entry";
 
 type UserUpdates = { username?:string, password?:string, role?:UserRole, preferredWorkingHoursPerDay?:number }
 type EntryUpdates = { day:number, duration:number, notes:string }

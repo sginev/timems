@@ -43,7 +43,7 @@ export default function AllEntriesPage()
   } )
 
   const list = data.entries
-  const showUsername = false
+  const showUsername = true
 
   return (
     <div>

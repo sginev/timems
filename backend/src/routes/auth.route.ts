@@ -1,4 +1,5 @@
-import { UserRole, IUser } from "../models/User";
+import { UserRole } from "shared/UserRole";
+import { IUser } from "../models/User";
 import ApiError from "../api-errors";
 
 //// throws error if ALL check options fail

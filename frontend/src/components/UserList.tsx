@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React from 'react'
 
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
@@ -6,7 +6,8 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown';
 
-import { User, UserRole, MyUserContext } from '../services/user'
+import { UserRole } from 'shared/UserRole';
+import { User, MyUserContext } from '../services/user';
 
 import api from "../services/api"
 
@@ -20,7 +21,7 @@ export default function UserListComponent( props:{ list:User[], onChange:()=>voi
 
 const UserListItemComponent:React.FC<{user:User,onChange:()=>void}> = ({ user, onChange }) => {
   const myUser = React.useContext( MyUserContext ) as User;
-  const [ role, setRole ] = useState( user.role ); 
+  const [ role, setRole ] = React.useState( user.role ); 
   const ROLES = {
     [UserRole.Member] : { label : "Regular User", color : "primary" } ,
     [UserRole.UserManager] : { label : "User Manager", color : "warning" } ,

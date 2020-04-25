@@ -268,6 +268,7 @@ code {
 }
 
 .entry-list-item .username {
+  background-color: #FFF2;
   padding: 0 30px;
   flex: 0 0 250px;
   text-align: left;
@@ -276,12 +277,12 @@ code {
   overflow: hidden;
 }
 .entry-list-item .date {
-  flex: 0 0 150px;
   background-color: #FFF1;
+  flex: 0 0 150px;
 }
 .entry-list-item .duration {
-  flex: 0 0 100px;
   border-right: 1px solid #FFF1;
+  flex: 0 0 100px;
 }
 .entry-list-item .notes {
   padding-left: 30px;
@@ -292,13 +293,14 @@ code {
   white-space: nowrap;
   overflow: hidden;
 }
-.entry-list-header,
+.entry-list-header .username,
 .entry-list-header .date  {
   background: none;
   border: 1px solid #FFF1;
 } 
 .entry-list-header {
   background: #0001;
+  border: 1px solid #FFF1;
 }
 
 .entry-list-item .buttons {

@@ -1,4 +1,4 @@
-import { UserRole } from "../src/models/User";
+import { UserRole } from "shared/UserRole";
 
 const common = {
   randomDay : '{{random.number({"min":18280,"max":18380})}}',

@@ -1,6 +1,6 @@
 {
   "name": "timetracker-client",
-  "version": "0.1.0",
+  "version": "0.8.1",
   "description": "Toptal Screening Test Project (client)",
   "private": true,
   "dependencies": {
@@ -23,27 +23,32 @@
     "@types/react-toast-notifications": "^2.4.0",
     "@types/styled-components": "^5.1.0",
     "bootstrap": "^4.4.1",
+    "customize-cra": "^0.9.1",
     "dateformat": "^3.0.3",
     "parse-duration": "^0.3.0",
     "react": "^16.13.1",
+    "react-app-rewired": "^2.1.5",
     "react-bootstrap": "^1.0.0",
     "react-datepicker": "^2.14.1",
+    "react-dev-utils": "^10.2.1",
     "react-dom": "^16.13.1",
     "react-icons": "^3.9.0",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.1",
     "react-tabs": "^3.1.0",
     "react-toast-notifications": "^2.4.0",
+    "shared": "file:../shared",
     "styled-components": "^5.1.0",
     "typescript": "^3.7.5"
   },
   "scripts": {
-    "dev": "PORT=3300 WDS_SOCKET_HOST=thechoephix.com react-scripts start - --disableHostCheck",
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
+    "dev": "PORT=3300 WDS_SOCKET_HOST=thechoephix.com react-app-rewired start",
+    "start": "react-app-rewired start",
+    "build": "react-app-rewired build",
+    "test": "react-app-rewired test",
     "eject": "react-scripts eject"
   },
+  "config-overrides-path": "config-overrides.js",
   "eslintConfig": {
     "extends": "react-app"
   },

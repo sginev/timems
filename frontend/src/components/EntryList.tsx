@@ -26,8 +26,8 @@ const EntryListItemComponent = ({ entry, showUsername, onClickEdit }:ItemProps) 
     const description = entry.notes
     return (
       <div className={`entry-list-item ${ color }`}>
-        { showUsername && <div className="username"> { entry._username } </div> }
         <div className="date"> { date } </div>
+        { showUsername && <div className="username"> { entry._username } </div> }
         <div className="duration"> { duration } </div>
         <div className="notes"> { description }</div>
         {/* <div className=""> ({ entry._dailyTotalDuration })</div> */}
@@ -37,6 +37,7 @@ const EntryListItemComponent = ({ entry, showUsername, onClickEdit }:ItemProps) 
   } else {
     return (
       <div className={`entry-list-item empty`}>
+        { showUsername && <div className="username"></div> }
         <div className="date"> &#8203; </div>
         <div className="duration"> </div>
         <div className="notes"> </div>
@@ -51,8 +52,8 @@ const EntryListComponent = ({ list, size, showUsername, onClickEdit }:ListProps)
   return (
     <div className="entry-list">
       <div className="entry-list-item entry-list-header">
-        { showUsername && <div className="username"> User </div> }
         <div className="date"> Date </div>
+        { showUsername && <div className="username"> User </div> }
         <div className="duration"> Time </div>
         <div className="notes"> Notes </div>
       </div>
