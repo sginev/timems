@@ -6,7 +6,7 @@ import { authenticateUser, validateToken } from './util/auth';
 
 import users from './routes/users.route';
 import entries from './routes/entries.route';
-import { UserRole } from 'shared/UserRole';
+import { UserRole } from 'shared/interfaces/UserRole';
 
 const routes = express.Router();
 

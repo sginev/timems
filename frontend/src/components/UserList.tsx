@@ -6,7 +6,7 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown';
 
-import { UserRole } from 'shared/UserRole';
+import { UserRole } from 'shared/interfaces/UserRole';
 import { User, MyUserContext } from '../services/user';
 
 import api from "../services/api"

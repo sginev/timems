@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { UserRole } from 'shared/UserRole';
+import { UserRole } from 'shared/interfaces/UserRole';
 
 export interface User
 {

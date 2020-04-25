@@ -1,6 +1,6 @@
 import Mongoose from 'mongoose';
 
-import { UserRole } from 'shared/UserRole';
+import { UserRole } from 'shared/interfaces/UserRole';
 
 export interface IUser extends Mongoose.Document {
   username : string

@@ -1,4 +1,4 @@
-import { UserRole } from "shared/UserRole";
+import { UserRole } from "shared/interfaces/UserRole";
 import { IUser } from "../models/User";
 import ApiError from "../api-errors";
 

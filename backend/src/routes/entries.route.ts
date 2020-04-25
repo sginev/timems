@@ -3,7 +3,7 @@ import express from 'express';
 import data from '../datamanager';
 import ApiError from '../api-errors';
 import { checkPermissions } from './auth.route';
-import { UserRole } from 'shared/UserRole';
+import { UserRole } from 'shared/interfaces/UserRole';
 
 const routes = express.Router();
 

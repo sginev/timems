@@ -3,43 +3,16 @@ import Joi from '@hapi/joi';
 
 import ApiError from './api-errors';
 import { encryptPassword, comparePassword } from './util/passwords';
-import { UserRole } from "shared/UserRole";
+import { UserRole } from 'shared/interfaces/UserRole';
 import User from "./models/User";
 import Entry from "./models/Entry";
+
+import validation from 'shared/validation/joi';
 
 type UserUpdates = { username?:string, password?:string, role?:UserRole, preferredWorkingHoursPerDay?:number }
 type EntryUpdates = { day:number, duration:number, notes:string }
 type EntryFilterOptions = { userId?:string, from?:number, to?:number, limit?:number, page?:number }
 
-const roles = [ UserRole.Admin, UserRole.UserManager, UserRole.Member, UserRole.Locked ]
-const validation = {
-  user : Joi.object({
-    username: Joi.string().alphanum().min(4).max(40).required(),
-    password: Joi.string().min(4).max(80).required(),
-    role: Joi.number().integer().valid( ...roles ).required(),
-    preferredWorkingHoursPerDay: Joi.number().min(0).max(24),
-  }),
-  user_updates : Joi.object({
-    username: Joi.string().alphanum().min(4).max(40),
-    password: Joi.string().min(4).max(80),
-    role: Joi.number().integer().valid( ...roles ),
-    preferredWorkingHoursPerDay: Joi.number().min(0).max(24),
-  }),
-  entry : Joi.object({
-    id: Joi.string(),
-    userId: Joi.string().required(),
-    day: Joi.number().integer().min(0).required(),
-    duration: Joi.number().required(),
-    notes: Joi.string().required(),
-    _username: Joi.string().required(),
-  }),
-  entry_updates : Joi.object({
-    userId: Joi.string(),
-    day: Joi.number().integer().min(0),
-    duration: Joi.number(),
-    notes: Joi.string(),
-  }),
-}
 const validate = <T>( joi:Joi.ObjectSchema<T>, target:T ) => {
   const validationError = joi.validate( target ).error;
   if ( validationError )
