@@ -1,7 +1,7 @@
 import Mongoose from 'mongoose';
 import Joi from '@hapi/joi';
 
-import ApiError from './api-errors';
+import ApiError from './types/ApiError';
 import { encryptPassword, comparePassword } from './util/passwords';
 import { UserRole } from 'shared/interfaces/UserRole';
 import User from "./models/User";

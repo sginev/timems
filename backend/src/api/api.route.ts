@@ -1,11 +1,11 @@
 import express from 'express';
 
-import data from './datamanager';
-import ApiError, { handleError } from './api-errors';
-import { authenticateUser, validateToken } from './util/auth';
+import data from '../datamanager';
+import ApiError from '../types/ApiError';
+import { authenticateUser, validateToken } from '../util/auth';
 
-import users from './routes/users.route';
-import entries from './routes/entries.route';
+import users from './users.route';
+import entries from './entries.route';
 import { UserRole } from 'shared/interfaces/UserRole';
 
 const routes = express.Router();
@@ -68,6 +68,13 @@ routes.use( (_, res) => {
   } ) 
 } );
 
-routes.use( handleError );
+routes.use( async ( error:ApiError, req, res, next ) => {
+  const status = error.status || 500;
+  const message = error.message || 'Internal Server Error';
+  const name = error.name || 'Unknown Error';
+  // const stacktrace = error.stack?.split('\n').slice(1).map(ln=>ln.trim()) 
+  console.log( `\x1b[31m${ status >= 500 ? error.stack : [name,message] }\x1b[0m` )
+  res.status( status ).send({ error: { name, message, status } });
+} );
 
 export default routes;

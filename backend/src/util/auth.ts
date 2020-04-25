@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
-import ApiError from '../api-errors';
+import ApiError from '../types/ApiError';
 import { IUser } from '../models/User';
 
 const JWT_SECRET = "sekret"

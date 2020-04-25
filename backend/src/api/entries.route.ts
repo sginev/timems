@@ -1,7 +1,7 @@
 import express from 'express';
 
 import data from '../datamanager';
-import ApiError from '../api-errors';
+import ApiError from '../types/ApiError';
 import { checkPermissions } from './auth.route';
 import { UserRole } from 'shared/interfaces/UserRole';
 

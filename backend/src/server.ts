@@ -10,7 +10,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import config from './configuration';
-import api from './api-routes';
+import api from './api/api.route';
 
 const app = express();
 
