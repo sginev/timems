@@ -63,7 +63,7 @@ async function main() {
           console.log( `- ${ entryData.notes } ${ entryData.day }/${ entryData.duration }` )
         }
       }
-      Entry.insertMany( entries )
+      await Entry.insertMany( entries )
       
       await data.entries.updateDailyTotals( newUser.id )
       

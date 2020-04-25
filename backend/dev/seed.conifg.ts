@@ -22,6 +22,34 @@ const configuration = {
       repeat: '1'
     },
     {
+      username: `manager`,
+      password: `toptal`,
+      role: UserRole.UserManager,
+      entries: [
+        {
+          day: common.randomDay,
+          duration: common.randomDuration,
+          notes: "{{lorem.sentence}}.",
+          repeat: '17'
+        }
+      ],
+      repeat: '1'
+    },
+    {
+      username: `joe_schmoe`,
+      password: `toptal`,
+      role: UserRole.Member,
+      entries: [
+        {
+          day: common.randomDay,
+          duration: common.randomDuration,
+          notes: "{{hacker.phrase}}",
+          repeat: '31'
+        }
+      ],
+      repeat: '1'
+    },
+    {
       username: `{{commerce.color}}_{{internet.domainWord}}`,
       password: `toptal`,
       role: UserRole.UserManager,
