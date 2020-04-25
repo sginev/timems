@@ -119,14 +119,14 @@ const EntryEditorModalComponent =
         </Modal.Body>
         
         <Modal.Footer>
-          <Button variant="secondary" onClick={ () => changeState({ show:false }) }>
-            Cancel
-          </Button>
           { entry &&
-            <Button variant="secondary" onClick={ deleteEntry }>
+            <Button className="mr-auto" variant="secondary" onClick={ deleteEntry }>
               Delete
             </Button>
           }
+          <Button variant="secondary" onClick={ () => changeState({ show:false }) }>
+            Cancel
+          </Button>
           <Button variant="primary" type="submit">
             { entry ? 'Update' : 'Add' } work record
           </Button>

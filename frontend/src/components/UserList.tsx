@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react'
 
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown';
 
@@ -71,8 +72,7 @@ const UserListItemComponent:React.FC<{user:User,onChange:()=>void}> = ({ user, o
           disabled={ ! canChangeRole }
           title={ ROLES[ role ].label }
           variant={ ROLES[ role ].color }
-          id="dropdown-basic-button" 
-          size="sm">
+          id="dropdown-basic-button" >
         { 
           Object.keys( ROLES )
                 .filter( key => myUser.role >= parseInt( key ) )
@@ -91,8 +91,10 @@ const UserListItemComponent:React.FC<{user:User,onChange:()=>void}> = ({ user, o
       <Card.Body>
         <Card.Title>{ user.username }</Card.Title>
         <Card.Text> { TEXT } </Card.Text>
-        { renderRoleDropdown() }
-        { renderDeleteButton() }
+        <ButtonGroup className="mr-2" size="sm">
+          { renderRoleDropdown() }
+          { renderDeleteButton() }
+        </ButtonGroup>
       </Card.Body>
     </Card>
   )

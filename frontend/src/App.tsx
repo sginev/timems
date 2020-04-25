@@ -8,7 +8,7 @@ import {
   useLocation,
   useHistory,
 } from "react-router-dom";
-import { ToastProvider } from 'react-toast-notifications';
+import { ToastProvider, useToasts } from 'react-toast-notifications';
 import { FaClock, FaUserFriends, FaRegClock, FaUserCircle } from "react-icons/fa";
 
 import './App.css';
@@ -35,7 +35,7 @@ window["auth"] = authenticationService
 function App() {
   return (
     <div className="App">
-      <ToastProvider>
+      <ToastProvider autoDismiss placement="top-center">
         <Router>
           <AppRoutesWrapper />
         </Router>
@@ -64,6 +64,7 @@ function AppRoutesWrapper() {
 function AppMemberContent() {
   const [ myUser, setMyUserData ] = useState<User|null>( null );
   const [ error, setError ] = useState<Error|null>( null );
+  const { addToast } = useToasts();
   const history = useHistory();
   const location = useLocation();
   hooks.setMyUserData = setMyUserData
@@ -80,17 +81,18 @@ function AppMemberContent() {
   }
 
   useEffect( () => {
-    console.log( "First run!" )
-    api.request( "/me", "get" )
-      .then( data => {
-        setMyUserData( data.user )
-      } )
-      .catch( error => {
+    console.log( "First run!" );
+    ( async () => {
+      try {
+        const data = await api.request( "/me", "get" );
+        setMyUserData( data.user );
+      } catch ( error ) {
         console.error( error );
-        authenticationService.logout().then( () => {
-          history.push("/login")
-        } );
-      } )
+        addToast( error.message, { appearance: 'error' } );
+        await authenticationService.logout();
+        history.push("/login");
+      }
+    } )()
   }, [] );
 
   if ( error ) 

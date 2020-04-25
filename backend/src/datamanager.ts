@@ -156,7 +156,8 @@ const entries = {
     const temp = await Entry.paginate( conditions , { limit, page, sort:'-day' } )
     return {
       entries : temp.docs,
-      pages : temp.totalPages,
+      totalPages : temp.totalPages,
+      page : temp.page,
     }
   },
 

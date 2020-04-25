@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 
 import PageContentHeaderComponent from '../../components/PageContentHeader';
 import PageContentBodyComponent from '../../components/PageContentBody';
-import ErrorBodyComponent from '../../components/ErrorBody';
 import EntryListComponent from '../../components/EntryList'
 import EntryFilterComponent, { FilterState } from '../../components/EntryFilter';
 import { useApiDataLoader } from '../../utils/react';
@@ -14,15 +13,14 @@ export default function AllEntriesPage()
 {
   const defaultFilterState = { startDate : null, endDate : null };
   const [ filterState, setFilterState ] = useState<FilterState>( defaultFilterState );
-  var [ page, setPage ] = useState( 1 );
   const canEdit = true;
   const limit = 10
   const path = `/entries`;
-  const defaultData = { entries : new Array<Entry>(), pages : 1 };
-  const [ { data, loading, error }, load ] = useApiDataLoader( path, defaultData, { limit } );
+  const defaultData = { entries : new Array<Entry>(), totalPages : 1, page : 1 };
+  const [ { data, loading }, load ] = useApiDataLoader( path, defaultData, { limit } );
 
-  if ( page > data.pages )
-    page = data.pages
+  data.page = data.page || 1;
+  data.totalPages = data.totalPages || 1;
 
   const onFilterChange = ( state:FilterState ) => {
     setFilterState( state );
@@ -30,29 +28,22 @@ export default function AllEntriesPage()
   }
 
   const onPageSelect = ( page:number ) => {
-    setPage( page )
     reloadData( filterState, page );
   }
 
-  const reloadData = ( state:FilterState = filterState, pg = page ) => {
+  const reloadData = ( state:FilterState = filterState, page = data.page ) => {
     const from = state.startDate ? millisecondsToDays( state.startDate.getTime() ) : undefined;
     const to = state.endDate ? millisecondsToDays( state.endDate.getTime() ) : undefined;
-    load( { from, to, limit, page : pg }, data );
-  }
-
-  const renderBody = () => {
-    if ( error )
-      return <ErrorBodyComponent error={ error } />
-    return <EntryListComponent 
-              list={ data.entries } size={ limit } 
-              showUsername={ true }
-              onClickEdit={ canEdit && onClickEdit } />
+    load( { from, to, limit, page }, data );
   }
 
   const [editorModalState, setEditorModalState] = useState<any>({});
-  const onClickEdit = ( entry:Entry ) => {
+  const onClickEdit = canEdit && ( ( entry:Entry ) => {
     setEditorModalState({ show:true, entry })
-  }
+  } )
+
+  const list = data.entries
+  const showUsername = false
 
   return (
     <div>
@@ -63,8 +54,8 @@ export default function AllEntriesPage()
 
       <PageContentBodyComponent>
         <EntryFilterComponent state={ filterState } setState={ onFilterChange } />
-        { renderBody() }
-        <PaginationComponent currentPage={ page } lastPage={ data.pages } onAction={ onPageSelect }/>
+        <EntryListComponent {...{ list, size:limit, showUsername, onClickEdit } } />
+        <PaginationComponent {...{ currentPage:data.page, lastPage: data.totalPages, onAction:onPageSelect } } />
       </PageContentBodyComponent>
 
       { editorModalState.show &&

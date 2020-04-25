@@ -1,8 +1,11 @@
 import React, { useState } from 'react'
-import { useHistory, Link } from "react-router-dom";
+import { useHistory } from "react-router-dom";
+import { useToasts } from 'react-toast-notifications';
+
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 
+import api from "../../services/api"
 import hooks from '../../services/hooks'
 import authenticationService from '../../services/auth'
 import { MyUserContext, User } from '../../services/user';
@@ -31,6 +34,7 @@ function MyUserPage() {
   const myUser = React.useContext( MyUserContext ) as User;
   const [ preferredWorkingHoursPerDay, setWorkHoursPerDay ] = useState( myUser.preferredWorkingHoursPerDay )
   const [ username, setUsername ] = useState( myUser.username )
+  const { addToast } = useToasts();
 
   const dirty = ! weakCompareObjects( { username, preferredWorkingHoursPerDay }, myUser )
 
@@ -43,7 +47,13 @@ function MyUserPage() {
   )
   const handleSubmit = async e => {
     e.preventDefault()
-    hooks.setMyUserData( { ...myUser, username, preferredWorkingHoursPerDay } )
+    try {
+      await api.request( '/users/' + myUser.id, "post", { username, preferredWorkingHoursPerDay } );
+      hooks.setMyUserData( { ...myUser, username, preferredWorkingHoursPerDay } );
+      addToast( 'Profile updated.', { appearance : "success" } )
+    } catch ( e ) {
+      addToast( e.message, { appearance : "error" } )
+    }
   }
   
   return ( 
