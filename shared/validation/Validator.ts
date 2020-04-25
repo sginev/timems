@@ -1,5 +1,5 @@
 import Joi from '@hapi/joi';
-import { UserRole } from './interfaces/UserRole';
+import { UserRole } from '../interfaces/UserRole';
 
 const roles = [ UserRole.Admin, UserRole.UserManager, UserRole.Member, UserRole.Locked ]
 

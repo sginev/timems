@@ -1,7 +1,9 @@
 import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
-import ApiError from '../types/ApiError';
+
+import { UserRole } from "shared/interfaces/UserRole";
 import { IUser } from '../models/User';
+import ApiError from '../types/ApiError';
 
 const JWT_SECRET = "sekret"
 
@@ -11,7 +13,8 @@ const makeHash = ( subject:string, salt:string ) => //// TODO: Use bcrypt?
 
 interface JWTData { userId : string , refreshKey : string , iat : number }
 
-export const authenticateUser = ( user:IUser ) => {
+export async function authenticateUser( user:IUser )
+{
   const secret = JWT_SECRET
   const refreshId = user.id + secret;
   const salt = makeSalt()
@@ -21,7 +24,8 @@ export const authenticateUser = ( user:IUser ) => {
   return { accessToken, refreshToken }
 }
 
-export const validateToken = ( authorizationHeader?:string ) => {
+export async function validateToken( authorizationHeader?:string )
+{
   if ( ! authorizationHeader ) 
     throw new ApiError( "Authentication header missing", 401 );
   const [ headerKey, authenticationToken ] = authorizationHeader.split(' ');
@@ -30,3 +34,13 @@ export const validateToken = ( authorizationHeader?:string ) => {
   const data = jwt.verify( authenticationToken, JWT_SECRET );
   return data as JWTData
 }; 
+
+//// throws error if ALL check options fail
+export async function checkPermissions( user:IUser, options:{ minimumRole?:UserRole, userId?:string } )
+{
+  if ( options.userId && user.id === options.userId ) 
+    return
+  if ( options.minimumRole && user.role >= options.minimumRole ) 
+    return
+  throw new ApiError( "Access denied.", 403 );
+}

@@ -1,63 +1,33 @@
 import express from 'express';
 
-import data from '../datamanager';
-import ApiError from '../types/ApiError';
-import { authenticateUser, validateToken } from '../util/auth';
-
 import users from './users.route';
 import entries from './entries.route';
-import { UserRole } from 'shared/interfaces/UserRole';
+import ApiError from '../types/ApiError';
+import { handleRouteAuth, processAccessToken, handleRouteGetAuthenticatedUserData } from './auth.route';
 
 const routes = express.Router();
 
-//// AUTHENTICATION ////
+//// Authentication (before processing access token)
 
-routes.post( ['/register','/login'], async (req, res, next) => {
+routes.post( ['/register','/login'], handleRouteAuth );
 
-  const { username, password } = req.body;
-  if ( ! username ) throw new ApiError( "No username given" )
-  if ( ! password ) throw new ApiError( "No password given" )
+//// Process caller's access token
 
-  switch( req.path ) {
-    case '/register':
-      var user = await data.users.add( username, password, UserRole.Member );
-      break;
-    case '/login':
-      var user = await data.users.checkCredentials( username, password );
-      break;
-    default: 
-      throw new ApiError( 'Bad path', 404 );
-  }
+routes.use( processAccessToken )
 
-  const { accessToken, refreshToken } = authenticateUser( user );
-  res.status(201)
-  res.locals.data = { user, accessToken, refreshToken };
-  res.locals.skipAuthorization = true;
+//// Return user data for returning user (via their access token)
 
-  next();
-} );
+routes.get( '/me', handleRouteGetAuthenticatedUserData );
 
-routes.use( async (req, res, next) => {
-  if ( ! res.locals.skipAuthorization ) {
-    // const user = await data.getUserByUsername( `admin` )
-    const id = validateToken( req.headers['authorization'] ).userId;
-    const user = ( await data.users.getById( id ) )?.toJSON();
-    if ( ! user ) 
-      throw new ApiError( "Your user does not exist. Please login again with a valid user.", 401 );
-    res.locals.caller = user;
-  }
-  next();
-} )
-
-////
-
-routes.get( '/me', async (_, res, next) => {
-  res.locals.data = { user : res.locals.caller };
-  next();
-} );
+//// CRUD user documents
 
 routes.use( "/users", users );
+
+//// CRUD work entry documents
+
 routes.use( "/entries", entries );
+
+//// 404
 
 routes.use( (_, res) => {
   if ( ! res.locals.data )
@@ -68,6 +38,8 @@ routes.use( (_, res) => {
   } ) 
 } );
 
+//// Handle errors (still respond with valid json, containing the error message)
+
 routes.use( async ( error:ApiError, req, res, next ) => {
   const status = error.status || 500;
   const message = error.message || 'Internal Server Error';
@@ -76,5 +48,7 @@ routes.use( async ( error:ApiError, req, res, next ) => {
   console.log( `\x1b[31m${ status >= 500 ? error.stack : [name,message] }\x1b[0m` )
   res.status( status ).send({ error: { name, message, status } });
 } );
+
+////
 
 export default routes;

@@ -2,7 +2,7 @@ import express from 'express';
 
 import data from '../datamanager';
 import ApiError from '../types/ApiError';
-import { checkPermissions } from './auth.route';
+import { checkPermissions } from '../util/auth';
 import { UserRole } from 'shared/interfaces/UserRole';
 
 const routes = express.Router();

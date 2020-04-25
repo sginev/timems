@@ -1,6 +1,6 @@
-import mongoose from 'mongoose'
+import mongoose from 'mongoose';
 
-import express from 'express'
+import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
@@ -27,7 +27,8 @@ app.use( "/api", api );
 app.use( '/', express.static( '../frontend/public' ) );
 app.use( '*', express.static( '../frontend/public/404.html' ) );
 
-( async function() {
+const connectToDatabase = async() => 
+{
   const dbUri:string = `${config.DATABASE_URL}?authSource=${config.DATABASE_AUTHDB}`;
   const dbOptions:mongoose.ConnectionOptions = {
     useNewUrlParser: true,
@@ -40,9 +41,11 @@ app.use( '*', express.static( '../frontend/public/404.html' ) );
   mongoose.set( 'useCreateIndex', true );
   mongoose.set( 'useFindAndModify', false );
   await mongoose.connect( dbUri, dbOptions );
-
   console.log(`Connected to database ${ config.DATABASE_URL }`);
+}
 
+( async function() {
+  await connectToDatabase();
   app.listen( config.PORT, () => console.log( `> Running on port ${ config.PORT }.` ) );
 } )()
 .catch( e => console.error( e ) )

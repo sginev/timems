@@ -6,7 +6,7 @@ import { UserRole } from 'shared/interfaces/UserRole';
 import User from "./models/User";
 import Entry from "./models/Entry";
 
-import Validator from 'shared/Validator';
+import Validator from 'shared/validation/Validator';
 
 type UserUpdates = { username?:string, password?:string, role?:UserRole, preferredWorkingHoursPerDay?:number }
 type EntryUpdates = { day:number, duration:number, notes:string }
@@ -17,19 +17,23 @@ const { validate } = new Validator( error => {
 } )
 
 const users = {
-  getAll: async function () {
+  getAll: async function () 
+  {
     return await User.find();
   } ,
 
-  getById: async function ( id:string ) {
+  getById: async function ( id:string ) 
+  {
     return await User.findById( id );
   } ,
 
-  getByUsername: async function ( username:string ) {
+  getByUsername: async function ( username:string ) 
+  {
     return await User.findOne({ username });
   } ,
 
-  add: async function ( username:string, password:string, role:UserRole ) {
+  add: async function ( username:string, password:string, role:UserRole ) 
+  {
     if ( await this.getByUsername( username ) )
       throw new ApiError( "Chosen username is already taken.", 409 );
 
@@ -44,12 +48,14 @@ const users = {
     return newUser;
   } ,
 
-  update: async function ( id:string, updates:UserUpdates ) {
+  update: async function ( id:string, updates:UserUpdates ) 
+  {
     for ( const key in updates )
       if ( updates[key] === undefined )
         delete updates[key]
 
-    if ( updates.username ) {
+    if ( updates.username ) 
+    {
       const user = await this.getByUsername( updates.username );
       if ( user && user.id !== id )
         throw new ApiError( "Chosen username is already taken.", 409 );
@@ -57,7 +63,8 @@ const users = {
 
     validate( Validator.UserUpdates, updates )
   
-    if ( updates.password ) {
+    if ( updates.password ) 
+    {
       updates['passhash'] = encryptPassword( updates.password );
       delete updates.password;
     }
@@ -73,12 +80,14 @@ const users = {
     return user;
   } ,
 
-  delete: async function ( id:string ) {
+  delete: async function ( id:string ) 
+  {
     await User.findByIdAndDelete( id )
     await Entry.deleteMany({ userId : id })
   } ,
 
-  checkCredentials: async function ( username:string, password:string ) {
+  checkCredentials: async function ( username:string, password:string ) 
+  {
     const user = await User.findOne({ username }).select('+passhash').exec()
     if ( ! user ) 
       throw new ApiError( `No user with username '${ username }' found.`, 401 )
@@ -108,7 +117,8 @@ const entries = {
     await Entry.updateMany( { userId }, { $set : { _username } } )
   },
   
-  getPaginated: async function ( options?:EntryFilterOptions ) {
+  getPaginated: async function ( options?:EntryFilterOptions ) 
+  {
     const DEFAULT_LIMIT = 10
     const { userId, from, to, limit, page } = { limit : DEFAULT_LIMIT, page :1, ...options }
 
@@ -130,11 +140,13 @@ const entries = {
     }
   },
 
-  getById: async function ( id:string ) {
+  getById: async function ( id:string ) 
+  {
     return await Entry.findById( id ).exec()
   },
 
-  add: async function ( userId:string , day:number , duration:number , notes:string ) {
+  add: async function ( userId:string , day:number , duration:number , notes:string ) 
+  {
     const user = await users.getById( userId );
     if ( ! user )
       throw new ApiError( "User does not exist", 404 );
@@ -145,7 +157,8 @@ const entries = {
     await this.updateDailyTotals( entry.userId, entry.day );
   },
 
-  update: async function ( id:string, updates:EntryUpdates ) {
+  update: async function ( id:string, updates:EntryUpdates ) 
+  {
     for ( const key in updates )
       if ( updates[key] === undefined )
         delete updates[key]
@@ -160,7 +173,8 @@ const entries = {
     await this.updateDailyTotals( entry.userId, entry.day );
   },
 
-  delete: async function ( id:string ) {
+  delete: async function ( id:string ) 
+  {
     const entry = await this.getById( id );
     if ( !entry ) 
       throw new ApiError( `Entry not found.`, 404 );
