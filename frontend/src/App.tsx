@@ -62,9 +62,8 @@ function AppMemberContent() {
   const [ myUser, setMyUserData ] = useState<User|null>( null );
   const [ error, setError ] = useState<Error|null>( null );
   const history = useHistory();
-  hooks.setMyUserData = setMyUserData
-
   const location = useLocation();
+  hooks.setMyUserData = setMyUserData
 
   function canViewPage( page:"my-entries"|"all-entries"|"all-users"|"my-user" ) {
     const myrole = myUser?.role || 0

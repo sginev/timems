@@ -41,15 +41,6 @@ const api = new class ApiService
     const json = await response.json();
     return json.data as T;
   }
-
-  async getEntries() {
-    const data = await this.request<{entries:any[]}>( "/entries", "get" )
-    return data.entries
-  }
-  async getUsers() {
-    const data = await this.request<{users:any[]}>( "/users", "get" )
-    return data.users
-  }
 } ()
 
 export default api

@@ -19,5 +19,5 @@ export function useApiDataLoader<T>( apiPath:string, defaultValue:T, params?:any
 
   useEffect( () => { load( params ) }, [] )
 
-  return [ state, load ] as [ State, (path:any,fallbackValue?:T)=>Promise<void> ];
+  return [ state, load ] as [ State, (params?: any, fallbackValue?: T) => Promise<void> ];
 }

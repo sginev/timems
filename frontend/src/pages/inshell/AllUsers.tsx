@@ -10,13 +10,18 @@ export default function AllUsers()
 {
   const limit = 10
   const path = `/users`;
-  const [ { data, loading, error }, load ] = useApiDataLoader( path, { users : [] }, { limit } );
+  const [ { data, loading, error }, reload ] = useApiDataLoader( path, { users : [] }, { limit } );
+
+  console.log( data )
+
+  const onChange = () => reload( { limit }, data )
+  // return <h1>WHat?</h1>
 
   const renderBody = () => {
     if ( error )
       return <ErrorBodyComponent error={ error } />
     if ( ! loading )
-      return <UserListComponent list={ data.users } />;
+      return <UserListComponent list={ data.users } onChange={ onChange } />;
   }
 
   return (
