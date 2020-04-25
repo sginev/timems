@@ -1,26 +1,32 @@
-import React from "react"
+import React, { useState } from "react"
 import logo from './logo.svg';
 import { useHistory } from "react-router-dom";
+import { useToasts } from 'react-toast-notifications'
 
 import authenticationService from '../../services/auth'
 
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 
+const defaultValues = { username : '', password : '' }
+
 export default function LoginPage() {
   const history = useHistory();
+  const { addToast } = useToasts()
+  const [ values, setValues ] = useState( defaultValues );
+
   const handleSubmit = async e => {
     e.preventDefault()
-    await authenticationService.login( values.username, values.password );
-    history.push("/");
+    try {
+      await authenticationService.login( values.username, values.password );
+      setValues(defaultValues);
+      history.push("/");
+    } catch ( e ) {
+      addToast( e.message, { appearance: 'error' } )
+    }
   }
-  const values = {
-    username : '',
-    password : '',
-  };
   return (
     <>
-      
       <p> <img src={logo} className="App-logo" alt="logo" /> </p>
       
       <div style={{ maxWidth:"800px" }}>
@@ -53,7 +59,6 @@ export default function LoginPage() {
       <p className="App-link" onClick={ () => history.push("/register") } >
         Are you a new user?
       </p>
-
     </>
   )
 }

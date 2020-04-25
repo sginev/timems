@@ -8,6 +8,7 @@ import {
   useLocation,
   useHistory,
 } from "react-router-dom";
+import { ToastProvider } from 'react-toast-notifications';
 import { FaClock, FaUserFriends, FaRegClock, FaUserCircle } from "react-icons/fa";
 
 import './App.css';
@@ -34,9 +35,11 @@ window["auth"] = authenticationService
 function App() {
   return (
     <div className="App">
-      <Router>
-        <AppRoutesWrapper />
-      </Router>
+      <ToastProvider>
+        <Router>
+          <AppRoutesWrapper />
+        </Router>
+      </ToastProvider>
     </div>
   );
 }
