@@ -1,5 +1,4 @@
 import Mongoose from 'mongoose';
-import Joi from '@hapi/joi';
 
 import ApiError from './types/ApiError';
 import { encryptPassword, comparePassword } from './util/passwords';
