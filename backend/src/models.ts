@@ -27,8 +27,3 @@ export interface Entry extends DataObject
   notes : string
   _dailyTotalDuration? : number
 }
-
-export enum EntryColor {
-  BelowPreference = 1,
-  MeetsPreference = 2,
-}
