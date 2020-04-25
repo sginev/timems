@@ -5,10 +5,13 @@ import { Entry, daysToMilliseconds } from '../services/entry';
 import dateformat from 'dateformat'
 import { MyUserContext } from '../services/user';
 
-type ItemProps = { entry:Entry, showUsername:boolean, onClickEdit:(entry:Entry)=>void }
-const EntryListItemComponent = ({ entry, showUsername, onClickEdit }:ItemProps) => {
+type SharedProps = { showUsername:boolean, colorize:boolean, onClickEdit:(entry:Entry)=>void };
+type ItemProps = { entry:Entry } & SharedProps;
+type ListProps = { list:Entry[], size:number } & SharedProps;
+
+const EntryListItemComponent = ({ entry, showUsername, colorize, onClickEdit }:ItemProps) => {
   const myUser = React.useContext( MyUserContext )!;
-  const color = ! entry || ! myUser.preferredWorkingHoursPerDay ? '' :
+  const color = ( !colorize || !entry || !myUser.preferredWorkingHoursPerDay ) ? '' :
     entry._dailyTotalDuration! < myUser.preferredWorkingHoursPerDay ? 'prefUnmet' : 'prefMet';
 
   const renderEditButtons = () => (
@@ -46,9 +49,8 @@ const EntryListItemComponent = ({ entry, showUsername, onClickEdit }:ItemProps) 
   }
 }
 
-type ListProps = { list:Entry[], size:number, showUsername:boolean, onClickEdit:(entry:Entry)=>void }
-const EntryListComponent = ({ list, size, showUsername, onClickEdit }:ListProps) => {
-  const items = new Array( size ).fill( 0 )
+const EntryListComponent = ({ list, size, showUsername, colorize, onClickEdit }:ListProps) => {
+  const items = new Array( size ).fill( 0 ).map( (_,i) => list[i] || undefined )
   return (
     <div className="entry-list">
       <div className="entry-list-item entry-list-header">
@@ -57,10 +59,8 @@ const EntryListComponent = ({ list, size, showUsername, onClickEdit }:ListProps)
         <div className="duration"> Time </div>
         <div className="notes"> Notes </div>
       </div>
-      { items.map( ( _, i ) => <EntryListItemComponent 
-          key={ i } entry={ list[ i ] } 
-          showUsername={ showUsername }
-          onClickEdit={ onClickEdit } /> ) }
+      { items.map( ( entry, i ) => <EntryListItemComponent 
+        { ...{ key:i, entry, showUsername, colorize, onClickEdit } } /> ) }
     </div>
   )
 }

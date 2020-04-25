@@ -44,6 +44,7 @@ export default function AllEntriesPage()
 
   const list = data.entries
   const showUsername = true
+  const colorize = false
 
   return (
     <div>
@@ -54,7 +55,7 @@ export default function AllEntriesPage()
 
       <PageContentBodyComponent>
         <EntryFilterComponent state={ filterState } setState={ onFilterChange } />
-        <EntryListComponent {...{ list, size:limit, showUsername, onClickEdit } } />
+        <EntryListComponent {...{ list, size:limit, showUsername, colorize, onClickEdit } } />
         <PaginationComponent {...{ currentPage:data.page, lastPage: data.totalPages, onAction:onPageSelect } } />
       </PageContentBodyComponent>
 
