@@ -20,10 +20,10 @@ type Response = ResponseWithCaller & { locals: { user?:IUser } }
 
 //// Routes
 
-routes.get( '/', async (_, res:Response, next) => {
+routes.get( '/', async (req, res:Response, next) => {
   assertAccess( res.locals.access.read.any.user );
-  const users = await data.users.getAll();
-  res.locals.data = { users };
+  const options = req.query;
+  res.locals.data = await data.users.getPaginated( options );
   next();
 } );
 

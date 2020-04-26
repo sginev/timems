@@ -47,12 +47,12 @@ const EntrySchema = new Mongoose.Schema({
 
 EntrySchema.virtual('id').get( _id => _id );
 
+EntrySchema.plugin( MongoosePaginate );
+
 EntrySchema.set('toJSON', { 
   virtuals: true,
   versionKey:false,
   transform: (_, ret) => { delete ret._id }
 });
-
-EntrySchema.plugin( MongoosePaginate );
 
 export default Mongoose.model<IEntry>('Entry', EntrySchema) as Mongoose.Model<IEntry>&Mongoose.PaginateModel<IEntry>;

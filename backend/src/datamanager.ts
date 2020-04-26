@@ -22,6 +22,16 @@ const users = {
     return await User.find();
   } ,
 
+  getPaginated: async function ({ limit=12, page=1 }) 
+  {
+    const temp = await User.paginate( {}, { limit, page } )
+    return {
+      users : temp.docs,
+      totalPages : temp.totalPages,
+      page : temp.page,
+    }
+  },
+  
   getById: async function ( id:string ) 
   {
     return await User.findById( id );

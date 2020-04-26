@@ -1,4 +1,5 @@
 import Mongoose from 'mongoose';
+import MongoosePaginate from 'mongoose-paginate-v2';
 
 import { UserRole } from 'shared/interfaces/UserRole';
 
@@ -32,10 +33,12 @@ const UserSchema = new Mongoose.Schema({
 
 UserSchema.virtual('id').get( _id => _id );
 
+UserSchema.plugin( MongoosePaginate );
+
 UserSchema.set('toJSON', { 
   virtuals: true,
   versionKey:false,
   transform: (_, ret) => { delete ret._id }
 });
 
-export default Mongoose.model<IUser>('User', UserSchema);
+export default Mongoose.model<IUser>('User', UserSchema) as Mongoose.Model<IUser>&Mongoose.PaginateModel<IUser>;
