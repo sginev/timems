@@ -5,6 +5,7 @@ import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown';
+import UserRoleStyling, { AllRoles } from '../styling/UserRoles'
 
 import { UserRole } from 'shared/interfaces/UserRole';
 import { User, MyUserContext } from '../services/user';
@@ -22,12 +23,7 @@ export default function UserListComponent( props:{ list:User[], onChange:()=>voi
 const UserListItemComponent:React.FC<{user:User,onChange:()=>void}> = ({ user, onChange }) => {
   const myUser = React.useContext( MyUserContext ) as User;
   const [ role, setRole ] = React.useState( user.role ); 
-  const ROLES = {
-    [UserRole.Member] : { label : "Regular User", color : "primary" } ,
-    [UserRole.UserManager] : { label : "User Manager", color : "warning" } ,
-    [UserRole.Admin] : { label : "Administrator", color : "danger" } ,
-    [UserRole.Locked] : { label : "Locked", color : "secondary" } ,
-  };
+  
   const TEXT = ! user.preferredWorkingHoursPerDay ? <>&#8203;</> :
     "Preferred work hours per day: " + user.preferredWorkingHoursPerDay;
   const canChangeRole = myUser.id !== user.id 
@@ -66,20 +62,19 @@ const UserListItemComponent:React.FC<{user:User,onChange:()=>void}> = ({ user, o
   const renderRoleDropdown = () => {
     if ( role == -1 )
       return <Button id="dropdown-basic-button" variant='link' disabled>Please wait...</Button>
-    if ( ! ROLES[ role ] )
-      return <Button id="dropdown-basic-button" variant='dark' disabled>Error getting roles</Button>
+    const props = UserRoleStyling.get( role )
     return (
       <DropdownButton
           disabled={ ! canChangeRole }
-          title={ ROLES[ role ].label }
-          variant={ ROLES[ role ].color }
+          title={ props.label }
+          variant={ props.color }
           id="dropdown-basic-button" >
         { 
-          Object.keys( ROLES )
-                .filter( key => myUser.role >= parseInt( key ) )
-                .map( key => (
+          Object.entries( AllRoles )
+                .filter( ([key,_]) => myUser.role >= parseInt( key ) )
+                .map( ([key,props]) => (
                   <Dropdown.Item key={ key } onClick={ () => changeUserRole( parseInt( key ) ) }>
-                    { ROLES[ key ].label } 
+                    { props.label } 
                   </Dropdown.Item>
                 ) )
         }

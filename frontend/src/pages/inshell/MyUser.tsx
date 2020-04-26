@@ -2,13 +2,14 @@ import React, { useState } from 'react'
 import { useHistory } from "react-router-dom";
 import { useToasts } from 'react-toast-notifications';
 
-import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
-
 import api from "../../services/api"
 import hooks from '../../services/hooks'
 import authenticationService from '../../services/auth'
 import { MyUserContext, User } from '../../services/user';
+
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
+import UserRoleStyling from '../../styling/UserRoles'
 
 import PageContentHeaderComponent from '../../components/PageContentHeader';
 import PageContentBodyComponent from '../../components/PageContentBody';
@@ -71,7 +72,14 @@ function MyUserPage() {
         <PageContentBodyComponent>
           <div style={{ maxWidth:"520px" }}>
 
-          <Form.Group controlId="formBasicUsername">
+            <Form.Group controlId="formBasicRole">
+              <Form.Label>Your permission level is:</Form.Label>
+              <h4>{ UserRoleStyling.get( myUser.role ).label }</h4>
+            </Form.Group>
+
+            <br/>
+
+            <Form.Group controlId="formBasicUsername">
               <Form.Label>Username</Form.Label>
               <Form.Control 
                 type="text" 
