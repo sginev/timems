@@ -5,23 +5,25 @@ import PageContentBodyComponent from '../../components/PageContentBody';
 import ErrorBodyComponent from '../../components/ErrorBody';
 import UserListComponent from '../../components/UserList';
 import { useApiDataLoader } from '../../utils/react';
+import PaginationComponent from '../../components/Pagination';
+import { User } from '../../services/user';
 
 export default function AllUsers()
 {
-  const limit = 10
+  const limit = 21
   const path = `/users`;
-  const [ { data, loading, error }, reload ] = useApiDataLoader( path, { users : [] }, { limit } );
+  const defaultData = { users : new Array<User>(), totalPages : 1, page : 1 };
+  const [ { data, loading, error }, load ] = useApiDataLoader( path, defaultData, { limit } );
 
-  console.log( data )
+  data.page = data.page || 1;
+  data.totalPages = data.totalPages || 1;
 
-  const onChange = () => reload( { limit }, data )
-  // return <h1>WHat?</h1>
+  const reloadData = ( page = data.page ) => {
+    load( { page, limit }, data );
+  }
 
-  const renderBody = () => {
-    if ( error )
-      return <ErrorBodyComponent error={ error } />
-    if ( ! loading )
-      return <UserListComponent list={ data.users } onChange={ onChange } />;
+  const onPageSelect = ( page:number ) => {
+    reloadData( page );
   }
 
   return (
@@ -29,7 +31,8 @@ export default function AllUsers()
       <PageContentHeaderComponent title="Time management users" />
       { loading && <div className="progress-line"></div> }
       <PageContentBodyComponent>
-        { renderBody() }
+        <UserListComponent list={ data.users } onChange={ reloadData } />
+        <PaginationComponent {...{ currentPage:data.page, lastPage: data.totalPages, onAction:onPageSelect } } />
       </PageContentBodyComponent>
     </div>
   )
