@@ -96,6 +96,7 @@ function MyUserPage() {
               <Form.Control
                 onChange={ e => 
                   setWorkHoursPerDay( parseFloat( e.target.value ) || undefined ) } 
+                onPointerUp={ console.log }
                 value={ preferredWorkingHoursPerDay || 0 }
                 type="range" 
                 min="0" 
