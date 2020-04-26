@@ -59,3 +59,14 @@ button:focus {
   box-shadow: none;
   outline: none;
 }
+
+
+.user-list-header .username,
+.user-list-header .date  {
+  background: none;
+  border-right: 1px solid #FFF1;
+} 
+.user-list-header {
+  background: #0001;
+  border: 1px solid #FFF1;
+}

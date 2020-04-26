@@ -13,6 +13,12 @@ import api from "../services/api"
 export default function UserListComponent( props:{ list:User[], onChange:()=>void } ) {
   return (
     <div className="user-list">
+      <div className="user-list-item user-list-header">
+        <div className="username"> Account </div>
+        <div className="text"> Notes </div>
+        <div className="button button-role"> &#8203; </div>
+        <div className="button button-delete"> &#8203; </div>
+      </div>
       { props.list.map( o => <UserListItemComponent key={ o.id } user={ o } onChange={ props.onChange } /> ) }
     </div>
   )

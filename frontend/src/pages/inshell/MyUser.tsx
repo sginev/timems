@@ -57,18 +57,17 @@ function MyUserPage() {
   }
   
   return ( 
-    <div>
-      <Form onSubmit={ handleSubmit }>
+    <>
+      <PageContentHeaderComponent title="My profile settings">
+        { dirty && (
+          <Button variant="primary" type="submit" form="settings-form">
+            Save Changes
+          </Button>
+        ) }
+      </PageContentHeaderComponent>
 
-        <PageContentHeaderComponent title="My profile settings">
-          { dirty && (
-            <Button variant="primary" type="submit">
-              Save Changes
-            </Button>
-          ) }
-        </PageContentHeaderComponent>
-
-        <PageContentBodyComponent>
+      <PageContentBodyComponent>
+        <Form onSubmit={ handleSubmit } id="settings-form">
           <div style={{ maxWidth:"520px" }}>
 
             <Form.Group controlId="formBasicRole">
@@ -112,10 +111,10 @@ function MyUserPage() {
             <LogoutButton />
 
           </div>
-        </PageContentBodyComponent>
         
-      </Form>
-    </div>
+        </Form>
+      </PageContentBodyComponent>
+    </>
   )
 }
 

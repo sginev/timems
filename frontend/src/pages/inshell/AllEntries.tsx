@@ -50,7 +50,7 @@ export default function AllEntriesPage()
   useRefreshOnFocus( error ? undefined : reloadData );
 
   return (
-    <div>
+    <>
 
       <PageContentHeaderComponent title="All users' work records" />
 
@@ -69,6 +69,6 @@ export default function AllEntriesPage()
           refresh={ () => reloadData() } />
       }
 
-    </div>
+    </>
   )
 }

@@ -84,6 +84,8 @@
 
 .entry-list {
   width: 100%;
+  overflow: auto;
+
 }
 
 .entry-list-item {
@@ -142,7 +144,7 @@
 .entry-list-header .username,
 .entry-list-header .date  {
   background: none;
-  border: 1px solid #FFF1;
+  border-right: 1px solid #FFF1;
 } 
 .entry-list-header {
   background: #0001;

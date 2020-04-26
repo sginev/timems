@@ -28,13 +28,13 @@ export default function AllUsers()
   }
 
   return (
-    <div>
+    <>
       <PageContentHeaderComponent title="All user accounts" />
       { loading && <div className="progress-line"></div> }
       <PageContentBodyComponent>
         <UserListComponent list={ data.users } onChange={ reloadData } />
         <PaginationComponent {...{ currentPage:data.page, lastPage: data.totalPages, onAction:onPageSelect } } />
       </PageContentBodyComponent>
-    </div>
+    </>
   )
 }

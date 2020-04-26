@@ -8,7 +8,7 @@ export default function AboutPage() {
   const myUser = React.useContext( MyUserContext ) as User;
   const history = useHistory();
   return (
-    <div>
+    <>
       <PageContentHeaderComponent title="" />
       <PageContentBodyComponent className="center-content">
         <br/>
@@ -39,6 +39,6 @@ export default function AboutPage() {
           </>
         ) }
       </PageContentBodyComponent>
-    </div>
+    </>
   )
 }

@@ -83,7 +83,7 @@ export default function MyEntriesPage()
   ////
 
   return (
-    <div>
+    <>
 
       <PageContentHeaderComponent title="My work records">
         <Button variant="secondary" onClick={ () => setEditorModalState({ show:true }) }>
@@ -115,6 +115,9 @@ export default function MyEntriesPage()
 
         <EntryListComponent {...{ list, size:limit, showUsername, minDailyHours, onClickEdit } } />
         <PaginationComponent {...{ currentPage:data.page, lastPage: data.totalPages, onAction:onPageSelect } } />
+
+        <div className="page-component-foot-filler" ></div>
+        
       </PageContentBodyComponent>
 
       { editorModalState.show &&
@@ -124,6 +127,6 @@ export default function MyEntriesPage()
           refresh={ () => reloadData() } />
       }
 
-    </div>
+    </>
   )
 }

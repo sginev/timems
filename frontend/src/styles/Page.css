@@ -1,7 +1,10 @@
 .page-content {
-  min-height: 100vh;
+  height: 100vh;
   width: 100%;
-  overflow:auto;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
 .center-content,
@@ -13,6 +16,8 @@
   align-items: center;
   text-align: center;
 }
+
+
 
 .page-content-header {
   line-height: 62px;
@@ -41,11 +46,24 @@
 
 .page-content-body {
   padding: 20px 20px;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .page-content-body > * {
   animation: fade-in 250ms;
 }
+.page-content-foot-filler {
+  flex: 1 1 0px;
+}
+
+
+
+
+
+
 
 .progress-line, .progress-line:before {
   height: 2px;
