@@ -1,14 +1,9 @@
-
-// const API_URL_ORIGIN = window.location.origin
-const API_URL_ORIGIN = 'http://thechoephix.com:3000'
-const API_URL_PATH = "/api"
-
-const KEY_ACCESS_TOKEN = "ACCESS_TOKEN";
+import { API_HOST, LOCAL_STORAGE_KEY_ACCESS_TOKEN } from '../Configuration'
 
 const api = new class ApiService
 {
-  baseUrl:string = API_URL_ORIGIN + API_URL_PATH
-  authToken:string|null = localStorage.getItem( KEY_ACCESS_TOKEN )
+  baseUrl:string = API_HOST
+  authToken:string|null = localStorage.getItem( LOCAL_STORAGE_KEY_ACCESS_TOKEN )
 
   async request<T extends any>( path:string, method:"get"|"post"|"patch"|"put"|"delete", data?:any ) {
     const headers = { "Content-Type" : "application/json" }

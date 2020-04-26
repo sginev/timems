@@ -14,12 +14,14 @@ import { MyUserContext, User } from '../../utils/user';
 import PaginationComponent from '../../components/Pagination';
 import EntryEditorModalComponent from '../../components/EntryEditor';
 
+import { PAGE_SIZE_OWN_ENTRIES } from '../../Configuration';
+
 export default function MyEntriesPage() 
 {
   const myUser = React.useContext( MyUserContext )!;
   const defaultFilterState = { startDate : null, endDate : null };
   const [ filterState, setFilterState ] = useState<FilterState>( defaultFilterState );
-  const limit = 10
+  const limit = PAGE_SIZE_OWN_ENTRIES
   const path = `/entries`;
   const defaultData = { entries : new Array<Entry>(), totalPages : 1, page : 1 };
   const [ { data, loading, error }, load ] = useApiDataLoader( path, defaultData, { userId: myUser.id, limit } );

@@ -1,5 +1,3 @@
-console.log('config-overrides.js loaded...')
-
 const { removeModuleScopePlugin, override, babelInclude } = require("customize-cra");
 const path = require("path");
 
