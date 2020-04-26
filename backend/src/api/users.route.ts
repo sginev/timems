@@ -62,7 +62,6 @@ routes.post('/:id', async (req, res:Response, next) => {
                 res.locals.access.update.own.user :
                 res.locals.access.update.any.user );
 
-  console.log( res.locals.caller.role , 'vs' , user.role )
   assert( res.locals.caller.role >= user.role,
     `You cannot edit users with higher permission level than your own`, 403 );
   assert( !updates.role || res.locals.caller.role >= updates.role,

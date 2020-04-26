@@ -80,8 +80,6 @@ const users = {
       delete updates.password;
     }
 
-    console.log( updates )
-    
     const user = await User.findByIdAndUpdate( id, updates, {new: true} );
     
     if ( user && updates.username ) {
