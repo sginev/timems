@@ -2,7 +2,6 @@ import React from 'react'
 
 import PageContentHeaderComponent from '../../components/PageContentHeader';
 import PageContentBodyComponent from '../../components/PageContentBody';
-import ErrorBodyComponent from '../../components/ErrorBody';
 import UserListComponent from '../../components/UserList';
 import { useApiDataLoader } from '../../utils/react';
 import PaginationComponent from '../../components/Pagination';
@@ -13,7 +12,7 @@ export default function AllUsers()
   const limit = 21
   const path = `/users`;
   const defaultData = { users : new Array<User>(), totalPages : 1, page : 1 };
-  const [ { data, loading, error }, load ] = useApiDataLoader( path, defaultData, { limit } );
+  const [ { data, loading }, load ] = useApiDataLoader( path, defaultData, { limit } );
 
   data.page = data.page || 1;
   data.totalPages = data.totalPages || 1;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 
 import Pagination from 'react-bootstrap/Pagination';
 
@@ -36,11 +36,6 @@ const decideButtonNumbers = ( currentPage:number, lastPage:number, maxButtonsCou
   }
 
   return [ 1, -1, ...brange( currentPage - onion, currentPage + onion ), -1, lastPage ]
-
-  // console.log( 1, buffer, 'X', buffer, 1 )
-  // const midbi = ~~(.5 * maxButtonsCount);
-
-  return new Array(lastPage).fill(0).map((_,i)=>i+1);
 }
 
 const PaginationComponent:React.FC<PaginationProperties> = 
@@ -62,21 +57,3 @@ const PaginationComponent:React.FC<PaginationProperties> =
 }
 
 export default PaginationComponent
-
-// <Pagination>
-// <Pagination.First />
-// <Pagination.Prev />
-// <Pagination.Item>{1}</Pagination.Item>
-// <Pagination.Ellipsis />
-
-// <Pagination.Item>{10}</Pagination.Item>
-// <Pagination.Item>{11}</Pagination.Item>
-// <Pagination.Item active>{12}</Pagination.Item>
-// <Pagination.Item>{13}</Pagination.Item>
-// <Pagination.Item disabled>{14}</Pagination.Item>
-
-// <Pagination.Ellipsis disabled />
-// <Pagination.Item>{20}</Pagination.Item>
-// <Pagination.Next />
-// <Pagination.Last />
-// </Pagination>

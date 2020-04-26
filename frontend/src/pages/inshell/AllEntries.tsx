@@ -8,8 +8,6 @@ import { useApiDataLoader, useRefreshOnFocus } from '../../utils/react';
 import { millisecondsToDays, Entry } from '../../utils/entry';
 import PaginationComponent from '../../components/Pagination';
 import EntryEditorModalComponent from '../../components/EntryEditor';
-import { MyUserContext } from '../../utils/user';
-import { AccessControl } from 'shared/authorization/AccessControl';
 
 export default function AllEntriesPage() 
 {

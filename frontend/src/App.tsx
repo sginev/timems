@@ -29,7 +29,6 @@ import AboutPage from './pages/inshell/About';
 import api from './services/api';
 import hooks from './utils/hooks'
 import authenticationService from './services/auth'
-import ErrorBodyComponent from './components/ErrorBody';
 import { MyUserContext, User } from './utils/user';
 import { AccessControl } from 'shared/authorization/AccessControl';
 
@@ -63,7 +62,6 @@ function AppRoutesWrapper() {
 
 function AppMemberContent() {
   const [ myUser, setMyUserData ] = useState<User|null>( null );
-  const [ error, setError ] = useState<Error|null>( null );
   const { addToast } = useToasts();
   const history = useHistory();
   const location = useLocation();
@@ -96,9 +94,6 @@ function AppMemberContent() {
       }
     } )()
   }, [] );
-
-  if ( error ) 
-    return <ErrorBodyComponent error={ error }/>;
 
   return (
     <>

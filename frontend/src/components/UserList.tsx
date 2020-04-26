@@ -1,8 +1,6 @@
 import React from 'react'
 
-import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
-import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown';
 import UserRoleStyling, { AllRoles } from '../styling/UserRoles'
@@ -20,16 +18,16 @@ export default function UserListComponent( props:{ list:User[], onChange:()=>voi
   )
 }
 
-type ColorVariant = "primary" | "warning" | "danger" | "secondary" | "dark" | "success" | "info" | "light" | undefined
+// type ColorVariant = "primary" | "warning" | "danger" | "secondary" | "dark" | "success" | "info" | "light" | undefined
 
-const UserListItemEmptyComponent = () => (
-  <div className={`user-list-item`}>
-    <div className={"username"}> &#8203; </div>
-    <div className="text"> &#8203; </div>
-    <div className="button button-role"> &#8203; </div>
-    <div className="button button-delete"> &#8203; </div>
-  </div>
-)
+// const UserListItemEmptyComponent = () => (
+//   <div className={`user-list-item`}>
+//     <div className={"username"}> &#8203; </div>
+//     <div className="text"> &#8203; </div>
+//     <div className="button button-role"> &#8203; </div>
+//     <div className="button button-delete"> &#8203; </div>
+//   </div>
+// )
 
 const UserListItemComponent:React.FC<{user:User,onChange:()=>void}> = ({ user, onChange }) => {
   const myUser = React.useContext( MyUserContext ) as User;
@@ -72,13 +70,12 @@ const UserListItemComponent:React.FC<{user:User,onChange:()=>void}> = ({ user, o
   const roleProps = UserRoleStyling.get( role )
 
   const renderRoleDropdown = () => {
-    if ( role == -1 )
+    if ( role === -1 )
       return <Button id="dropdown-basic-button" variant='link' disabled>Please wait...</Button>
     return (
       <DropdownButton block
           disabled={ ! canChangeRole }
           title={ roleProps.label }
-          // variant={ roleProps.color }
           id="dropdown-basic-button" >
         { 
           Object.entries( AllRoles )

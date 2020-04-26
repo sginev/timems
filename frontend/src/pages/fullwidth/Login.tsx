@@ -1,5 +1,4 @@
 import React, { useState } from "react"
-import logo from './logo.svg';
 import { useHistory, useLocation } from "react-router-dom";
 import { useToasts } from 'react-toast-notifications'
 import validation from 'shared/validation/Validator'
@@ -65,7 +64,6 @@ export default function LoginPage() {
 
   return (
     <>
-      {/* <p> <img src={logo} className="App-logo" alt="logo" /> </p> */}
       <AtomSpinner />
       
       <br/>
