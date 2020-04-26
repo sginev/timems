@@ -21,9 +21,9 @@ type Response = ResponseWithCaller & { locals: { user?:IUser } }
 //// Routes
 
 routes.get( '/', async (req, res:Response, next) => {
+  assertValidated( validation.api.user.list.validate( req.query ) );
   assertAccess( res.locals.access.read.any.user );
-  const options = req.query;
-  res.locals.data = await data.users.getPaginated( options );
+  res.locals.data = await data.users.getPaginated( req.query );
   next();
 } );
 
@@ -38,52 +38,49 @@ routes.get( '/:id', async (req, res:Response, next) => {
 } );
 
 routes.put('/', async (req, res:Response, next) => {
-  assertAccess( res.locals.access.create.any.user );
   assertValidated( validation.api.user.create.validate( req.body ) );
+  assertAccess( res.locals.access.create.any.user );
   const { username, password, role } = req.body;
   assert( res.locals.caller.role >= role, 
     "You cannot create users with higher permission level than your own.", 403 );
   const user = await data.users.add( username, password, role || UserRole.Member );
-  res.locals.data = { user }
+  res.locals.data = { user };
   next();
 });
 
 routes.post('/:id', async (req, res:Response, next) => {
-  const user = res.locals.user as IUser;
-  assertFound( user, 'User' );
   assertValidated( validation.api.user.update.validate( req.body ) );
+  assertFound( res.locals.user, 'User' );
   const updates = {
     username : req.body.username,
     password : req.body.password,
     role : req.body.role,
     preferredWorkingHoursPerDay: req.body.preferredWorkingHoursPerDay,
-  }
-  assertAccess( user!.id == res.locals.caller.id ?
+  };
+  assertAccess( res.locals.user!.id == res.locals.caller.id ?
                 res.locals.access.update.own.user :
                 res.locals.access.update.any.user );
-
-  assert( res.locals.caller.role >= user.role,
+  assert( res.locals.caller.role >= res.locals.user!.role,
     `You cannot edit users with higher permission level than your own`, 403 );
   assert( !updates.role || res.locals.caller.role >= updates.role,
     "You cannot set users to a higher permission level than your own.", 403 );
-  assert( !updates.role || user.id !== res.locals.caller.id,
+  assert( !updates.role || res.locals.user!.id !== res.locals.caller.id,
     "You cannot change your own role.", 403 );
-  const updatedUser = await data.users.update( user.id, updates );
+  const updatedUser = await data.users.update( req.params.id, updates );
   res.locals.data = { user : updatedUser };
   next();
 });
 
 routes.delete('/:id', async (req, res:Response, next) => {
-  const user = res.locals.user as IUser;
-  assertFound( user, 'User' )
-  assertAccess( user!.id == res.locals.caller.id ?
+  assertFound( res.locals.user, 'User' );
+  assertAccess( res.locals.user!.id == res.locals.caller.id ?
                 res.locals.access.delete.own.user :
                 res.locals.access.delete.any.user );
-  assert( user.role !== UserRole.Admin || user.id !== res.locals.caller.id,
+  assert( res.locals.user!.role !== UserRole.Admin || res.locals.user!.id !== res.locals.caller.id,
     "You cannot delete your own account if you are an Administrator.", 403 );
-  assert( res.locals.caller.role >= user.role,
+  assert( res.locals.caller.role >= res.locals.user!.role,
     `You cannot delete users with higher permission level than your own`, 403 );
-  await data.users.delete( user.id );
+  await data.users.delete( req.params.id );
   res.locals.data = {};
   next();
 });
