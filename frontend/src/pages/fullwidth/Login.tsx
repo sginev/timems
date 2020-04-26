@@ -1,10 +1,9 @@
-import React, { useState } from "react"
+import React, { useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
-import { useToasts } from 'react-toast-notifications'
-import validation from 'shared/validation/Validator'
+import { useToasts } from 'react-toast-notifications';
+import validation from 'shared/validation/Validator';
 
-import authenticationService from '../../services/auth'
-
+import api from '../../services/api';
 import AtomSpinner from '../../styling/Atom'
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
@@ -44,8 +43,7 @@ export default function LoginPage() {
         validation.form.auth.login.validate({ username, password });
       if ( error )
         throw error;
-      const authenticate = newUser ? authenticationService.register : authenticationService.login;
-      await authenticate( values.username, values.password );
+      await ( newUser ? api.register : api.login )( values.username, values.password );
       setValues(defaultValues);
       history.push("/");
     } catch ( e ) {
@@ -54,7 +52,7 @@ export default function LoginPage() {
   }
 
   function onChangeValues( newValues ) {
-    setValues({ ...values, ...newValues })
+    setValues({ ...values, ...newValues });
   }
 
   function switchMode() {

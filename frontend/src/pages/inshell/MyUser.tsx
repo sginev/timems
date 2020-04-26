@@ -4,7 +4,6 @@ import { useToasts } from 'react-toast-notifications';
 
 import api from "../../services/api"
 import hooks from '../../utils/hooks'
-import authenticationService from '../../services/auth'
 import { MyUserContext, User } from '../../utils/user';
 
 import Form from 'react-bootstrap/Form';
@@ -18,7 +17,7 @@ function LogoutButton() {
   let history = useHistory();
   return (
     <p className="link" 
-      onClick={() => authenticationService.logout().then( () => history.push("/login") ) }>
+      onClick={() => api.logout().then( () => history.push("/login") ) }>
       Log out of your account
     </p>
   )

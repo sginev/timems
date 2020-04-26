@@ -28,7 +28,6 @@ import AboutPage from './pages/inshell/About';
 
 import api from './services/api';
 import hooks from './utils/hooks'
-import authenticationService from './services/auth'
 import { MyUserContext, User } from './utils/user';
 import { AccessControl } from 'shared/authorization/AccessControl';
 
@@ -46,7 +45,7 @@ function App() {
 
 function AppRoutesWrapper() {
   const location = useLocation();
-  const loggedIn = authenticationService.isLoggedIn();
+  const loggedIn = api.isLoggedIn;
   if( ! loggedIn ) {
     return (
       <div className={ "page-content " + location.pathname.substr(1) }>
@@ -89,7 +88,7 @@ function AppMemberContent() {
       } catch ( error ) {
         console.error( error );
         addToast( error.message, { appearance: 'error' } );
-        await authenticationService.logout();
+        await api.logout();
         history.push("/login");
       }
     } )()
