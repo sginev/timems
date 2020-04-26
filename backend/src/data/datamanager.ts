@@ -167,26 +167,38 @@ const days = {
     to && ( match.day.$lte = +to );
 
     limit = limit || DEFAULT_LIMIT
-    page = page || 1
+    page = +( page || 1 )
 
     const aggregations:any[] = [
-      { $match: match },
-      { $group: { 
-        _id: "$day",
-        day: { $first: "$day" },
-        totalDuration: { $sum: "$duration" },
-        notes: { $push: "$notes" },
-        entriesCount: { $sum: 1 },
-      } },
-      { $unset: ["_id"] },
-      { $sort : { day : -1 } },
-      { $limit: page * limit },
-      { $skip: ( page - 1 ) * limit },
+      { $facet: {
+        "days": [
+          { $match: match },
+          { $group: { 
+            _id: "$day",
+            day: { $first: "$day" },
+            totalDuration: { $sum: "$duration" },
+            notes: { $push: "$notes" },
+            entriesCount: { $sum: 1 },
+          } },
+          { $unset: ["_id"] },
+          { $sort : { day : -1 } },
+          { $limit: page * limit },
+          { $skip: ( page - 1 ) * limit },
+        ],
+        pagination: [
+          { $count: "count" },
+        ]
+      }}
     ]
 
-    const days = await Entry.aggregate( aggregations );
+    const [ { days, pagination : [ { count } ] } ] = await Entry.aggregate( aggregations );
 
-    return { days };
+    return { 
+      days,
+      totalDays: count,
+      totalPages: ~~( count / limit ) + 1,
+      page
+    };
   },
 }
 
