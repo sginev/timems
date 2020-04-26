@@ -5,14 +5,16 @@ import { authenticateUser, validateToken } from '../util/auth';
 
 import data from '../datamanager';
 import { AccessControl } from 'shared/authorization/AccessControl';
+import Validator from 'shared/validation/Validator';
+import { assertValidated } from '../util/assertions';
 
 type Handler = ( req:Express.Request, res:Express.Response, next:Express.NextFunction ) => void;
 
 export const handleRouteAuth:Handler = async (req, res, next) => 
 {
+  assertValidated( Validator.Auth.validate( req.body ) );
+  
   const { username, password } = req.body;
-  if ( ! username ) throw new ApiError( "No username given" )
-  if ( ! password ) throw new ApiError( "No password given" )
 
   switch( req.path )
   {

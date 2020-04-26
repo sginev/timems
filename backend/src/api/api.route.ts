@@ -3,7 +3,7 @@ import express from 'express';
 import users from './users.route';
 import entries from './entries.route';
 import ApiError from '../types/ApiError';
-import { handleRouteAuth, processAccessToken, handleRouteGetAuthenticatedUserData } from './auth.route';
+import { handleRouteAuth, processAccessToken, handleRouteGetAuthenticatedUserData } from './auth';
 
 const routes = express.Router();
 

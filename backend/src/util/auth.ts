@@ -1,7 +1,6 @@
 import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
 
-import { UserRole } from "shared/interfaces/UserRole";
 import { IUser } from '../models/User';
 import ApiError from '../types/ApiError';
 
