@@ -21,7 +21,7 @@ export default function AllEntriesPage()
   const [ { data, loading, error }, load ] = useApiDataLoader( path, defaultData, { limit } );
 
   data.page = data.page || 1;
-  data.totalPages = data.totalPages || 1;
+  data.totalPages = data.entries.length && ( data.totalPages || 1 );
 
   const onFilterChange = ( state:FilterState ) => {
     setFilterState( state );

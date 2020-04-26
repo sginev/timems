@@ -17,7 +17,7 @@ export default function AllUsers()
   const [ { data, loading }, load ] = useApiDataLoader( path, defaultData, { limit } );
 
   data.page = data.page || 1;
-  data.totalPages = data.totalPages || 1;
+  data.totalPages = data.users.length && ( data.totalPages || 1 );
 
   const reloadData = ( page = data.page ) => {
     load( { page, limit }, data );

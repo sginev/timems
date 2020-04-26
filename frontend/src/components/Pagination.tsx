@@ -40,6 +40,9 @@ const decideButtonNumbers = ( currentPage:number, lastPage:number, maxButtonsCou
 
 const PaginationComponent:React.FC<PaginationProperties> = 
 ({ currentPage, lastPage, onAction }) => {
+  if ( lastPage === 0 )
+    return <></>
+
   const buttons:(number|'...')[] = decideButtonNumbers( currentPage, lastPage, 11 );
   const onItemClick = pg => onAction( pg )
 

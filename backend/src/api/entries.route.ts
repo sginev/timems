@@ -20,7 +20,7 @@ type Response = ResponseWithCaller & { locals: { entry?:IEntry } };
 //// Routes
 
 routes.get( '/', async (req, res:Response, next) => {
-  assertValidated( validation.api.user.list.validate( req.query ) );
+  assertValidated( validation.api.entry.list.validate( req.query ) );
   assertAccess( req.query.userId == res.locals.caller.id ?
                 res.locals.access.read.own.entry :
                 res.locals.access.read.any.entry );
