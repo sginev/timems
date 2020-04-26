@@ -51,8 +51,9 @@ function AppRoutesWrapper() {
     return (
       <div className={ "page-content " + location.pathname.substr(1) }>
         <Switch>
-          <Route exact path="/login" component={ LoginPage } />
-          <Route exact path="/register" component={ RegisterPage } />
+          {/* <Route exact path="/login" component={ LoginPage } />
+          <Route exact path="/register" component={ RegisterPage } /> */}
+          <Route exact path="/(login|register)" component={ LoginPage } />
           <Redirect to="/login"/>
         </Switch>
       </div>
