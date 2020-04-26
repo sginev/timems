@@ -4,9 +4,19 @@ import { UserRole } from '../interfaces/UserRole';
 const roles = [ UserRole.Admin, UserRole.UserManager, UserRole.Member, UserRole.Locked ]
 
 class Validator {
-  public static readonly UserModel = Joi.object({
+  public static readonly Auth = Joi.object({
     username: Joi.string().alphanum().min(4).max(40).required(),
     password: Joi.string().min(4).max(80).required(),
+  })
+  public static readonly AuthFormLogin = Validator.Auth;
+  public static readonly AuthFormRegister = Validator.Auth.keys({
+    passwordConfirmation: Joi.any().valid(Joi.ref('password')).required()
+      //@ts-ignore
+      .error( () => new Joi.ValidationError('Passwords must match'))
+  })
+
+  public static readonly UserModel = Joi.object({
+    username: Joi.string().alphanum().min(4).max(40).required(),
     role: Joi.number().integer().valid( ...roles ).required(),
     preferredWorkingHoursPerDay: Joi.number().min(0).max(24),
   })
@@ -34,10 +44,11 @@ class Validator {
   constructor ( private readonly onValidationFailure?:( error:Joi.ValidationError ) => void ) {}
 
   public readonly validate = <T>( joi:Joi.ObjectSchema<T>, target:T ) => {
-    const { error } = joi.validate( target );
+    const { error, value } = joi.validate( target );
     if ( error && this.onValidationFailure ) {
       this.onValidationFailure( error )
     }
+    return { error, value }
   } 
 }
 

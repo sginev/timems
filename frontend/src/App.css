@@ -199,9 +199,6 @@ code {
 .page-content-body > * {
   animation: fade-in 250ms;
 }
-.page-content-header > * {
-  animation: fade-in 500ms;
-}
 
 
 .progress-line, .progress-line:before {

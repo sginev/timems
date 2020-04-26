@@ -2,6 +2,7 @@ import React, { useState } from "react"
 import logo from './logo.svg';
 import { useHistory, useLocation } from "react-router-dom";
 import { useToasts } from 'react-toast-notifications'
+import Validator from 'shared/validation/Validator'
 
 import authenticationService from '../../services/auth'
 
@@ -37,6 +38,12 @@ export default function LoginPage() {
   const handleSubmit = async e => {
     e.preventDefault()
     try {
+      const { username, password, passwordConfirmation } = values
+      const { error } = newUser ? 
+        Validator.AuthFormRegister.validate({ username, password, passwordConfirmation }) : 
+        Validator.AuthFormLogin.validate({ username, password });
+      if ( error )
+        throw error;
       const authenticate = newUser ? authenticationService.register : authenticationService.login;
       await authenticate( values.username, values.password );
       setValues(defaultValues);
@@ -52,6 +59,7 @@ export default function LoginPage() {
 
   function switchMode() {
     history.push( conf.modeSwitchPath );
+    setValues({ ...values, password: '', passwordConfirmation: '' })
   }
 
   return (
@@ -63,40 +71,37 @@ export default function LoginPage() {
           <Form.Group controlId="formBasicUsername">
             <Form.Label>Username</Form.Label>
             <Form.Control 
-              required 
               type="text" 
+              value={ values.username }
               onChange={ e => onChangeValues({ username : e.target.value }) }
               placeholder="Enter username" />
           </Form.Group>
           { ! newUser ? (
             <>
-              {/* The key makes sure the field resets if you switch to registration mode. */}
-              <Form.Group controlId="formLoginPassword" key='loginPass'> 
+              <Form.Group controlId="formLoginPassword"> 
                 <Form.Label>Password</Form.Label>
                 <Form.Control 
-                  // required 
                   type="password" 
+                  value={ values.password }
                   onChange={ e => onChangeValues({ password : e.target.value }) }
                   placeholder="Password" />
               </Form.Group>
             </>
           ) : (
             <>
-              {/* The key makes sure the field resets if you switch to login mode. */}
-              <Form.Group controlId="formRegistrationPassword" key='registerPass'>
+              <Form.Group controlId="formRegistrationPassword">
                 <Form.Label>Password</Form.Label>
                 <Form.Control 
-                  // required 
                   type="password" 
+                  value={ values.password }
                   onChange={ e => onChangeValues({ password : e.target.value }) }
                   placeholder="Password" />
               </Form.Group>
               <Form.Group controlId="formRegistrationPasswordConfirmation">
                 <Form.Label>Confirm password</Form.Label>
                 <Form.Control 
-                  required 
                   type="password" 
-                  isValid={ values.passwordConfirmation === values.password }
+                  value={ values.passwordConfirmation }
                   onChange={ e => onChangeValues({ passwordConfirmation : e.target.value }) }
                   placeholder="Confirm password" />
               </Form.Group>
