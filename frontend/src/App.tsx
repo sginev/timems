@@ -12,7 +12,7 @@ import { ToastProvider, useToasts } from 'react-toast-notifications';
 import { FaClock, FaUserFriends, FaRegClock, FaUserCircle } from "react-icons/fa";
 
 import './App.css';
-import './styles/superhero/bootstrap.min.css';
+import './themes/superhero/bootstrap.min.css';
 
 import MyEntriesPage from './pages/inshell/MyEntries'
 import AllEntriesPage from './pages/inshell/AllEntries'
