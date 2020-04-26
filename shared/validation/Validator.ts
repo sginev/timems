@@ -7,7 +7,7 @@ const roles = [ UserRole.Admin, UserRole.UserManager, UserRole.Member, UserRole.
 
 const common = {
   user : {
-    username: Joi.string().regex( /^[a-zA-Z0-9-_]+$/ ).min(4).max(40),
+    username: Joi.string().regex( /^[a-zA-Z0-9-_\.]+$/ ).min(4).max(40),
     password: Joi.string().min(4).max(80),
     role: Joi.number().integer().valid( ...roles ),
     preferredWorkingHoursPerDay: Joi.number().min(0).max(24),
