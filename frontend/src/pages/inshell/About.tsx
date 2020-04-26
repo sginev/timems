@@ -8,37 +8,39 @@ import { APP_NAME } from '../../Configuration'
 export default function AboutPage() {
   const myUser = React.useContext( MyUserContext ) as User;
   const history = useHistory();
+
+  const renderLockedContent = () => (
+    <>
+      <h2>Your account has been <b>locked</b>!</h2>
+      <br/>
+      <p>
+        Please contact an administrator or a user manager if you think this is a mistake.
+      </p>
+    </>
+  );
+
+  const renderRegularContent = () => (
+    <>
+      <br/>
+      <h1>{ APP_NAME }</h1>
+      <h2>Toptal Test Project</h2>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <p className="App-link" onClick={ () => history.push("/my-entries") } >
+        Click here to view your entries.
+      </p>
+    </>
+  );
+
   return (
     <>
       <PageContentHeaderComponent title='' />
       <PageContentBodyComponent className="center-content">
-        <br/>
-        <h1>{ APP_NAME }</h1>
-        <h2>Toptal Test Project</h2>
-        <br/>
-        <br/>
-        { myUser.role > 0 ? (
-          <>
-            <h4></h4>
-            <br/>
-            <br/>
-            <br/>
-            <br/>
-            <p className="App-link" onClick={ () => history.push("/my-entries") } >
-              Click here to view your entries.
-            </p>
-          </>
-        ) : (
-          <>
-            <h3>Your account has been <b>locked</b>!</h3>
-            <br/>
-            <br/>
-            <br/>
-            <p>
-              Please contact an administrator or a user manager if you think this is a mistake.
-            </p>
-          </>
-        ) }
+        { ( myUser.role > 0 ? renderRegularContent : renderLockedContent )() }
       </PageContentBodyComponent>
     </>
   )
