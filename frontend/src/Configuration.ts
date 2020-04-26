@@ -9,6 +9,8 @@ export const API_HOST = process.env.REACT_APP_API_URL || ( window.location.origi
 
 export const LOCAL_STORAGE_KEY_ACCESS_TOKEN = "26EsxJNwrrAJz"
 
+export const APP_NAME = "TimeMS"
+
 export const PAGE_SIZE_OWN_ENTRIES = 15
 export const PAGE_SIZE_ALL_ENTRIES = 15
 export const PAGE_SIZE_ALL_USERS = 15

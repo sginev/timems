@@ -28,6 +28,7 @@ import AboutPage from './pages/inshell/About';
 
 import api from './services/api';
 import hooks from './utils/hooks'
+import { APP_NAME } from './Configuration'
 import { MyUserContext, User } from './utils/user';
 import { AccessControl } from 'shared/authorization/AccessControl';
 
@@ -97,7 +98,7 @@ function AppMemberContent() {
   return (
     <>
       <div className="navigation-bar">
-        <NavLink className="home" exact to="/"><button> TOPTAL </button></NavLink>
+        <NavLink className="home" exact to="/"><button> { APP_NAME } </button></NavLink>
         { canViewPage( "my-entries" ) && 
           <NavLink activeClassName="active" exact to="/my-entries"><button><FaRegClock/></button></NavLink> }
         { canViewPage( "all-entries" ) && 

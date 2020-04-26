@@ -3,22 +3,23 @@ import { useHistory } from "react-router-dom";
 import PageContentHeaderComponent from '../../components/PageContentHeader';
 import PageContentBodyComponent from '../../components/PageContentBody';
 import { MyUserContext, User } from '../../utils/user';
+import { APP_NAME } from '../../Configuration'
 
 export default function AboutPage() {
   const myUser = React.useContext( MyUserContext ) as User;
   const history = useHistory();
   return (
     <>
-      <PageContentHeaderComponent title="" />
+      <PageContentHeaderComponent title='' />
       <PageContentBodyComponent className="center-content">
         <br/>
-        <h1>TOPTAL</h1>
-        <h2>Time Management Test Project</h2>
+        <h1>{ APP_NAME }</h1>
+        <h2>Toptal Test Project</h2>
         <br/>
         <br/>
         { myUser.role > 0 ? (
           <>
-            <h4>Welcome, <b>{ myUser.username }</b>!</h4>
+            <h4></h4>
             <br/>
             <br/>
             <br/>
