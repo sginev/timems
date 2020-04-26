@@ -4,7 +4,7 @@ import PageContentHeaderComponent from '../../components/PageContentHeader';
 import PageContentBodyComponent from '../../components/PageContentBody';
 import EntryListComponent from '../../components/EntryList'
 import EntryFilterComponent, { FilterState } from '../../components/EntryFilter';
-import { useApiDataLoader } from '../../utils/react';
+import { useApiDataLoader, useRefreshOnFocus } from '../../utils/react';
 import { millisecondsToDays, Entry } from '../../services/entry';
 import PaginationComponent from '../../components/Pagination';
 import EntryEditorModalComponent from '../../components/EntryEditor';
@@ -17,7 +17,7 @@ export default function AllEntriesPage()
   const limit = 10
   const path = `/entries`;
   const defaultData = { entries : new Array<Entry>(), totalPages : 1, page : 1 };
-  const [ { data, loading }, load ] = useApiDataLoader( path, defaultData, { limit } );
+  const [ { data, loading, error }, load ] = useApiDataLoader( path, defaultData, { limit } );
 
   data.page = data.page || 1;
   data.totalPages = data.totalPages || 1;
@@ -45,6 +45,8 @@ export default function AllEntriesPage()
   const list = data.entries
   const showUsername = true
   const colorize = false
+
+  useRefreshOnFocus( error ? undefined : reloadData );
 
   return (
     <div>

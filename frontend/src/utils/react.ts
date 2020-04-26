@@ -3,7 +3,8 @@ import { useToasts } from 'react-toast-notifications';
 
 import api from '../services/api'
 
-export function useApiDataLoader<T>( apiPath:string, defaultValue:T, params?:any ) {
+export function useApiDataLoader<T>( apiPath:string, defaultValue:T, params?:any ) 
+{
   type State = { error?:Error, loading:boolean, data:T };
   
   const [ state, setState ] = useState<State>({ data:defaultValue, loading:true });
@@ -24,4 +25,21 @@ export function useApiDataLoader<T>( apiPath:string, defaultValue:T, params?:any
   useEffect( () => { load( params ) }, [] )
 
   return [ state, load ] as [ State, (params?: any, fallbackValue?: T) => Promise<void> ];
+}
+
+export function useRefreshOnFocus( refreshFunction?:()=>any, sleep:number=2000 ) 
+{
+  const renderTime = new Date().getTime();
+  const isStale = () => new Date().getTime() - renderTime > sleep;
+
+  const onFocus = () => {
+    isStale() && refreshFunction!();
+  };
+
+  useEffect(() => {
+    if ( ! refreshFunction )
+      return;
+    window.addEventListener('focus', onFocus);
+    return () => window.removeEventListener('focus', onFocus);
+  });
 }

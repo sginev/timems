@@ -8,7 +8,7 @@ import PageContentHeaderComponent from '../../components/PageContentHeader';
 import PageContentBodyComponent from '../../components/PageContentBody';
 import EntryListComponent from '../../components/EntryList'
 import EntryFilterComponent, { FilterState } from '../../components/EntryFilter';
-import { useApiDataLoader } from '../../utils/react';
+import { useApiDataLoader, useRefreshOnFocus } from '../../utils/react';
 import { millisecondsToDays, Entry } from '../../services/entry';
 import { MyUserContext, User } from '../../services/user';
 import PaginationComponent from '../../components/Pagination';
@@ -23,7 +23,7 @@ export default function MyEntriesPage()
   const limit = 10
   const path = `/entries`;
   const defaultData = { entries : new Array<Entry>(), totalPages : 1, page : 1 };
-  const [ { data, loading }, load ] = useApiDataLoader( path, defaultData, { userId: myUser.id, limit } );
+  const [ { data, loading, error }, load ] = useApiDataLoader( path, defaultData, { userId: myUser.id, limit } );
 
   data.page = data.page || 1;
   data.totalPages = data.totalPages || 1;
@@ -52,30 +52,7 @@ export default function MyEntriesPage()
   const showUsername = false
   const colorize = true
 
-  const renderTime = new Date().getTime();
-  const isStale = () => new Date().getTime() - renderTime > 2000;
-
-  // User has switched back to the tab
-  const onFocus = () => {
-    console.log('Tab is in focus');
-    isStale() && reloadData();
-  };
-
-  // User has switched away from the tab (AKA tab is hidden)
-  const onBlur = () => {
-    console.log('Tab is blurred');
-  };
-
-  React.useEffect(() => {
-    window.addEventListener('focus', onFocus);
-    window.addEventListener('blur', onBlur);
-    // Specify how to clean up after this effect:
-    return () => {
-      window.removeEventListener('focus', onFocus);
-      window.removeEventListener('blur', onBlur);
-    };
-  });
-
+  useRefreshOnFocus( error ? undefined : reloadData );
 
   return (
     <div>
