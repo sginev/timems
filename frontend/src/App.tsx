@@ -26,20 +26,16 @@ import api from './services/api';
 import hooks from './services/hooks'
 import authenticationService from './services/auth'
 import ErrorBodyComponent from './components/ErrorBody';
-import { MyUserContext, User, AccessControlContext } from './services/user';
-
-import AccessController from 'shared/authorization/AccessController';
-const access = new AccessController();
+import { MyUserContext, User } from './services/user';
+import { AccessControl } from 'shared/authorization/AccessControl';
 
 function App() {
   return (
     <div className="App">
       <ToastProvider autoDismiss placement="top-center">
-        <AccessControlContext.Provider value={ access }>
-          <Router>
-            <AppRoutesWrapper />
-          </Router>
-        </AccessControlContext.Provider>
+        <Router>
+          <AppRoutesWrapper />
+        </Router>
       </ToastProvider>
     </div>
   );
@@ -72,11 +68,12 @@ function AppMemberContent() {
   function canViewPage( page:"my-entries"|"all-entries"|"all-users"|"my-user" ) {
     if ( !myUser )
       return false;
+    const access = new AccessControl( myUser );
     switch ( page ) {
-      case "my-user":     return access.canViewOwnUser( myUser );
-      case "my-entries":  return access.canViewOwnEntries( myUser );
-      case "all-users":   return access.canViewAllUsers( myUser );
-      case "all-entries": return access.canViewAllEntries( myUser );
+      case "my-user":     return access.read.own.user;
+      case "my-entries":  return access.read.own.entry;
+      case "all-users":   return access.read.any.user;
+      case "all-entries": return access.read.any.entry;
       default: return false
     }
   }

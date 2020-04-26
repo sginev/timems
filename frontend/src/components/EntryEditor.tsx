@@ -12,6 +12,7 @@ import { MyUserContext, User } from '../services/user';
 import { Entry, millisecondsToDays, daysToMilliseconds } from '../services/entry';
 
 import api from "../services/api"
+import { AccessControl } from 'shared/authorization/AccessControl';
 
 type EntryEditorProps = { state:EntryEditorState, changeState:React.Dispatch<EntryEditorState>, refresh:Function }
 type EntryEditorState = { show:boolean, entry?:Entry }
@@ -33,6 +34,14 @@ const EntryEditorModalComponent =
 {
   const myUser = React.useContext( MyUserContext ) as User;
   const [ fields, setFields ] = useState( entry ? makeFieldValues( entry ) : fieldsInitialValues )
+  
+  const access = new AccessControl( myUser );
+  // const canEdit = myUser.id === entry.userId ?
+  //                 access.update.own.entry :
+  //                 access.update.any.entry;
+  const canDelete = myUser.id === entry?.userId ?
+                    access.delete.own.entry :
+                    access.delete.any.entry;
 
   const onSubmit = e => {
     e.preventDefault();
@@ -119,7 +128,7 @@ const EntryEditorModalComponent =
         </Modal.Body>
         
         <Modal.Footer>
-          { entry &&
+          { entry && canDelete && 
             <Button className="mr-auto" variant="secondary" onClick={ deleteEntry }>
               Delete
             </Button>

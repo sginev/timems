@@ -4,24 +4,30 @@ import { FaTimesCircle as IconDelete, FaPen as IconEdit } from 'react-icons/fa';
 import { Entry, daysToMilliseconds } from '../services/entry';
 import dateformat from 'dateformat'
 import { MyUserContext } from '../services/user';
+import { AccessControl } from 'shared/authorization/AccessControl';
 
-type SharedProps = { showUsername:boolean, colorize:boolean, onClickEdit?:((entry:Entry)=>void) };
-type ItemProps = { entry:Entry } & SharedProps;
+type SharedProps = { showUsername:boolean, colorize:boolean, onClickEdit:(entry:Entry)=>void };
+type ItemProps = { entry?:Entry } & SharedProps;
 type ListProps = { list:Entry[], size:number } & SharedProps;
 
 const EntryListItemComponent = ({ entry, showUsername, colorize, onClickEdit }:ItemProps) => {
   const myUser = React.useContext( MyUserContext )!;
   const color = ( !colorize || !entry || !myUser.preferredWorkingHoursPerDay ) ? '' :
-    entry._dailyTotalDuration! < myUser.preferredWorkingHoursPerDay ? 'prefUnmet' : 'prefMet';
-
-  const renderEditButtons = () => (
-    <div className="buttons">
-      <div className="edit" onClick={ () => onClickEdit!( entry ) }> <IconEdit/> </div>
-      {/* <div className="delete"> <IconDelete/> </div> */}
-    </div>
-  )
+  entry._dailyTotalDuration! < myUser.preferredWorkingHoursPerDay ? 'prefUnmet' : 'prefMet';
+  
+  const access = new AccessControl( myUser );
+  const canEdit = myUser.id === entry?.userId ?
+                  access.update.own.entry :
+                  access.update.any.entry;
   
   if ( entry ) {
+    const renderEditButtons = () => (
+      <div className="buttons">
+        <div className="edit" onClick={ () => onClickEdit!( entry! ) }> <IconEdit/> </div>
+        {/* <div className="delete"> <IconDelete/> </div> */}
+      </div>
+    )
+    
     const date = dateformat( new Date( daysToMilliseconds( entry.day ) ), `yyyy.mm.dd` )
     const duration = entry.duration < 1 ? 
                      ~~( entry.duration * 60 ) + 'min' : 
@@ -34,7 +40,7 @@ const EntryListItemComponent = ({ entry, showUsername, colorize, onClickEdit }:I
         <div className="duration"> { duration } </div>
         <div className="notes"> { description }</div>
         {/* <div className=""> ({ entry._dailyTotalDuration })</div> */}
-        { onClickEdit && renderEditButtons() }
+        { canEdit && !!onClickEdit && renderEditButtons() }
       </div>
     )
   } else {
