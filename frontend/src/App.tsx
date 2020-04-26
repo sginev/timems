@@ -27,6 +27,7 @@ import hooks from './services/hooks'
 import authenticationService from './services/auth'
 import ErrorBodyComponent from './components/ErrorBody';
 import { MyUserContext, User } from './services/user';
+import { UserRole } from 'shared/interfaces/UserRole';
 
 window["hooks"] = hooks
 window["auth"] = authenticationService
@@ -70,9 +71,9 @@ function AppMemberContent() {
   function canViewPage( page:"my-entries"|"all-entries"|"all-users"|"my-user" ) {
     const myrole = myUser?.role || 0
     switch ( page ) {
-      case "my-entries": return myrole >= 1
-      case "all-users": return myrole >= 5
-      case "all-entries": return myrole >= 9
+      case "my-entries": return myrole >= UserRole.Member
+      case "all-users": return myrole >= UserRole.UserManager
+      case "all-entries": return myrole >= UserRole.Admin
       case "my-user": return !! myUser
       default: return false
     }
