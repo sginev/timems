@@ -6,14 +6,14 @@ import dateformat from 'dateformat'
 import { MyUserContext } from '../utils/user';
 import { AccessControl } from 'shared/authorization/AccessControl';
 
-type SharedProps = { showUsername:boolean, colorize:boolean, onClickEdit:(entry:Entry)=>void };
+type SharedProps = { showUsername:boolean, minDailyHours?:number, onClickEdit:(entry:Entry)=>void };
 type ItemProps = { entry?:Entry } & SharedProps;
 type ListProps = { list:Entry[], size:number } & SharedProps;
 
-const EntryListItemComponent = ({ entry, showUsername, colorize, onClickEdit }:ItemProps) => {
+const EntryListItemComponent = ({ entry, showUsername, minDailyHours, onClickEdit }:ItemProps) => {
   const myUser = React.useContext( MyUserContext )!;
-  const color = ( !colorize || !entry || !myUser.preferredWorkingHoursPerDay ) ? '' :
-  entry._dailyTotalDuration! < myUser.preferredWorkingHoursPerDay ? 'prefUnmet' : 'prefMet';
+  const color = ( !minDailyHours || !entry ) ? '' : 
+                entry._dailyTotalDuration! < minDailyHours ? 'prefUnmet' : 'prefMet';
   
   const access = new AccessControl( myUser );
   const canEdit = myUser.id === entry?.userId ?
@@ -54,7 +54,7 @@ const EntryListItemComponent = ({ entry, showUsername, colorize, onClickEdit }:I
   }
 }
 
-const EntryListComponent = ({ list, size, showUsername, colorize, onClickEdit }:ListProps) => {
+const EntryListComponent = ({ list, size, showUsername, minDailyHours, onClickEdit }:ListProps) => {
   const items = new Array( size ).fill( 0 ).map( (_,i) => list[i] || undefined )
   return (
     <div className="entry-list">
@@ -65,7 +65,7 @@ const EntryListComponent = ({ list, size, showUsername, colorize, onClickEdit }:
         <div className="notes"> Notes </div>
       </div>
       { items.map( ( entry, i ) => <EntryListItemComponent 
-        { ...{ key:i, entry, showUsername, colorize, onClickEdit } } /> ) }
+        { ...{ key:i, entry, showUsername, minDailyHours, onClickEdit } } /> ) }
     </div>
   )
 }
