@@ -1,73 +1,84 @@
 import express from 'express';
 
 import data from '../datamanager';
-import ApiError from '../types/ApiError';
-import { checkPermissions } from '../util/auth';
-import { UserRole } from "shared/interfaces/UserRole";
+import ResponseWithCaller from '../types/ResponseWithCaller'
 import { IUser } from '../models/User';
+import { UserRole } from "shared/interfaces/UserRole";
+import { assertAccess, assertFound, assert } from '../util/assertions';
 
 const routes = express.Router();
+
+//// Middleware
 
 routes.param( 'id', async (_, res, next, id) => {
   res.locals.user = ( await data.users.getById( id ) )?.toJSON();
   next()
 } );
 
-routes.get( '/', async (_, res, next) => {
-  const minimumRole = UserRole.UserManager;
-  await checkPermissions( res.locals.caller, { minimumRole } );
-  const users = await data.users.getAll()
+type Response = ResponseWithCaller & { locals: { user?:IUser } }
+
+//// Routes
+
+routes.get( '/', async (_, res:Response, next) => {
+  assertAccess( res.locals.access.read.any.user );
+  const users = await data.users.getAll();
   res.locals.data = { users };
   next();
 } );
 
-routes.get( '/:id', async (req, res, next) => {
+routes.get( '/:id', async (req, res:Response, next) => {
   const user = res.locals.user;
-  if ( !user ) 
-    throw new ApiError( `User not found.`, 404 );
-  const userId = user.id;  
-  const minimumRole = UserRole.UserManager;
-  await checkPermissions( res.locals.caller, { minimumRole, userId } );
+  assertFound( user, 'User' );
+  assertAccess( user!.id === res.locals.caller.id ?
+                res.locals.access.read.own.user :
+                res.locals.access.read.any.user );
   res.locals.data = { user }
   next();
 } );
 
-routes.put('/', async (req, res, next) => {
+routes.put('/', async (req, res:Response, next) => {
+  assertAccess( res.locals.access.create.any.user );
   const { username, password, role } = req.body;
-  const minimumRole = UserRole.UserManager;
-  await checkPermissions( res.locals.caller, { minimumRole } );
-  if ( res.locals.caller.role < role )
-    throw new ApiError( "You cannot create users with higher permission level than your own." );
+  assert( res.locals.caller.role >= role, 
+    "You cannot create users with higher permission level than your own.", 403 );
   const user = await data.users.add( username, password, role || UserRole.Member );
   res.locals.data = { user }
   next();
 });
 
-routes.post('/:id', async (req, res, next) => {
-  const user = res.locals.user as IUser
-  if ( !user ) 
-    throw new ApiError( `User not found.`, 404 );
+routes.post('/:id', async (req, res:Response, next) => {
+  const user = res.locals.user as IUser;
+  assertFound( user, 'User' );
   const updates = {
     username : req.body.username,
     password : req.body.password,
     role : req.body.role,
     preferredWorkingHoursPerDay: req.body.preferredWorkingHoursPerDay,
   }
-  const minimumRole = Math.max( UserRole.UserManager, user.role ) as UserRole;
-  await checkPermissions( res.locals.caller, { minimumRole, userId : user.id } );
-  if ( updates.role && res.locals.caller.role < updates.role )
-    throw new ApiError( "You cannot set users to a higher permission level than your own." );
+  assertAccess( user!.id === res.locals.caller.id ?
+                res.locals.access.update.own.user :
+                res.locals.access.update.any.user );
+  assert( res.locals.caller.role >= user.role,
+    `You cannot edit users with higher permission level than your own`, 403 );
+  assert( !updates.role || res.locals.caller.role < updates.role,
+    "You cannot set users to a higher permission level than your own.", 403 );
+  assert( !updates.role || user.id === res.locals.caller.id,
+    "You cannot change your own role.", 403 );
   const updatedUser = await data.users.update( user.id, updates );
   res.locals.data = { user : updatedUser };
   next();
 });
 
-routes.delete('/:id', async (req, res, next) => {
-  const user = res.locals.user as IUser
-  if ( !user ) 
-    throw new ApiError( `User not found.`, 404 );
-  const minimumRole = Math.max( UserRole.UserManager, user.role ) as UserRole;
-  await checkPermissions( res.locals.caller, { minimumRole, userId : user.id } );
+routes.delete('/:id', async (req, res:Response, next) => {
+  const user = res.locals.user as IUser;
+  assertFound( user, 'User' )
+  assertAccess( user!.id === res.locals.caller.id ?
+                res.locals.access.delete.own.user :
+                res.locals.access.delete.any.user );
+  assert( user.id !== res.locals.caller.id,
+    "You cannot delete your own account if you are an Administrator.", 403 );
+  assert( res.locals.caller.role >= user.role,
+    `You cannot delete users with higher permission level than your own`, 403 );
   await data.users.delete( user.id );
   res.locals.data = {};
   next();

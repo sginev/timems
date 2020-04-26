@@ -33,14 +33,4 @@ export function validateToken( authorizationHeader?:string )
     throw new ApiError( "Wrong authentication type", 401 );
   const data = jwt.verify( authenticationToken, JWT_SECRET );
   return data as JWTData
-}; 
-
-//// throws error if ALL check options fail
-export async function checkPermissions( user:IUser, options:{ minimumRole?:UserRole, userId?:string } )
-{
-  if ( options.userId && user.id === options.userId ) 
-    return
-  if ( options.minimumRole && user.role >= options.minimumRole ) 
-    return
-  throw new ApiError( "Access denied.", 403 );
-}
+};

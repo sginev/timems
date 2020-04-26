@@ -171,6 +171,7 @@ const entries = {
     if ( updatedEntry && updatedEntry.day !== entry.day )
       await this.updateDailyTotals( entry.userId, updatedEntry.day );
     await this.updateDailyTotals( entry.userId, entry.day );
+    return await this.getById( id );
   },
 
   delete: async function ( id:string ) 

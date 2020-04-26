@@ -4,6 +4,7 @@ import { UserRole } from 'shared/interfaces/UserRole';
 import { authenticateUser, validateToken } from '../util/auth';
 
 import data from '../datamanager';
+import { AccessControl } from 'shared/authorization/AccessControl';
 
 type Handler = ( req:Express.Request, res:Express.Response, next:Express.NextFunction ) => void;
 
@@ -43,6 +44,7 @@ export const processAccessToken:Handler = async (req, res, next) =>
     if ( ! user ) 
       throw new ApiError( "Your user does not exist. Please login again with a valid user.", 401 );
     res.locals.caller = user;
+    res.locals.access = new AccessControl( user );
   }
 
   next();
