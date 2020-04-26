@@ -20,4 +20,49 @@ export default class AccessController {
 
   public canEditOwnEntries = ( user:UserLike ) => !! user
   public canEditAllEntries = ( user:UserLike ) => user.role >= UserRole.Admin
+
+  public can( user:UserLike ) {
+    return {
+      create: {
+        own: {
+          user: () => true,
+          entry: () => !! user,
+        },
+        any: {
+          user: () => user.role >= UserRole.UserManager,
+          entry: () => user.role >= UserRole.Admin,
+        },
+      },
+      read: {
+        own: {
+          user: () => !! user,
+          entry: () => user.role >= UserRole.Member,
+        },
+        any: {
+          user: () => user.role >= UserRole.UserManager,
+          entry: () => user.role >= UserRole.Admin,
+        },
+      },
+      update: {
+        own: {
+          user: () => !! user,
+          entry: () => user.role >= UserRole.Member,
+        },
+        any: {
+          user: () => user.role >= UserRole.UserManager,
+          entry: () => user.role >= UserRole.Admin,
+        },
+      },
+      delete: {
+        own: {
+          user: () => !! user,
+          entry: () => user.role >= UserRole.Member,
+        },
+        any: {
+          user: () => user.role >= UserRole.UserManager,
+          entry: () => user.role >= UserRole.Admin,
+        },
+      },
+    }
+  }
 }
