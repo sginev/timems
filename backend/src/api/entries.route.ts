@@ -3,8 +3,8 @@ import express from 'express';
 import data from '../datamanager';
 import ResponseWithCaller from '../types/ResponseWithCaller'
 import { IEntry } from '../models/Entry';
-import { UserRole } from 'shared/interfaces/UserRole';
 import { assertAccess, assertFound, assert } from '../util/assertions';
+import Validator from 'shared/validation/Validator';
 
 const routes = express.Router();
 

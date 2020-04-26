@@ -5,6 +5,7 @@ import ResponseWithCaller from '../types/ResponseWithCaller'
 import { IUser } from '../models/User';
 import { UserRole } from "shared/interfaces/UserRole";
 import { assertAccess, assertFound, assert } from '../util/assertions';
+import Validator from 'shared/validation/Validator';
 
 const routes = express.Router();
 
@@ -58,11 +59,13 @@ routes.post('/:id', async (req, res:Response, next) => {
   assertAccess( user!.id === res.locals.caller.id ?
                 res.locals.access.update.own.user :
                 res.locals.access.update.any.user );
+
+  console.log( res.locals.caller.role , 'vs' , user.role )
   assert( res.locals.caller.role >= user.role,
     `You cannot edit users with higher permission level than your own`, 403 );
-  assert( !updates.role || res.locals.caller.role < updates.role,
+  assert( !updates.role || res.locals.caller.role >= updates.role,
     "You cannot set users to a higher permission level than your own.", 403 );
-  assert( !updates.role || user.id === res.locals.caller.id,
+  assert( !updates.role || user.id !== res.locals.caller.id,
     "You cannot change your own role.", 403 );
   const updatedUser = await data.users.update( user.id, updates );
   res.locals.data = { user : updatedUser };
@@ -75,7 +78,7 @@ routes.delete('/:id', async (req, res:Response, next) => {
   assertAccess( user!.id === res.locals.caller.id ?
                 res.locals.access.delete.own.user :
                 res.locals.access.delete.any.user );
-  assert( user.id !== res.locals.caller.id,
+  assert( user.role !== UserRole.Admin || user.id !== res.locals.caller.id,
     "You cannot delete your own account if you are an Administrator.", 403 );
   assert( res.locals.caller.role >= user.role,
     `You cannot delete users with higher permission level than your own`, 403 );
