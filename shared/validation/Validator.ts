@@ -1,4 +1,4 @@
-import Joi from '@hapi/joi';
+import * as Joi from '@hapi/joi';
 import { UserRole } from '../interfaces/UserRole';
 
 const MAX_PAGE_SIZE = 500
@@ -85,8 +85,7 @@ const validation = {
         username : common.user.username.required(),
         password : common.user.password.required(),
         passwordConfirmation: Joi.any().valid(Joi.ref('password')).required()
-                              //@ts-ignore
-                              .error( () => new Joi.ValidationError('Passwords must match'))
+                              .error( () => new ValidationError('Passwords must match'))
       }),
     }
   },
@@ -107,5 +106,7 @@ const validation = {
     },
   },
 }
+
+class ValidationError extends Error {}
 
 export default validation;
