@@ -188,7 +188,7 @@ const days = {
         pagination: [
           { $count: "totalDays" },
         ]
-      }}
+      } }
     ]
 
     const [ { days, pagination } ] = await Entry.aggregate( aggregations );

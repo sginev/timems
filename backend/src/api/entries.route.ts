@@ -52,7 +52,7 @@ routes.put('/', async (req, res:Response, next) => {
 routes.post('/:id', async (req, res:Response, next) => {
   assertValidated( validation.api.entry.update.validate( req.body ) )
   assertFound( res.locals.entry, `Entry` );
-  assertAccess( req.params.id == res.locals.caller.id ?
+  assertAccess( res.locals.entry!.userId == res.locals.caller.id ?
                 res.locals.access.update.own.entry :
                 res.locals.access.update.any.entry );
   const entry = await data.entries.update( req.params.id, req.body ) as IEntry;
@@ -62,7 +62,7 @@ routes.post('/:id', async (req, res:Response, next) => {
 
 routes.delete('/:id', async (req, res:Response, next) => {
   assertFound( res.locals.entry, `Entry` );
-  assertAccess( res.locals.entry!.userId === res.locals.caller.id ?
+  assertAccess( res.locals.entry!.userId == res.locals.caller.id ?
                 res.locals.access.delete.own.entry :
                 res.locals.access.delete.any.entry );
   await data.entries.delete( req.params.id );
