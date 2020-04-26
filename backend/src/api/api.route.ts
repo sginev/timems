@@ -2,6 +2,7 @@ import express from 'express';
 
 import users from './users.route';
 import entries from './entries.route';
+import days from './days.route';
 import ApiError from './types/ApiError';
 import { handleRouteAuth, processAccessToken, handleRouteGetAuthenticatedUserData } from './auth.handlers';
 
@@ -26,6 +27,10 @@ routes.use( "/users", users );
 //// CRUD work entry documents
 
 routes.use( "/entries", entries );
+
+//// READ work entries combined into days
+
+routes.use( "/days", days );
 
 //// 404
 

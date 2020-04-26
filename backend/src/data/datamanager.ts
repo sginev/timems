@@ -155,4 +155,26 @@ const entries = {
   },
 }
 
-export default { users, entries }
+const days = {
+  getAll: async function ( userId?:string ) {
+    const aggregations:any[] = [
+      { $group: { 
+        _id: "$day",
+        day: { $first: "$day" },
+        totalDuration: { $sum: "$duration" },
+        notes: { $push: "$notes" },
+        entriesCount: { $sum: 1 },
+      } },
+      { $unset: ["_id"] }
+    ]
+    
+    if ( userId )
+      aggregations.splice( 0, 0, { $match: { userId : Mongoose.Types.ObjectId( userId ) } } );
+
+    const days = await Entry.aggregate( aggregations );
+
+    return { days };
+  },
+}
+
+export default { users, entries, days }
