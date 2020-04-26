@@ -10,6 +10,7 @@ import { assertValidated, assert, assertFound } from '../api/util/assertions';
 type UserUpdates = { username?:string, password?:string, role?:UserRole, preferredWorkingHoursPerDay?:number }
 type EntryUpdates = { day:number, duration:number, notes:string }
 type EntryFilterOptions = { userId?:string, from?:number, to?:number, limit?:number, page?:number }
+type DayFilterOptions = EntryFilterOptions
 
 const users = {
   getAll: async function () {
@@ -156,8 +157,20 @@ const entries = {
 }
 
 const days = {
-  getAll: async function ( userId?:string ) {
+  getPaginated: async function ( { userId, from, to, limit, page }:DayFilterOptions ) {
+    const DEFAULT_LIMIT = 10;
+
+    const match:any = { }
+    userId && ( match.userId = Mongoose.Types.ObjectId( userId ) );
+    ( from || to ) && ( match.day = {} )
+    from && ( match.day.$gte = +from );
+    to && ( match.day.$lte = +to );
+
+    limit = limit || DEFAULT_LIMIT
+    page = page || 1
+
     const aggregations:any[] = [
+      { $match: match },
       { $group: { 
         _id: "$day",
         day: { $first: "$day" },
@@ -165,11 +178,11 @@ const days = {
         notes: { $push: "$notes" },
         entriesCount: { $sum: 1 },
       } },
-      { $unset: ["_id"] }
+      { $unset: ["_id"] },
+      { $sort : { day : -1 } },
+      { $limit: page * limit },
+      { $skip: ( page - 1 ) * limit },
     ]
-    
-    if ( userId )
-      aggregations.splice( 0, 0, { $match: { userId : Mongoose.Types.ObjectId( userId ) } } );
 
     const days = await Entry.aggregate( aggregations );
 

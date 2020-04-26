@@ -66,6 +66,13 @@ const validation = {
         duration: common.entry.duration,
         notes: common.entry.notes,
       }),
+    },
+    day : {
+      list : common.paginate.append({
+        userId : common.entry.userId,
+        from : Joi.number().integer().min(0),
+        to : Joi.number().integer().min(0),
+      }),
     }
   },
   form : {

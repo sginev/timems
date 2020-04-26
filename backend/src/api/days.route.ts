@@ -13,11 +13,11 @@ type Response = ResponseWithCaller & { locals: { user?:IUser } };
 //// Routes
 
 routes.get( '/', async (req, res:Response, next) => {
-  assertValidated( validation.api.entry.list.validate( req.query ) );
+  assertValidated( validation.api.day.list.validate( req.query ) );
   assertAccess( req.query.userId == res.locals.caller.id ?
                 res.locals.access.read.own.entry :
                 res.locals.access.read.any.entry );
-  res.locals.data = await data.days.getAll( req.query.userId as string );
+  res.locals.data = await data.days.getPaginated( req.query );
   next();
 } );
 
