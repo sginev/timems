@@ -2,14 +2,14 @@
   "name": "timetracker-backend",
   "version": "0.1.0",
   "description": "Toptal Screening Test Project (server)",
+  "author": "Stefan G",
+  "private": true,
   "main": "src/index.ts",
   "scripts": {
     "start": "ts-node src/index.ts",
     "dev": "nodemon -e .ts -x \"clear && ts-node src/server.ts\"",
     "seed": "npx ts-node dev/seed.ts"
   },
-  "author": "Stefan G",
-  "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",

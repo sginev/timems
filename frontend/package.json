@@ -1,7 +1,8 @@
 {
-  "name": "timetracker-client",
+  "name": "timetracker-frontend",
   "version": "0.8.1",
   "description": "Toptal Screening Test Project (client)",
+  "author": "Stefan G",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
