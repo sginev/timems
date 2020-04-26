@@ -24,17 +24,6 @@ export default function UserListComponent( props:{ list:User[], onChange:()=>voi
   )
 }
 
-// type ColorVariant = "primary" | "warning" | "danger" | "secondary" | "dark" | "success" | "info" | "light" | undefined
-
-// const UserListItemEmptyComponent = () => (
-//   <div className={`user-list-item`}>
-//     <div className={"username"}> &#8203; </div>
-//     <div className="text"> &#8203; </div>
-//     <div className="button button-role"> &#8203; </div>
-//     <div className="button button-delete"> &#8203; </div>
-//   </div>
-// )
-
 const UserListItemComponent:React.FC<{user:User,onChange:()=>void}> = ({ user, onChange }) => {
   const myUser = React.useContext( MyUserContext ) as User;
   const [ role, setRole ] = React.useState( user.role ); 
