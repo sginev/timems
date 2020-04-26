@@ -26,19 +26,20 @@ import api from './services/api';
 import hooks from './services/hooks'
 import authenticationService from './services/auth'
 import ErrorBodyComponent from './components/ErrorBody';
-import { MyUserContext, User } from './services/user';
-import { UserRole } from 'shared/interfaces/UserRole';
-import AccessController from 'shared/authorization/AccessController';
+import { MyUserContext, User, AccessControlContext } from './services/user';
 
+import AccessController from 'shared/authorization/AccessController';
 const access = new AccessController();
 
 function App() {
   return (
     <div className="App">
       <ToastProvider autoDismiss placement="top-center">
-        <Router>
-          <AppRoutesWrapper />
-        </Router>
+        <AccessControlContext.Provider value={ access }>
+          <Router>
+            <AppRoutesWrapper />
+          </Router>
+        </AccessControlContext.Provider>
       </ToastProvider>
     </div>
   );

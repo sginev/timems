@@ -5,7 +5,7 @@ import { Entry, daysToMilliseconds } from '../services/entry';
 import dateformat from 'dateformat'
 import { MyUserContext } from '../services/user';
 
-type SharedProps = { showUsername:boolean, colorize:boolean, onClickEdit:(entry:Entry)=>void };
+type SharedProps = { showUsername:boolean, colorize:boolean, onClickEdit?:((entry:Entry)=>void) };
 type ItemProps = { entry:Entry } & SharedProps;
 type ListProps = { list:Entry[], size:number } & SharedProps;
 
@@ -16,7 +16,7 @@ const EntryListItemComponent = ({ entry, showUsername, colorize, onClickEdit }:I
 
   const renderEditButtons = () => (
     <div className="buttons">
-      <div className="edit" onClick={ () => onClickEdit( entry ) }> <IconEdit/> </div>
+      <div className="edit" onClick={ () => onClickEdit!( entry ) }> <IconEdit/> </div>
       {/* <div className="delete"> <IconDelete/> </div> */}
     </div>
   )

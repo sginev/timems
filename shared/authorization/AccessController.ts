@@ -17,4 +17,7 @@ export default class AccessController {
   public canViewOwnEntries = ( user:UserLike ) => user.role >= UserRole.Member
   public canViewAllUsers = ( user:UserLike ) => user.role >= UserRole.UserManager
   public canViewAllEntries = ( user:UserLike ) => user.role >= UserRole.Admin
+
+  public canEditOwnEntries = ( user:UserLike ) => !! user
+  public canEditAllEntries = ( user:UserLike ) => user.role >= UserRole.Admin
 }

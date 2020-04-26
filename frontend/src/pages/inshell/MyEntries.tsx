@@ -10,16 +10,17 @@ import EntryListComponent from '../../components/EntryList'
 import EntryFilterComponent, { FilterState } from '../../components/EntryFilter';
 import { useApiDataLoader, useRefreshOnFocus } from '../../utils/react';
 import { millisecondsToDays, Entry } from '../../services/entry';
-import { MyUserContext, User } from '../../services/user';
+import { MyUserContext, User, AccessControlContext } from '../../services/user';
 import PaginationComponent from '../../components/Pagination';
 import EntryEditorModalComponent from '../../components/EntryEditor';
 
 export default function MyEntriesPage() 
 {
-  const myUser = React.useContext( MyUserContext ) as User;
+  const myUser = React.useContext( MyUserContext )!;
+  const access = React.useContext( AccessControlContext );
   const defaultFilterState = { startDate : null, endDate : null };
   const [ filterState, setFilterState ] = useState<FilterState>( defaultFilterState );
-  const canEdit = true;
+  const canEdit = access.canEditOwnEntries( myUser );
   const limit = 10
   const path = `/entries`;
   const defaultData = { entries : new Array<Entry>(), totalPages : 1, page : 1 };
@@ -44,7 +45,7 @@ export default function MyEntriesPage()
   }
 
   const [editorModalState, setEditorModalState] = useState<any>({});
-  const onClickEdit = canEdit && ( ( entry:Entry ) => {
+  const onClickEdit = ! canEdit ? undefined : ( ( entry:Entry ) => {
     setEditorModalState({ show:true, entry })
   } )
 

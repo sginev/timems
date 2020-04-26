@@ -8,12 +8,15 @@ import { useApiDataLoader, useRefreshOnFocus } from '../../utils/react';
 import { millisecondsToDays, Entry } from '../../services/entry';
 import PaginationComponent from '../../components/Pagination';
 import EntryEditorModalComponent from '../../components/EntryEditor';
+import { AccessControlContext, MyUserContext } from '../../services/user';
 
 export default function AllEntriesPage() 
 {
+  const myUser = React.useContext( MyUserContext )!;
   const defaultFilterState = { startDate : null, endDate : null };
+  const access = React.useContext( AccessControlContext );
   const [ filterState, setFilterState ] = useState<FilterState>( defaultFilterState );
-  const canEdit = true;
+  const canEdit = access.canEditAllEntries( myUser );
   const limit = 10
   const path = `/entries`;
   const defaultData = { entries : new Array<Entry>(), totalPages : 1, page : 1 };
@@ -38,7 +41,7 @@ export default function AllEntriesPage()
   }
 
   const [editorModalState, setEditorModalState] = useState<any>({});
-  const onClickEdit = canEdit && ( ( entry:Entry ) => {
+  const onClickEdit = ! canEdit ? undefined : ( ( entry:Entry ) => {
     setEditorModalState({ show:true, entry })
   } )
 
