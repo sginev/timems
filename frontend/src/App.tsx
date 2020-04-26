@@ -11,8 +11,12 @@ import {
 import { ToastProvider, useToasts } from 'react-toast-notifications';
 import { FaClock, FaUserFriends, FaRegClock, FaUserCircle } from "react-icons/fa";
 
-import './App.css';
-import './themes/superhero/bootstrap.min.css';
+import './styles/themes/superhero/bootstrap.min.css';
+import './styles/App.css';
+import './styles/NavigationBar.css';
+import './styles/Page.css';
+import './styles/EntryList.css';
+import './styles/UserList.css';
 
 import MyEntriesPage from './pages/inshell/MyEntries'
 import AllEntriesPage from './pages/inshell/AllEntries'

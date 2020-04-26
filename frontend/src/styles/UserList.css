@@ -1,0 +1,58 @@
+.user-list {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.user-list-item {
+  width: 100%;
+  margin-bottom: 4px;
+  background-color: #ffffff11;
+  line-height: 100%;
+  display: flex;
+  flex-direction: row;
+  font-size: 20px;
+  cursor: default;
+  transition: opacity 100ms, background-color 100ms;
+}
+
+.user-list-item > div {
+  line-height: 50px;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.user-list-item .username {
+  background-color: #FFF1;
+  flex: 0 1 250px;
+  padding: 0 20px;
+}
+
+.user-list-item .text {
+  flex: 1 1 0px;
+  font-size: 16px;
+  padding: 0 20px;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.user-list-item .button button {
+  height: 100%;
+}
+
+.user-list-item .button-role .dropdown-toggle {
+  background: none;
+  border: none;
+}
+
+.user-list-item .button-delete button {
+  border: none;
+}
+
+button:focus {
+  box-shadow: none;
+  outline: none;
+}

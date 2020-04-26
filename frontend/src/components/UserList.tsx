@@ -20,6 +20,8 @@ export default function UserListComponent( props:{ list:User[], onChange:()=>voi
   )
 }
 
+type ColorVariant = "primary" | "warning" | "danger" | "secondary" | "dark" | "success" | "info" | "light" | undefined
+
 const UserListItemComponent:React.FC<{user:User,onChange:()=>void}> = ({ user, onChange }) => {
   const myUser = React.useContext( MyUserContext ) as User;
   const [ role, setRole ] = React.useState( user.role ); 
@@ -49,7 +51,7 @@ const UserListItemComponent:React.FC<{user:User,onChange:()=>void}> = ({ user, o
 
   const renderDeleteButton = () => {
     return (
-      <Button 
+      <Button block
         id="user-delete" 
         variant='outline-danger' 
         disabled={ ! canChangeRole }
@@ -58,16 +60,16 @@ const UserListItemComponent:React.FC<{user:User,onChange:()=>void}> = ({ user, o
       </Button>
     )
   }
+  const roleProps = UserRoleStyling.get( role )
 
   const renderRoleDropdown = () => {
     if ( role == -1 )
       return <Button id="dropdown-basic-button" variant='link' disabled>Please wait...</Button>
-    const props = UserRoleStyling.get( role )
     return (
-      <DropdownButton
+      <DropdownButton block
           disabled={ ! canChangeRole }
-          title={ props.label }
-          variant={ props.color }
+          title={ roleProps.label }
+          // variant={ roleProps.color }
           id="dropdown-basic-button" >
         { 
           Object.entries( AllRoles )
@@ -81,17 +83,13 @@ const UserListItemComponent:React.FC<{user:User,onChange:()=>void}> = ({ user, o
       </DropdownButton>
     )
   }
+
   return (
-    <Card style={{ width: '18rem' }} className="user-list-item">
-      {/* <Card.Img variant="top" src={ img } /> */}
-      <Card.Body>
-        <Card.Title>{ user.username }</Card.Title>
-        <Card.Text> { TEXT } </Card.Text>
-        <ButtonGroup className="mr-2" size="sm">
-          { renderRoleDropdown() }
-          { renderDeleteButton() }
-        </ButtonGroup>
-      </Card.Body>
-    </Card>
+    <div className={`user-list-item`}>
+      <div className={"username " + roleProps.color}> { user.username }</div>
+      <div className="text"> { TEXT }</div>
+      <div className="button button-role"> { renderRoleDropdown() }</div>
+      <div className="button button-delete"> { renderDeleteButton() }</div>
+    </div>
   )
 }
