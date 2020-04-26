@@ -12,9 +12,11 @@ type UserUpdates = { username?:string, password?:string, role?:UserRole, preferr
 type EntryUpdates = { day:number, duration:number, notes:string }
 type EntryFilterOptions = { userId?:string, from?:number, to?:number, limit?:number, page?:number }
 
-const { validate } = new Validator( error => {
-  throw new ApiError( error.toString(), 403, "ValidationError" );
-} )
+const validate = ( joi:any, target:any ) => {
+  const { error } = joi.validate( target );
+  if ( error )
+    throw error;
+}
 
 const users = {
   getAll: async function () 

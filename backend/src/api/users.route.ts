@@ -4,7 +4,7 @@ import data from '../datamanager';
 import ResponseWithCaller from '../types/ResponseWithCaller'
 import { IUser } from '../models/User';
 import { UserRole } from "shared/interfaces/UserRole";
-import { assertAccess, assertFound, assert } from '../util/assertions';
+import { assertAccess, assertFound, assert, assertValidated } from '../util/assertions';
 import Validator from 'shared/validation/Validator';
 
 const routes = express.Router();
@@ -39,6 +39,7 @@ routes.get( '/:id', async (req, res:Response, next) => {
 
 routes.put('/', async (req, res:Response, next) => {
   assertAccess( res.locals.access.create.any.user );
+  assertValidated( Validator.ApiUserCreate.validate( req.body ) );
   const { username, password, role } = req.body;
   assert( res.locals.caller.role >= role, 
     "You cannot create users with higher permission level than your own.", 403 );
@@ -50,6 +51,7 @@ routes.put('/', async (req, res:Response, next) => {
 routes.post('/:id', async (req, res:Response, next) => {
   const user = res.locals.user as IUser;
   assertFound( user, 'User' );
+  assertValidated( Validator.ApiUserUpdate.validate( req.body ) );
   const updates = {
     username : req.body.username,
     password : req.body.password,
