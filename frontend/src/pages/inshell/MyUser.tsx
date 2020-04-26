@@ -19,7 +19,7 @@ function LogoutButton() {
   return (
     <p className="link" 
       onClick={() => authenticationService.logout().then( () => history.push("/login") ) }>
-      Log out of this account
+      Log out of your account
     </p>
   )
 }
@@ -118,4 +118,5 @@ function MyUserPage() {
     </div>
   )
 }
+
 export default MyUserPage

@@ -28,9 +28,9 @@ import authenticationService from './services/auth'
 import ErrorBodyComponent from './components/ErrorBody';
 import { MyUserContext, User } from './services/user';
 import { UserRole } from 'shared/interfaces/UserRole';
+import AccessController from 'shared/authorization/AccessController';
 
-window["hooks"] = hooks
-window["auth"] = authenticationService
+const access = new AccessController();
 
 function App() {
   return (
@@ -69,12 +69,13 @@ function AppMemberContent() {
   hooks.setMyUserData = setMyUserData
 
   function canViewPage( page:"my-entries"|"all-entries"|"all-users"|"my-user" ) {
-    const myrole = myUser?.role || 0
+    if ( !myUser )
+      return false;
     switch ( page ) {
-      case "my-entries": return myrole >= UserRole.Member
-      case "all-users": return myrole >= UserRole.UserManager
-      case "all-entries": return myrole >= UserRole.Admin
-      case "my-user": return !! myUser
+      case "my-user":     return access.canViewOwnUser( myUser );
+      case "my-entries":  return access.canViewOwnEntries( myUser );
+      case "all-users":   return access.canViewAllUsers( myUser );
+      case "all-entries": return access.canViewAllEntries( myUser );
       default: return false
     }
   }
