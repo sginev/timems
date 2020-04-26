@@ -35,7 +35,8 @@ routes.put('/', async (req, res, next) => {
   const { userId, day, duration, notes } = req.body;
   const minimumRole = UserRole.Admin;
   await checkPermissions( res.locals.caller, { minimumRole, userId } );
-  res.locals.data = await data.entries.add( userId, day, duration, notes );
+  const entry = await data.entries.add( userId, day, duration, notes );
+  res.locals.data = { entry }
   next();
 });
 

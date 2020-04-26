@@ -15,7 +15,8 @@ routes.param( 'id', async (_, res, next, id) => {
 routes.get( '/', async (_, res, next) => {
   const minimumRole = UserRole.UserManager;
   await checkPermissions( res.locals.caller, { minimumRole } );
-  res.locals.data = { users : await data.users.getAll() };
+  const users = await data.users.getAll()
+  res.locals.data = { users };
   next();
 } );
 
@@ -37,7 +38,7 @@ routes.put('/', async (req, res, next) => {
   if ( res.locals.caller.role < role )
     throw new ApiError( "You cannot create users with higher permission level than your own." );
   const user = await data.users.add( username, password, role || UserRole.Member );
-  res.locals.data = user
+  res.locals.data = { user }
   next();
 });
 
