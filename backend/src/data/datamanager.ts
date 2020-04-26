@@ -5,7 +5,7 @@ import { UserRole } from 'shared/interfaces/UserRole';
 import User, { IUser } from "./models/User";
 import Entry, { IEntry } from "./models/Entry";
 import validation from 'shared/validation/Validator';
-import { assertValidated, assert, assertFound } from './util/assertions';
+import { assertValidated, assert, assertFound } from '../api/util/assertions';
 
 type UserUpdates = { username?:string, password?:string, role?:UserRole, preferredWorkingHoursPerDay?:number }
 type EntryUpdates = { day:number, duration:number, notes:string }

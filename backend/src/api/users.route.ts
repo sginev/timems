@@ -1,10 +1,10 @@
 import express from 'express';
 
-import data from '../datamanager';
-import ResponseWithCaller from '../types/ResponseWithCaller'
-import { IUser } from '../models/User';
+import data from '../data/datamanager';
+import ResponseWithCaller from './types/ResponseWithCaller'
+import { IUser } from '../data/models/User';
 import { UserRole } from "shared/interfaces/UserRole";
-import { assertAccess, assertFound, assert, assertValidated } from '../util/assertions';
+import { assertAccess, assertFound, assert, assertValidated } from './util/assertions';
 import validation from 'shared/validation/Validator';
 
 const routes = express.Router();

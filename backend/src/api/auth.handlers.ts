@@ -1,12 +1,12 @@
 import Express from 'express';
-import ApiError from '../types/ApiError';
+import ApiError from './types/ApiError';
 import { UserRole } from 'shared/interfaces/UserRole';
-import { authenticateUser, validateToken } from '../util/auth';
+import { authenticateUser, validateToken } from './util/authentication';
 
-import data from '../datamanager';
+import data from '../data/datamanager';
 import { AccessControl } from 'shared/authorization/AccessControl';
 import validation from 'shared/validation/Validator';
-import { assertValidated } from '../util/assertions';
+import { assertValidated } from './util/assertions';
 
 type Handler = ( req:Express.Request, res:Express.Response, next:Express.NextFunction ) => void;
 

@@ -3,10 +3,10 @@ import faker from 'faker'
 import dotenv from "dotenv";
 dotenv.config();
 
-import User from "../src/models/User"
-import Entry, { IEntry } from "../src/models/Entry"
-import { encryptPassword } from '../src/util/passwords';
-import data from '../src/datamanager';
+import User from "../data/models/User"
+import Entry, { IEntry } from "../data/models/Entry"
+import { encryptPassword } from '../data/util/passwords';
+import data from '../data/datamanager';
 
 import configuration from './seed.conifg'
 

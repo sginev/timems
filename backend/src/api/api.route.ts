@@ -2,8 +2,8 @@ import express from 'express';
 
 import users from './users.route';
 import entries from './entries.route';
-import ApiError from '../types/ApiError';
-import { handleRouteAuth, processAccessToken, handleRouteGetAuthenticatedUserData } from './auth';
+import ApiError from './types/ApiError';
+import { handleRouteAuth, processAccessToken, handleRouteGetAuthenticatedUserData } from './auth.handlers';
 
 const routes = express.Router();
 

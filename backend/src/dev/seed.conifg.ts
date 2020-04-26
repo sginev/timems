@@ -1,4 +1,4 @@
-import { UserRole } from "shared/UserRole";
+import { UserRole } from "shared/interfaces/UserRole";
 
 const common = {
   randomDay : '{{random.number({"min":18280,"max":18380})}}',
