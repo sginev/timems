@@ -17,5 +17,5 @@ export interface Day
   entriesCount : number
 }
 
-export const millisecondsToDays = ms => ~~( ms / ( 1000 * 60 * 60 * 24 ) ) + 1
+export const millisecondsToDays = ms => Math.ceil( ms / ( 1000 * 60 * 60 * 24 ) ) + 1
 export const daysToMilliseconds = days => ( days * 1000 * 60 * 60 * 24 )
