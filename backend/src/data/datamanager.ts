@@ -170,35 +170,34 @@ const days = {
     page = +( page || 1 )
 
     const aggregations:any[] = [
+      { $match: match },
+      { $group: { 
+        _id: "$day",
+        day: { $first: "$day" },
+        totalDuration: { $sum: "$duration" },
+        notes: { $push: "$notes" },
+        entriesCount: { $sum: 1 },
+      } },
+      { $unset: ["_id"] },
+      { $sort : { day : -1 } },
       { $facet: {
-        "days": [
-          { $match: match },
-          { $group: { 
-            _id: "$day",
-            day: { $first: "$day" },
-            totalDuration: { $sum: "$duration" },
-            notes: { $push: "$notes" },
-            entriesCount: { $sum: 1 },
-          } },
-          { $unset: ["_id"] },
-          { $sort : { day : -1 } },
+        days: [
           { $limit: page * limit },
           { $skip: ( page - 1 ) * limit },
         ],
         pagination: [
-          { $count: "count" },
+          { $count: "totalDays" },
         ]
       }}
     ]
 
-    const [ { days, pagination : [ { count } ] } ] = await Entry.aggregate( aggregations );
-
-    return { 
-      days,
-      totalDays: count,
-      totalPages: ~~( count / limit ) + 1,
-      page
-    };
+    const [ { days, pagination } ] = await Entry.aggregate( aggregations );
+    if ( days?.length )  {
+      const [ { totalDays } ] = pagination;
+      const totalPages = ~~( totalDays / limit ) + 1;
+      return { days, totalDays, totalPages, page };
+    }
+    return { days:[], totalDays:0, totalPages:0, page:1 };
   },
 }
 
