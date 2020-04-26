@@ -9,8 +9,8 @@ import PageContentBodyComponent from '../../components/PageContentBody';
 import EntryListComponent from '../../components/EntryList'
 import EntryFilterComponent, { FilterState } from '../../components/EntryFilter';
 import { useApiDataLoader, useRefreshOnFocus } from '../../utils/react';
-import { millisecondsToDays, Entry } from '../../services/entry';
-import { MyUserContext, User } from '../../services/user';
+import { millisecondsToDays, Entry } from '../../utils/entry';
+import { MyUserContext, User } from '../../utils/user';
 import PaginationComponent from '../../components/Pagination';
 import EntryEditorModalComponent from '../../components/EntryEditor';
 

@@ -8,7 +8,7 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import UserRoleStyling, { AllRoles } from '../styling/UserRoles'
 
 import { UserRole } from 'shared/interfaces/UserRole';
-import { User, MyUserContext } from '../services/user';
+import { User, MyUserContext } from '../utils/user';
 
 import api from "../services/api"
 

@@ -8,8 +8,8 @@ import parseDuration from 'parse-duration'
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-import { MyUserContext, User } from '../services/user';
-import { Entry, millisecondsToDays, daysToMilliseconds } from '../services/entry';
+import { MyUserContext, User } from '../utils/user';
+import { Entry, millisecondsToDays, daysToMilliseconds } from '../utils/entry';
 
 import api from "../services/api"
 import { AccessControl } from 'shared/authorization/AccessControl';

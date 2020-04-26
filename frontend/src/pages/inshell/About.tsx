@@ -2,7 +2,7 @@ import React from "react"
 import { useHistory } from "react-router-dom";
 import PageContentHeaderComponent from '../../components/PageContentHeader';
 import PageContentBodyComponent from '../../components/PageContentBody';
-import { MyUserContext, User } from '../../services/user';
+import { MyUserContext, User } from '../../utils/user';
 
 export default function AboutPage() {
   const myUser = React.useContext( MyUserContext ) as User;

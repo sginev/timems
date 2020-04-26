@@ -27,10 +27,10 @@ import PageNotFoundPage from './pages/fullwidth/404';
 import AboutPage from './pages/inshell/About';
 
 import api from './services/api';
-import hooks from './services/hooks'
+import hooks from './utils/hooks'
 import authenticationService from './services/auth'
 import ErrorBodyComponent from './components/ErrorBody';
-import { MyUserContext, User } from './services/user';
+import { MyUserContext, User } from './utils/user';
 import { AccessControl } from 'shared/authorization/AccessControl';
 
 function App() {

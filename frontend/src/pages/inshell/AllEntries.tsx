@@ -5,10 +5,10 @@ import PageContentBodyComponent from '../../components/PageContentBody';
 import EntryListComponent from '../../components/EntryList'
 import EntryFilterComponent, { FilterState } from '../../components/EntryFilter';
 import { useApiDataLoader, useRefreshOnFocus } from '../../utils/react';
-import { millisecondsToDays, Entry } from '../../services/entry';
+import { millisecondsToDays, Entry } from '../../utils/entry';
 import PaginationComponent from '../../components/Pagination';
 import EntryEditorModalComponent from '../../components/EntryEditor';
-import { MyUserContext } from '../../services/user';
+import { MyUserContext } from '../../utils/user';
 import { AccessControl } from 'shared/authorization/AccessControl';
 
 export default function AllEntriesPage() 

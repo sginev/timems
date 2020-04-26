@@ -3,9 +3,9 @@ import { useHistory } from "react-router-dom";
 import { useToasts } from 'react-toast-notifications';
 
 import api from "../../services/api"
-import hooks from '../../services/hooks'
+import hooks from '../../utils/hooks'
 import authenticationService from '../../services/auth'
-import { MyUserContext, User } from '../../services/user';
+import { MyUserContext, User } from '../../utils/user';
 
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';

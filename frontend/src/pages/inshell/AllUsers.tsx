@@ -6,7 +6,7 @@ import ErrorBodyComponent from '../../components/ErrorBody';
 import UserListComponent from '../../components/UserList';
 import { useApiDataLoader } from '../../utils/react';
 import PaginationComponent from '../../components/Pagination';
-import { User } from '../../services/user';
+import { User } from '../../utils/user';
 
 export default function AllUsers()
 {

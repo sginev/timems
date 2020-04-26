@@ -1,9 +1,9 @@
 import React from 'react'
 
 import { FaTimesCircle as IconDelete, FaPen as IconEdit } from 'react-icons/fa';
-import { Entry, daysToMilliseconds } from '../services/entry';
+import { Entry, daysToMilliseconds } from '../utils/entry';
 import dateformat from 'dateformat'
-import { MyUserContext } from '../services/user';
+import { MyUserContext } from '../utils/user';
 import { AccessControl } from 'shared/authorization/AccessControl';
 
 type SharedProps = { showUsername:boolean, colorize:boolean, onClickEdit:(entry:Entry)=>void };

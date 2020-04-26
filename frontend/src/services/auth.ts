@@ -1,5 +1,5 @@
 import api from './api'
-import hooks from './hooks'
+import hooks from '../utils/hooks'
 
 const KEY_ACCESS_TOKEN = "ACCESS_TOKEN";
 
