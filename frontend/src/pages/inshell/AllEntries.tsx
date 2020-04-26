@@ -1,13 +1,13 @@
 import React, { useState } from 'react'
 
-import PageContentHeaderComponent from '../../components/PageContentHeader';
-import PageContentBodyComponent from '../../components/PageContentBody';
-import EntryListComponent from '../../components/EntryList'
-import EntryFilterComponent, { FilterState } from '../../components/EntryFilter';
+import PageContentHeaderComponent from '../../components/core/PageContentHeader';
+import PageContentBodyComponent from '../../components/core/PageContentBody';
+import EntryListComponent from '../../components/lists/EntryList'
+import EntryFilterComponent, { FilterState } from '../../components/common/EntryFilter';
 import { useApiDataLoader, useRefreshOnFocus } from '../../utils/react';
 import { millisecondsToDays, Entry } from '../../utils/entry';
-import PaginationComponent from '../../components/Pagination';
-import EntryEditorModalComponent from '../../components/EntryEditor';
+import PaginationComponent from '../../components/common/Pagination';
+import EntryEditorModalComponent from '../../components/modals/EntryEditor';
 
 import { PAGE_SIZE_ALL_ENTRIES } from '../../Configuration';
 

@@ -8,16 +8,16 @@ import Button from 'react-bootstrap/Button';
 import Accordion from 'react-bootstrap/Accordion';
 import Container from 'react-bootstrap/Container';
 
-import PageContentHeaderComponent from '../../components/PageContentHeader';
-import PageContentBodyComponent from '../../components/PageContentBody';
-import EntryListComponent from '../../components/EntryList';
-import EntryFilterComponent, { FilterState } from '../../components/EntryFilter';
+import PageContentHeaderComponent from '../../components/core/PageContentHeader';
+import PageContentBodyComponent from '../../components/core/PageContentBody';
+import EntryListComponent from '../../components/lists/EntryList';
+import EntryFilterComponent, { FilterState } from '../../components/common/EntryFilter';
 import { useApiDataLoader, useRefreshOnFocus } from '../../utils/react';
 import { millisecondsToDays, Entry } from '../../utils/entry';
 import { MyUserContext } from '../../utils/user';
-import PaginationComponent from '../../components/Pagination';
-import EntryEditorModalComponent from '../../components/EntryEditor';
-import MinimumDailyHoursSliderComponent, { minimumDailyHoursToText } from '../../components/WorkHoursSlider';
+import PaginationComponent from '../../components/common/Pagination';
+import EntryEditorModalComponent from '../../components/modals/EntryEditor';
+import MinimumDailyHoursSliderComponent, { minimumDailyHoursToText } from '../../components/common/WorkHoursSlider';
 
 import { PAGE_SIZE_OWN_ENTRIES } from '../../Configuration';
 

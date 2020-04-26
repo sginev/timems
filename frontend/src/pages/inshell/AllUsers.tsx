@@ -1,10 +1,10 @@
 import React from 'react'
 
-import PageContentHeaderComponent from '../../components/PageContentHeader';
-import PageContentBodyComponent from '../../components/PageContentBody';
-import UserListComponent from '../../components/UserList';
+import PageContentHeaderComponent from '../../components/core/PageContentHeader';
+import PageContentBodyComponent from '../../components/core/PageContentBody';
+import UserListComponent from '../../components/lists/UserList';
 import { useApiDataLoader } from '../../utils/react';
-import PaginationComponent from '../../components/Pagination';
+import PaginationComponent from '../../components/common/Pagination';
 import { User } from '../../utils/user';
 
 import { PAGE_SIZE_ALL_USERS } from '../../Configuration'

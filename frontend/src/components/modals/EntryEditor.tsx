@@ -8,10 +8,10 @@ import parseDuration from 'parse-duration'
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-import { MyUserContext, User } from '../utils/user';
-import { Entry, millisecondsToDays, daysToMilliseconds } from '../utils/entry';
+import { MyUserContext, User } from '../../utils/user';
+import { Entry, millisecondsToDays, daysToMilliseconds } from '../../utils/entry';
 
-import api from "../services/api"
+import api from "../../services/api"
 import { AccessControl } from 'shared/authorization/AccessControl';
 
 type EntryEditorProps = { state:EntryEditorState, changeState:React.Dispatch<EntryEditorState>, refresh:Function }

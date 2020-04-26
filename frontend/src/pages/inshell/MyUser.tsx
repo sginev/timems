@@ -10,8 +10,8 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import UserRoleStyling from '../../styling/UserRoles'
 
-import PageContentHeaderComponent from '../../components/PageContentHeader';
-import PageContentBodyComponent from '../../components/PageContentBody';
+import PageContentHeaderComponent from '../../components/core/PageContentHeader';
+import PageContentBodyComponent from '../../components/core/PageContentBody';
 
 function LogoutButton() {
   let history = useHistory();

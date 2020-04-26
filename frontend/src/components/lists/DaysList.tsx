@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Day, daysToMilliseconds } from '../utils/entry';
+import { Day, daysToMilliseconds } from '../../utils/entry';
 import dateformat from 'dateformat'
 
 type SharedProps = { minDailyHours?:number };

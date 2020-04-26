@@ -1,7 +1,7 @@
 import React from "react"
 import { useHistory } from "react-router-dom";
-import PageContentHeaderComponent from '../../components/PageContentHeader';
-import PageContentBodyComponent from '../../components/PageContentBody';
+import PageContentHeaderComponent from '../../components/core/PageContentHeader';
+import PageContentBodyComponent from '../../components/core/PageContentBody';
 import { MyUserContext, User } from '../../utils/user';
 import { APP_NAME } from '../../Configuration'
 

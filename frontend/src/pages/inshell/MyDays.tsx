@@ -7,15 +7,15 @@ import hooks from "../../utils/hooks";
 import Accordion from 'react-bootstrap/Accordion';
 import Container from 'react-bootstrap/Container';
 
-import PageContentHeaderComponent from '../../components/PageContentHeader';
-import PageContentBodyComponent from '../../components/PageContentBody';
-import DayListComponent from '../../components/DaysList';
-import EntryFilterComponent, { FilterState } from '../../components/EntryFilter';
+import PageContentHeaderComponent from '../../components/core/PageContentHeader';
+import PageContentBodyComponent from '../../components/core/PageContentBody';
+import DayListComponent from '../../components/lists/DaysList';
+import EntryFilterComponent, { FilterState } from '../../components/common/EntryFilter';
 import { useApiDataLoader, useRefreshOnFocus } from '../../utils/react';
 import { millisecondsToDays, Day } from '../../utils/entry';
 import { MyUserContext } from '../../utils/user';
-import PaginationComponent from '../../components/Pagination';
-import MinimumDailyHoursSliderComponent, { minimumDailyHoursToText } from '../../components/WorkHoursSlider';
+import PaginationComponent from '../../components/common/Pagination';
+import MinimumDailyHoursSliderComponent, { minimumDailyHoursToText } from '../../components/common/WorkHoursSlider';
 
 import { PAGE_SIZE_OWN_ENTRIES } from '../../Configuration';
 

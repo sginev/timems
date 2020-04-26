@@ -3,12 +3,12 @@ import React from 'react'
 import Button from 'react-bootstrap/Button';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown';
-import UserRoleStyling, { AllRoles } from '../styling/UserRoles'
+import UserRoleStyling, { AllRoles } from '../../styling/UserRoles'
 
 import { UserRole } from 'shared/interfaces/UserRole';
-import { User, MyUserContext } from '../utils/user';
+import { User, MyUserContext } from '../../utils/user';
 
-import api from "../services/api"
+import api from "../../services/api"
 
 export default function UserListComponent( props:{ list:User[], onChange:()=>void } ) {
   return (

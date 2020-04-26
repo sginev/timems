@@ -1,9 +1,9 @@
 import React from 'react'
 
 import { FaPen as IconEdit } from 'react-icons/fa';
-import { Entry, daysToMilliseconds } from '../utils/entry';
+import { Entry, daysToMilliseconds } from '../../utils/entry';
 import dateformat from 'dateformat'
-import { MyUserContext } from '../utils/user';
+import { MyUserContext } from '../../utils/user';
 import { AccessControl } from 'shared/authorization/AccessControl';
 
 type SharedProps = { showUsername:boolean, minDailyHours?:number, onClickEdit:(entry:Entry)=>void };
