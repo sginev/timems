@@ -19,7 +19,6 @@ import AllEntriesPage from './pages/inshell/AllEntries'
 import AllUsersPage from './pages/inshell/AllUsers'
 import MyUserPage from './pages/inshell/MyUser'
 import LoginPage from './pages/fullwidth/Login';
-import RegisterPage from './pages/fullwidth/Register';
 import PageNotFoundPage from './pages/fullwidth/404';
 import AboutPage from './pages/inshell/About';
 
@@ -51,8 +50,6 @@ function AppRoutesWrapper() {
     return (
       <div className={ "page-content " + location.pathname.substr(1) }>
         <Switch>
-          {/* <Route exact path="/login" component={ LoginPage } />
-          <Route exact path="/register" component={ RegisterPage } /> */}
           <Route exact path="/(login|register)" component={ LoginPage } />
           <Redirect to="/login"/>
         </Switch>
