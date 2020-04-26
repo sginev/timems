@@ -6,11 +6,12 @@ import api from '../services/api'
 export function useApiDataLoader<T>( apiPath:string, defaultValue:T, params?:any ) 
 {
   type State = { error?:Error, loading:boolean, data:T };
+  type LoadFunc = ( params?:any, fallbackValue?:T ) => Promise<void>
   
   const [ state, setState ] = useState<State>({ data:defaultValue, loading:true });
   const { addToast } = useToasts();
   
-  const load = async ( params?:any, fallbackValue=defaultValue ) => {
+  const load:LoadFunc = async ( params, fallbackValue=defaultValue ) => {
     setState({ data:fallbackValue, loading:true });
     try {
       // await new Promise( re => setTimeout( re, 1500 ) )
@@ -24,16 +25,19 @@ export function useApiDataLoader<T>( apiPath:string, defaultValue:T, params?:any
 
   useEffect( () => { load( params ) }, [] )
 
-  return [ state, load ] as [ State, (params?: any, fallbackValue?: T) => Promise<void> ];
+  return [ state, load ] as [ State, LoadFunc ];
 }
 
 export function useRefreshOnFocus( refreshFunction?:()=>any, sleep:number=2000 ) 
 {
   const renderTime = new Date().getTime();
-  const isStale = () => new Date().getTime() - renderTime > sleep;
+  const isStale = () => new Date().getTime() - renderTime < sleep;
 
   const onFocus = () => {
-    isStale() && refreshFunction!();
+    if ( isStale() )
+      return
+    console.log( "Page focused - automatically refreshing list." )
+    refreshFunction!();
   };
 
   useEffect(() => {

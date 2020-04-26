@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 
 import { NavLink } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
-import { FaSyncAlt as IconRefresh } from "react-icons/fa";
 
 import PageContentHeaderComponent from '../../components/PageContentHeader';
 import PageContentBodyComponent from '../../components/PageContentBody';
@@ -59,7 +58,6 @@ export default function MyEntriesPage()
     <div>
 
       <PageContentHeaderComponent title="My work records">
-        {/* <Button variant="outline-secondary" onClick={ () => reloadData() }> <IconRefresh /> </Button> */}
         <Button variant="primary" onClick={ () => setEditorModalState({ show:true }) }>
           Add new record
         </Button>

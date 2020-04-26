@@ -73,7 +73,7 @@ const UserListItemComponent:React.FC<{user:User,onChange:()=>void}> = ({ user, o
     if ( role === -1 )
       return <Button id="dropdown-basic-button" variant='link' disabled>Please wait...</Button>
     return (
-      <DropdownButton block
+      <DropdownButton
           disabled={ ! canChangeRole }
           title={ roleProps.label }
           id="dropdown-basic-button" >

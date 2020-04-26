@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { FaTimesCircle as IconDelete, FaPen as IconEdit } from 'react-icons/fa';
+import { FaPen as IconEdit } from 'react-icons/fa';
 import { Entry, daysToMilliseconds } from '../utils/entry';
 import dateformat from 'dateformat'
 import { MyUserContext } from '../utils/user';
@@ -24,7 +24,6 @@ const EntryListItemComponent = ({ entry, showUsername, colorize, onClickEdit }:I
     const renderEditButtons = () => (
       <div className="buttons">
         <div className="edit" onClick={ () => onClickEdit!( entry! ) }> <IconEdit/> </div>
-        {/* <div className="delete"> <IconDelete/> </div> */}
       </div>
     )
     
