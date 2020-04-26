@@ -5,14 +5,14 @@ import { authenticateUser, validateToken } from '../util/auth';
 
 import data from '../datamanager';
 import { AccessControl } from 'shared/authorization/AccessControl';
-import Validator from 'shared/validation/Validator';
+import validation from 'shared/validation/Validator';
 import { assertValidated } from '../util/assertions';
 
 type Handler = ( req:Express.Request, res:Express.Response, next:Express.NextFunction ) => void;
 
 export const handleRouteAuth:Handler = async (req, res, next) => 
 {
-  assertValidated( Validator.Auth.validate( req.body ) );
+  assertValidated( validation.api.auth.validate( req.body ) );
   
   const { username, password } = req.body;
 

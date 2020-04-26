@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import logo from './logo.svg';
 import { useHistory, useLocation } from "react-router-dom";
 import { useToasts } from 'react-toast-notifications'
-import Validator from 'shared/validation/Validator'
+import validation from 'shared/validation/Validator'
 
 import authenticationService from '../../services/auth'
 
@@ -40,8 +40,8 @@ export default function LoginPage() {
     try {
       const { username, password, passwordConfirmation } = values
       const { error } = newUser ? 
-        Validator.AuthFormRegister.validate({ username, password, passwordConfirmation }) : 
-        Validator.AuthFormLogin.validate({ username, password });
+        validation.form.auth.register.validate({ username, password, passwordConfirmation }) : 
+        validation.form.auth.login.validate({ username, password });
       if ( error )
         throw error;
       const authenticate = newUser ? authenticationService.register : authenticationService.login;

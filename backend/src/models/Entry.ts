@@ -31,7 +31,7 @@ const EntrySchema = new Mongoose.Schema({
   notes: { 
     type: String, 
     trim: true, 
-    required: false
+    required: true
   },
   _dailyTotalDuration: { 
     type: Number, 

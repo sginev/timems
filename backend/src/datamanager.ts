@@ -5,8 +5,7 @@ import { encryptPassword, comparePassword } from './util/passwords';
 import { UserRole } from 'shared/interfaces/UserRole';
 import User from "./models/User";
 import Entry from "./models/Entry";
-
-import Validator from 'shared/validation/Validator';
+import validation from 'shared/validation/Validator';
 
 type UserUpdates = { username?:string, password?:string, role?:UserRole, preferredWorkingHoursPerDay?:number }
 type EntryUpdates = { day:number, duration:number, notes:string }
@@ -49,7 +48,7 @@ const users = {
     if ( await this.getByUsername( username ) )
       throw new ApiError( "Chosen username is already taken.", 409 );
 
-    validate( Validator.UserModel, { username, password, role } )
+    // validate( Validator.UserModel, { username, password, role } )
 
     const passhash = encryptPassword( password );
     const preferredWorkingHoursPerDay = 0;
@@ -73,7 +72,7 @@ const users = {
         throw new ApiError( "Chosen username is already taken.", 409 );
     }
 
-    validate( Validator.UserUpdates, updates )
+    // validate( Validator.UserUpdates, updates )
   
     if ( updates.password ) 
     {
@@ -164,7 +163,9 @@ const entries = {
       throw new ApiError( "User does not exist", 404 );
     
     const entryData = { userId, day, duration, notes, _username: user.username };
-    validate( Validator.EntryModel, entryData );
+
+    // validate( Validator.EntryModel, entryData );
+
     const entry = await new Entry(entryData).save();
     await this.updateDailyTotals( entry.userId, entry.day );
   },
@@ -175,7 +176,7 @@ const entries = {
       if ( updates[key] === undefined )
         delete updates[key]
 
-    validate( Validator.EntryUpdates, updates )
+    // validate( Validator.EntryUpdates, updates )
     const entry = await this.getById( id );
     if ( !entry ) 
       throw new ApiError( `Entry not found.`, 404 );

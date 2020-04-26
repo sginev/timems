@@ -4,7 +4,7 @@ import data from '../datamanager';
 import ResponseWithCaller from '../types/ResponseWithCaller'
 import { IEntry } from '../models/Entry';
 import { assertAccess, assertFound, assert, assertValidated } from '../util/assertions';
-import Validator from 'shared/validation/Validator';
+import validation from 'shared/validation/Validator';
 
 const routes = express.Router();
 
@@ -41,7 +41,7 @@ routes.get( '/:id', async (_, res:Response, next) => {
 
 routes.put('/', async (req, res:Response, next) => {
   const { userId, day, duration, notes } = req.body;
-  assertValidated( Validator.ApiEntryCreate.validate( req.body ) )
+  assertValidated( validation.api.entry.create.validate( req.body ) )
   assertAccess( userId === res.locals.caller.id ?
                 res.locals.access.create.own.entry :
                 res.locals.access.create.any.entry );
@@ -53,7 +53,7 @@ routes.put('/', async (req, res:Response, next) => {
 routes.post('/:id', async (req, res:Response, next) => {
   let entry = res.locals.entry!;
   assertFound( entry, `Entry` );
-  assertValidated( Validator.ApiEntryUpdate.validate( req.body ) )
+  assertValidated( validation.api.entry.update.validate( req.body ) )
   assertAccess( entry.userId === res.locals.caller.id ?
                 res.locals.access.update.own.entry :
                 res.locals.access.update.any.entry );
