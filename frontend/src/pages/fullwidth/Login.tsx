@@ -6,6 +6,7 @@ import validation from 'shared/validation/Validator'
 
 import authenticationService from '../../services/auth'
 
+import AtomSpinner from '../../styling/Atom'
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 
@@ -64,7 +65,15 @@ export default function LoginPage() {
 
   return (
     <>
-      <p> <img src={logo} className="App-logo" alt="logo" /> </p>
+      {/* <p> <img src={logo} className="App-logo" alt="logo" /> </p> */}
+      <AtomSpinner />
+      
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
       
       <div style={{ maxWidth:"800px" }}>
         <Form onSubmit={ handleSubmit }>
@@ -113,6 +122,8 @@ export default function LoginPage() {
         </Form>
       </div>
 
+      <br/>
+      <br/>
       <br/>
       <br/>
       
