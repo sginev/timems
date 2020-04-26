@@ -4,6 +4,7 @@ import data from '../datamanager';
 import ApiError from '../types/ApiError';
 import { checkPermissions } from '../util/auth';
 import { UserRole } from "shared/interfaces/UserRole";
+import { IUser } from '../models/User';
 
 const routes = express.Router();
 
@@ -43,32 +44,30 @@ routes.put('/', async (req, res, next) => {
 });
 
 routes.post('/:id', async (req, res, next) => {
-  const user = res.locals.user
+  const user = res.locals.user as IUser
   if ( !user ) 
     throw new ApiError( `User not found.`, 404 );
-  const userId = user.id;
   const updates = {
     username : req.body.username,
     password : req.body.password,
     role : req.body.role,
     preferredWorkingHoursPerDay: req.body.preferredWorkingHoursPerDay,
   }
-  const minimumRole = UserRole.UserManager;
-  await checkPermissions( res.locals.caller, { minimumRole, userId } );
+  const minimumRole = Math.max( UserRole.UserManager, user.role ) as UserRole;
+  await checkPermissions( res.locals.caller, { minimumRole, userId : user.id } );
   if ( updates.role && res.locals.caller.role < updates.role )
     throw new ApiError( "You cannot set users to a higher permission level than your own." );
-  const updatedUser = await data.users.update( userId, updates );
+  const updatedUser = await data.users.update( user.id, updates );
   res.locals.data = { user : updatedUser };
   next();
 });
 
 routes.delete('/:id', async (req, res, next) => {
-  const user = res.locals.user
+  const user = res.locals.user as IUser
   if ( !user ) 
     throw new ApiError( `User not found.`, 404 );
-  const userId = user.userId;
-  const minimumRole = UserRole.UserManager;
-  await checkPermissions( res.locals.caller, { minimumRole, userId } );
+  const minimumRole = Math.max( UserRole.UserManager, user.role ) as UserRole;
+  await checkPermissions( res.locals.caller, { minimumRole, userId : user.id } );
   await data.users.delete( user.id );
   res.locals.data = {};
   next();
