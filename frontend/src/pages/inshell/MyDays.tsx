@@ -4,19 +4,17 @@ import { useToasts } from 'react-toast-notifications';
 import api from "../../services/api";
 import hooks from "../../utils/hooks";
 
-import Button from 'react-bootstrap/Button';
 import Accordion from 'react-bootstrap/Accordion';
 import Container from 'react-bootstrap/Container';
 
 import PageContentHeaderComponent from '../../components/PageContentHeader';
 import PageContentBodyComponent from '../../components/PageContentBody';
-import EntryListComponent from '../../components/EntryList';
+import DayListComponent from '../../components/DaysList';
 import EntryFilterComponent, { FilterState } from '../../components/EntryFilter';
 import { useApiDataLoader, useRefreshOnFocus } from '../../utils/react';
-import { millisecondsToDays, Entry } from '../../utils/entry';
+import { millisecondsToDays, Day } from '../../utils/entry';
 import { MyUserContext } from '../../utils/user';
 import PaginationComponent from '../../components/Pagination';
-import EntryEditorModalComponent from '../../components/EntryEditor';
 import MinimumDailyHoursSliderComponent, { minimumDailyHoursToText } from '../../components/WorkHoursSlider';
 
 import { PAGE_SIZE_OWN_ENTRIES } from '../../Configuration';
@@ -27,12 +25,12 @@ export default function MyEntriesPage()
   const defaultFilterState = { startDate : null, endDate : null };
   const [ filterState, setFilterState ] = useState<FilterState>( defaultFilterState );
   const limit = PAGE_SIZE_OWN_ENTRIES
-  const path = `/entries`;
-  const defaultData = { entries : new Array<Entry>(), totalPages : 1, page : 1 };
+  const path = `/days`;
+  const defaultData = { days : new Array<Day>(), totalPages : 1, page : 1 };
   const [ { data, loading, error }, load ] = useApiDataLoader( path, defaultData, { userId: myUser.id, limit } );
 
   data.page = data.page || 1;
-  data.totalPages = data.entries.length && ( data.totalPages || 1 );
+  data.totalPages = data.days.length && ( data.totalPages || 1 );
 
   const onFilterChange = ( state:FilterState ) => {
     setFilterState( state );
@@ -49,13 +47,7 @@ export default function MyEntriesPage()
     load( { from, to, limit, page, userId : myUser.id }, data );
   }
 
-  const [editorModalState, setEditorModalState] = useState<any>({});
-  const onClickEdit = ( entry:Entry ) => {
-    setEditorModalState({ show:true, entry })
-  }
-
-  const list = data.entries
-  const showUsername = false
+  const list = data.days;
 
   useRefreshOnFocus( error ? undefined : reloadData );
 
@@ -84,12 +76,7 @@ export default function MyEntriesPage()
 
   return (
     <>
-
-      <PageContentHeaderComponent title="My work records">
-        <Button variant="secondary" onClick={ () => setEditorModalState({ show:true }) }>
-          Add new record
-        </Button>
-      </PageContentHeaderComponent>
+      <PageContentHeaderComponent title="My work days" />
 
       { loading && <div className="progress-line" /> }
 
@@ -111,20 +98,12 @@ export default function MyEntriesPage()
         </Accordion>
 
 
-        <EntryListComponent {...{ list, size:limit, showUsername, minDailyHours, onClickEdit } } />
+        <DayListComponent {...{ list, size:limit, minDailyHours } } />
         <PaginationComponent {...{ currentPage:data.page, lastPage: data.totalPages, onAction:onPageSelect } } />
 
         <div className="page-component-foot-filler" ></div>
         
       </PageContentBodyComponent>
-
-      { editorModalState.show &&
-        <EntryEditorModalComponent 
-          state={ editorModalState } 
-          changeState={ setEditorModalState } 
-          refresh={ () => reloadData() } />
-      }
-
     </>
   )
 }

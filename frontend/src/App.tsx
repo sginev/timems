@@ -9,7 +9,7 @@ import {
   useHistory,
 } from "react-router-dom";
 import { ToastProvider, useToasts } from 'react-toast-notifications';
-import { FaClock, FaUserFriends, FaRegClock, FaUserCircle } from "react-icons/fa";
+import { FaClock, FaCalendar, FaUserFriends, FaRegClock, FaUserCircle } from "react-icons/fa";
 
 import './styles/themes/superhero/bootstrap.min.css';
 import './styles/App.css';
@@ -19,6 +19,7 @@ import './styles/EntryList.css';
 import './styles/UserList.css';
 
 import MyEntriesPage from './pages/inshell/MyEntries'
+import MyDaysPage from './pages/inshell/MyDays'
 import AllEntriesPage from './pages/inshell/AllEntries'
 import AllUsersPage from './pages/inshell/AllUsers'
 import MyUserPage from './pages/inshell/MyUser'
@@ -67,13 +68,14 @@ function AppMemberContent() {
   const location = useLocation();
   hooks.setMyUserData = setMyUserData
 
-  function canViewPage( page:"my-entries"|"all-entries"|"all-users"|"my-user" ) {
+  function canViewPage( page:"my-entries"|"my-days"|"all-entries"|"all-users"|"my-user" ) {
     if ( !myUser )
       return false;
     const access = new AccessControl( myUser );
     switch ( page ) {
       case "my-user":     return access.read.own.user;
       case "my-entries":  return access.read.own.entry;
+      case "my-days":  return access.read.own.entry;
       case "all-users":   return access.read.any.user;
       case "all-entries": return access.read.any.entry;
       default: return false
@@ -101,6 +103,8 @@ function AppMemberContent() {
         <NavLink className="home" exact to="/"><button> { APP_NAME } </button></NavLink>
         { canViewPage( "my-entries" ) && 
           <NavLink activeClassName="active" exact to="/my-entries"><button><FaRegClock/></button></NavLink> }
+        { canViewPage( "my-days" ) && 
+          <NavLink activeClassName="active" exact to="/my-days"><button><FaCalendar/></button></NavLink> }
         { canViewPage( "all-entries" ) && 
           <NavLink activeClassName="active" exact to="/all-entries"><button><FaClock/></button></NavLink> }
         { canViewPage( "all-users" ) && 
@@ -117,6 +121,7 @@ function AppMemberContent() {
               <Switch>
                 <Route exact path="/" component={ AboutPage } />
                 <Route path="/my-entries" component={ MyEntriesPage } />
+                <Route path="/my-days" component={ MyDaysPage } />
                 <Route path="/all-users" component={ AllUsersPage } />
                 <Route path="/all-entries" component={ AllEntriesPage } />
                 <Route path="/my-user" component={ MyUserPage } />
