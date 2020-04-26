@@ -30,7 +30,7 @@ routes.get( '/', async (req, res:Response, next) => {
 routes.get( '/:id', async (req, res:Response, next) => {
   const user = res.locals.user;
   assertFound( user, 'User' );
-  assertAccess( user!.id === res.locals.caller.id ?
+  assertAccess( user!.id == res.locals.caller.id ?
                 res.locals.access.read.own.user :
                 res.locals.access.read.any.user );
   res.locals.data = { user }
@@ -58,7 +58,7 @@ routes.post('/:id', async (req, res:Response, next) => {
     role : req.body.role,
     preferredWorkingHoursPerDay: req.body.preferredWorkingHoursPerDay,
   }
-  assertAccess( user!.id === res.locals.caller.id ?
+  assertAccess( user!.id == res.locals.caller.id ?
                 res.locals.access.update.own.user :
                 res.locals.access.update.any.user );
 
@@ -77,7 +77,7 @@ routes.post('/:id', async (req, res:Response, next) => {
 routes.delete('/:id', async (req, res:Response, next) => {
   const user = res.locals.user as IUser;
   assertFound( user, 'User' )
-  assertAccess( user!.id === res.locals.caller.id ?
+  assertAccess( user!.id == res.locals.caller.id ?
                 res.locals.access.delete.own.user :
                 res.locals.access.delete.any.user );
   assert( user.role !== UserRole.Admin || user.id !== res.locals.caller.id,

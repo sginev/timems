@@ -22,7 +22,7 @@ type Response = ResponseWithCaller & { locals: { entry?:IEntry } };
 routes.get( '/', async (req, res:Response, next) => {
   const options = req.query;
   const userId = options.userId as string;
-  assertAccess( userId === res.locals.caller.id ?
+  assertAccess( userId == res.locals.caller.id ?
                 res.locals.access.read.own.entry :
                 res.locals.access.read.any.entry );
   res.locals.data = await data.entries.getPaginated( options );
@@ -32,7 +32,7 @@ routes.get( '/', async (req, res:Response, next) => {
 routes.get( '/:id', async (_, res:Response, next) => {
   const entry = res.locals.entry!;
   assertFound( entry, `Entry` );
-  assertAccess( entry.userId === res.locals.caller.id ?
+  assertAccess( entry.userId == res.locals.caller.id ?
                 res.locals.access.read.own.entry :
                 res.locals.access.read.any.entry );
   res.locals.data = { entry };
@@ -42,7 +42,7 @@ routes.get( '/:id', async (_, res:Response, next) => {
 routes.put('/', async (req, res:Response, next) => {
   const { userId, day, duration, notes } = req.body;
   assertValidated( validation.api.entry.create.validate( req.body ) )
-  assertAccess( userId === res.locals.caller.id ?
+  assertAccess( userId == res.locals.caller.id ?
                 res.locals.access.create.own.entry :
                 res.locals.access.create.any.entry );
   const entry = await data.entries.add( userId, day, duration, notes );
@@ -54,7 +54,7 @@ routes.post('/:id', async (req, res:Response, next) => {
   let entry = res.locals.entry!;
   assertFound( entry, `Entry` );
   assertValidated( validation.api.entry.update.validate( req.body ) )
-  assertAccess( entry.userId === res.locals.caller.id ?
+  assertAccess( entry.userId == res.locals.caller.id ?
                 res.locals.access.update.own.entry :
                 res.locals.access.update.any.entry );
   interface EntryData { day:number , duration:number , notes:string };
