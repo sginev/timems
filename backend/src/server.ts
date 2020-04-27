@@ -49,3 +49,5 @@ const connectToDatabase = async() =>
   app.listen( config.PORT, () => console.log( `> Running on port ${ config.PORT }.` ) );
 } )()
 .catch( e => console.error( e ) )
+
+export default app;

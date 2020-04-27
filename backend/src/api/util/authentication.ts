@@ -30,6 +30,10 @@ export function validateToken( authorizationHeader?:string )
   const [ headerKey, authenticationToken ] = authorizationHeader.split(' ');
   if ( headerKey !== 'Bearer' ) 
     throw new ApiError( "Wrong authentication type", 401 );
-  const data = jwt.verify( authenticationToken, JWT_SECRET );
-  return data as JWTData
+  try {
+    const data = jwt.verify( authenticationToken, JWT_SECRET );
+    return data as JWTData
+  } catch ( e ) {
+    throw new ApiError( e.message, 401, e.name );
+  }
 };

@@ -40,11 +40,12 @@ routes.get( '/:id', async (req, res:Response, next) => {
 routes.put('/', async (req, res:Response, next) => {
   assertValidated( validation.api.user.create.validate( req.body ) );
   assertAccess( res.locals.access.create.any.user );
-  const { username, password, role } = req.body;
+  const { username, password } = req.body;
+  const role = req.body.role || UserRole.Member;
   assert( res.locals.caller.role >= role, 
     "You cannot create users with higher permission level than your own.", 403 );
-  const user = await data.users.add( username, password, role || UserRole.Member );
-  res.locals.data = { user };
+  const user = await data.users.add( username, password, role );
+  res.locals.data = { user : await data.users.getById( user.id ) };
   next();
 });
 

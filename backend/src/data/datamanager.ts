@@ -42,8 +42,7 @@ const users = {
       preferredWorkingHoursPerDay : 0
     };
     assertValidated( validation.model.user.create.validate( data ) );
-    const newUser = await new User( data ).save();
-    return newUser;
+    return await new User( data ).save();
   } ,
 
   update: async function ( id:string, updates:UserUpdates ) {
