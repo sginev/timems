@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import { useToasts } from 'react-toast-notifications';
-import validation from 'shared/validation/Validator';
+import validation from '../../validation/Validator';
 
 import api from '../../services/api';
 import AtomSpinner from '../../styling/Atom'
