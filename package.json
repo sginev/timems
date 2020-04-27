@@ -1,0 +1,16 @@
+{
+  "name": "timetracker",
+  "version": "0.1.0",
+  "author": "Stefan Ginev",
+  "license": "ISC",
+  "scripts": {
+    "setup": "npm i && (cd backend && npm i) && (cd frontend && npm i)",
+    "build": "(cd frontend && npm run build)",
+    "start": "npm run build && (cd backend && npm start)",
+    "seed": "(cd backend && npm run seed)"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@git.toptal.com:screening/stefan-ginev.git"
+  }
+}

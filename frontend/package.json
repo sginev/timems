@@ -4,7 +4,15 @@
   "description": "Toptal Screening Test Project (client)",
   "author": "Stefan G",
   "private": true,
+  "scripts": {
+    "dev": "react-app-rewired start",
+    "start": "react-app-rewired start",
+    "build": "react-app-rewired build",
+    "test": "react-app-rewired test",
+    "eject": "react-scripts eject"
+  },
   "dependencies": {
+    "@hapi/joi": "^17.1.1",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
@@ -39,13 +47,6 @@
     "shared": "file:../shared",
     "styled-components": "^5.1.0",
     "typescript": "^3.7.5"
-  },
-  "scripts": {
-    "dev": "PORT=3300 WDS_SOCKET_HOST=thechoephix.com react-app-rewired start",
-    "start": "react-app-rewired start",
-    "build": "react-app-rewired build",
-    "test": "react-app-rewired test",
-    "eject": "react-scripts eject"
   },
   "config-overrides-path": "config-overrides.js",
   "eslintConfig": {

@@ -24,8 +24,8 @@ app.use( morgan('dev') );
 app.use( "/api", api );
 
 //// Single-page React App (wip)
-app.use( '/', express.static( '../frontend/public' ) );
-app.use( '*', express.static( '../frontend/public/404.html' ) );
+app.use( '/', express.static( '../frontend/build' ) );
+app.use( '*', express.static( '../frontend/build/404.html' ) );
 
 const connectToDatabase = async() => 
 {

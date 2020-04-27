@@ -6,9 +6,9 @@
   "private": true,
   "main": "src/index.ts",
   "scripts": {
-    "start": "ts-node src/index.ts",
+    "start": "ts-node src/server.ts",
     "dev": "nodemon -e .ts -x \"clear && ts-node src/server.ts\"",
-    "seed": "npx ts-node dev/seed.ts"
+    "seed": "npx ts-node src/dev/seed.ts"
   },
   "dependencies": {
     "cors": "^2.8.5",
