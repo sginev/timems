@@ -20,7 +20,7 @@ export default function AllUsers()
   data.totalPages = data.users.length && ( data.totalPages || 1 );
 
   const reloadData = ( page = data.page ) => {
-    load( { page, limit }, data );
+    load( { page: +page, limit }, data );
   }
 
   const onPageSelect = ( page:number ) => {
