@@ -16,6 +16,20 @@ const configuration = {
           day: common.randomDay,
           duration: common.randomDuration,
           notes: "{{company.catchPhrase}}",
+          repeat: '2340'
+        }
+      ],
+      repeat: '1'
+    },
+    {
+      username: `demo`,
+      password: `demo`,
+      role: UserRole.Admin,
+      entries: [
+        {
+          day: common.randomDay,
+          duration: common.randomDuration,
+          notes: "{{company.catchPhrase}}",
           repeat: '234'
         }
       ],
@@ -23,7 +37,7 @@ const configuration = {
     },
     {
       username: `manager`,
-      password: `toptal`,
+      password: `demo`,
       role: UserRole.UserManager,
       entries: [
         {
@@ -37,7 +51,7 @@ const configuration = {
     },
     {
       username: `joe_schmoe`,
-      password: `toptal`,
+      password: `demo`,
       role: UserRole.Member,
       entries: [
         {
@@ -51,7 +65,7 @@ const configuration = {
     },
     {
       username: `{{commerce.color}}_{{internet.domainWord}}`,
-      password: `toptal`,
+      password: `demo`,
       role: UserRole.UserManager,
       entries: [
         {
@@ -65,7 +79,7 @@ const configuration = {
     },
     {
       username: `{{internet.userName}}`,
-      password: `toptal`,
+      password: `demo`,
       role: UserRole.Member,
       entries: [
         {
