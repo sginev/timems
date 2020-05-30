@@ -23,7 +23,7 @@ export default function AboutPage() {
     <>
       <br/>
       <h1>{ APP_NAME }</h1>
-      <h2>Toptal Test Project</h2>
+      <h2>Track your work hours.</h2>
       <br/>
       <br/>
       <br/>
