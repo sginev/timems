@@ -2,6 +2,7 @@ import { UserRole } from "shared/interfaces/UserRole";
 
 const common = {
   randomDay : '{{random.number({"min":18280,"max":18380})}}',
+  randomDayMore : '{{random.number({"min":18111,"max":18411})}}',
   randomDuration : '{{random.number({"min":1,"max":7})}}',
 };
 
@@ -16,7 +17,7 @@ const configuration = {
           day: common.randomDay,
           duration: common.randomDuration,
           notes: "{{company.catchPhrase}}",
-          repeat: '2340'
+          repeat: '234'
         }
       ],
       repeat: '1'
@@ -27,10 +28,10 @@ const configuration = {
       role: UserRole.Admin,
       entries: [
         {
-          day: common.randomDay,
+          day: common.randomDayMore,
           duration: common.randomDuration,
           notes: "{{company.catchPhrase}}",
-          repeat: '234'
+          repeat: '1234'
         }
       ],
       repeat: '1'
