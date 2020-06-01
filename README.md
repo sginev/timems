@@ -18,6 +18,7 @@ Then follow the following steps to serve the app:
 
 ## To do
 
+```
 [ ] Unit testing
 
 [ ] Resedign with smaller ui, theme selection
@@ -25,3 +26,4 @@ Then follow the following steps to serve the app:
 [ ] Make the switch to GraphQL
 
 [ ] e2e
+```
