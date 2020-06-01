@@ -1,5 +1,3 @@
-## Toptal take-home project
-
 # Time Management System
 
 ## Installation
@@ -17,3 +15,9 @@ Then follow the following steps to serve the app:
 * build frontend: `npm run build`
 
 * serve backend and frontend: `npm run build`
+
+## To do
+[ ] Unit testing
+[ ] Resedign with smaller ui, theme selection
+[ ] Make the switch to GraphQL
+[ ] e2e
