@@ -16,6 +16,8 @@ Then follow the following steps to serve the app:
 
 * serve backend and frontend: `npm run build`
 
+----
+
 ## To do
 ```
 [ ] Unit testing
