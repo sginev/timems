@@ -1,4 +1,6 @@
-# Time Management System
+# Work Time Management System
+
+----
 
 ## Installation
 
