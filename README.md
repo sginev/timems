@@ -17,7 +17,11 @@ Then follow the following steps to serve the app:
 * serve backend and frontend: `npm run build`
 
 ## To do
+
 [ ] Unit testing
+
 [ ] Resedign with smaller ui, theme selection
+
 [ ] Make the switch to GraphQL
+
 [ ] e2e
