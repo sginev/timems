@@ -20,10 +20,7 @@ Then follow the following steps to serve the app:
 
 ```
 [ ] Unit testing
-
 [ ] Resedign with smaller ui, theme selection
-
 [ ] Make the switch to GraphQL
-
 [ ] e2e
 ```
